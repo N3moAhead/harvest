@@ -76,7 +76,7 @@ func init() {
 
 func NewGame() *Game {
 	p := player.NewPlayer()
-	w := world.NewWorld(40, 40)
+	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
 	g := &Game{
 		Player: p,
 		World:  w,

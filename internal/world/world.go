@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
@@ -29,7 +30,7 @@ type World struct {
 }
 
 func NewWorld(widthInTiles, heightInTiles int) *World {
-	tileW, tileH := 32, 32
+	tileW, tileH := config.TILE_SIZE, config.TILE_SIZE
 
 	tiles := make([][]TileType, heightInTiles)
 
@@ -56,7 +57,7 @@ func NewWorld(widthInTiles, heightInTiles int) *World {
 		cameraPos:    component.Vector2D{X: 0, Y: 0},
 		cameraTarget: component.Vector2D{X: 0, Y: 0},
 		// The camera speed. The camera is faster as higher this value gets
-		cameraSpeed: 4.0,
+		cameraSpeed: config.CAMERA_SPEED,
 	}
 	return m
 }
