@@ -5,6 +5,7 @@ import (
 
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/player"
+	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -13,9 +14,13 @@ import (
 
 type Game struct {
 	Player *player.Player
+	World  *world.World
 }
 
 func (g *Game) Update() error {
+	// --- Delta Time Update ---
+	dt := 1.0 / float64(ebiten.TPS())
+
 	// --- Check for Exit ---
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		return errors.New("Game Quit!")
@@ -40,11 +45,19 @@ func (g *Game) Update() error {
 	}
 	g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
 
+	// --- World ---
+	g.World.Update(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
+
 	return nil
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.Player.Draw(screen)
+	// --- Drawing the Map ---
+	g.World.Draw(screen)
+
+	// --- Drawing the Player ---
+	cameraPosX, cameraPosY := g.World.GetCameraPosition()
+	g.Player.Draw(screen, cameraPosX, cameraPosY)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -63,8 +76,10 @@ func init() {
 
 func NewGame() *Game {
 	p := player.NewPlayer()
+	w := world.NewWorld(40, 40)
 	g := &Game{
 		Player: p,
+		World:  w,
 	}
 	return g
 }

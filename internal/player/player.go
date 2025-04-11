@@ -17,13 +17,13 @@ type Player struct {
 
 // The player is currently just drawn as a rectangle.
 // TODO: Draw the player with assets
-func (p *Player) Draw(screen *ebiten.Image) {
+func (p *Player) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float64) {
 	rectSize := 32
 	halfRectSize := float32(rectSize / 2)
 	vector.DrawFilledRect(
 		screen,
-		float32(p.Pos.X)-halfRectSize,
-		float32(p.Pos.Y)-halfRectSize,
+		float32(p.Pos.X)-float32(mapOffsetX)-halfRectSize,
+		float32(p.Pos.Y)-float32(mapOffsetY)-halfRectSize,
 		float32(rectSize),
 		float32(rectSize),
 		color.RGBA{R: 255, G: 255, B: 255, A: 255},
