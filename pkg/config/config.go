@@ -12,4 +12,6 @@ const (
 	HEIGHT_IN_TILES = 40
 	// The number of tiles in the Y direction.
 	WIDTH_IN_TILES = 40
+	// Initial Player Speed
+	INITIAL_PLAYER_SPEED = 6.0
 )

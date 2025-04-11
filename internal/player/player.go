@@ -35,7 +35,7 @@ func (p *Player) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float
 // game state from the past
 func NewPlayer() *Player {
 	p := &Player{
-		Speed:  5,
+		Speed:  config.INITIAL_PLAYER_SPEED,
 		Pos:    component.NewVector2D(config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2),
 		Health: component.NewHealth(100),
 	}
