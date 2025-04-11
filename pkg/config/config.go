@@ -5,7 +5,7 @@ package config
 const (
 	SCREEN_WIDTH  = 700
 	SCREEN_HEIGHT = 700
-	CAMERA_SPEED  = 5.0
+	CAMERA_SPEED  = 4.0
 	// TILE_SIZE is the size of a tile in pixels.
 	TILE_SIZE = 32
 	// The number of tiles in the X direction.
