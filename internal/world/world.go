@@ -91,7 +91,6 @@ func (m *World) Update(targetWorldPos component.Vector2D, screenWidth, screenHei
 	// For Safety clamp the camera position to the map boundaries again maybe the value came a bit off
 	m.cameraPos.X = math.Max(0, math.Min(m.cameraPos.X, float64(m.mapWidthPx-screenWidth)))
 	m.cameraPos.Y = math.Max(0, math.Min(m.cameraPos.Y, float64(m.mapHeightPx-screenHeight)))
-
 }
 
 func (m *World) Draw(screen *ebiten.Image) {

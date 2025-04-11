@@ -3,11 +3,19 @@ package game
 import (
 	"errors"
 
+	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
+)
+
+var (
+	assetStore   *assets.Store
+	audioContext *audio.Context
+	musicPlayer  *audio.Player
 )
 
 // --- Types ---
@@ -56,8 +64,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.World.Draw(screen)
 
 	// --- Drawing the Player ---
-	cameraPosX, cameraPosY := g.World.GetCameraPosition()
-	g.Player.Draw(screen, cameraPosX, cameraPosY)
+	mapOffsetX, mapOffsetY := g.World.GetCameraPosition()
+	g.Player.Draw(screen, assetStore, mapOffsetX, mapOffsetY)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -70,6 +78,18 @@ func init() {
 	ebiten.SetWindowSize(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
 	ebiten.SetWindowTitle("Harvest by Wurzelwerk")
 	ebiten.SetTPS(60)
+
+	// A new Audio Context
+	audioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
+	// Initing the asset store
+	assetStore = assets.NewStore()
+
+	// Always image name to path
+	imagesToLoad := map[string]string{
+		"player": "assets/images/CookTestImage.png",
+	}
+
+	assetStore.Load(imagesToLoad)
 }
 
 // --- Public ---

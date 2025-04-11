@@ -14,4 +14,5 @@ const (
 	WIDTH_IN_TILES = 40
 	// Initial Player Speed
 	INITIAL_PLAYER_SPEED = 6.0
+	AUDIO_SAMPLE_RATE    = 44100
 )
