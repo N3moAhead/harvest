@@ -2,7 +2,10 @@ module github.com/N3moAhead/harvest
 
 go 1.22.5
 
-require github.com/hajimehoshi/ebiten/v2 v2.8.7
+require (
+	github.com/google/uuid v1.6.0
+	github.com/hajimehoshi/ebiten/v2 v2.8.7
+)
 
 require (
 	github.com/ebitengine/gomobile v0.0.0-20240911145611-4856209ac325 // indirect
