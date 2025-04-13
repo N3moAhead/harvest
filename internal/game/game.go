@@ -1,7 +1,9 @@
 package game
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
@@ -53,6 +55,16 @@ func (g *Game) Update() error {
 	}
 	g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
 
+	/// --- SFX TEST PLS REMOVE LATER IN THE GAME ---
+	// For Testing pressing the space button will play a lazer sound
+	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+		laserSfx, ok := assetStore.GetSFXData("laser")
+		if ok {
+			sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
+			sfxPlayer.Play()
+		}
+	}
+
 	// --- World ---
 	g.World.Update(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
 
@@ -79,6 +91,9 @@ func init() {
 	ebiten.SetWindowTitle("Harvest by Wurzelwerk")
 	ebiten.SetTPS(60)
 
+	// TODO Move all this assetStore init stuff into
+	// a seperate file to keep the game.go file clean
+
 	// A new Audio Context
 	audioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
 	// Initing the asset store
@@ -88,8 +103,33 @@ func init() {
 	imagesToLoad := map[string]string{
 		"player": "assets/images/CookTestImage.png",
 	}
+	sfxToLoad := map[string]string{
+		"laser": "assets/audio/sfx/laserTest.wav",
+	}
+	musicToLoad := map[string]string{
+		"menu": "assets/audio/music/8bitMenuMusic.mp3",
+	}
 
-	assetStore.Load(imagesToLoad)
+	err := assetStore.Load(imagesToLoad, sfxToLoad, musicToLoad, config.AUDIO_SAMPLE_RATE)
+	if err != nil {
+		panic(err)
+	}
+
+	// TODO REMOVE or change this section
+	// This here should just be a test to test running music :)
+	music, ok := assetStore.GetMusicData("menu")
+	if ok {
+		musicBytesReader := bytes.NewReader(music)
+		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
+
+		musicPlayer, err = audioContext.NewPlayer(loop)
+		if err == nil {
+			musicPlayer.Play()
+		} else {
+			err = fmt.Errorf("Musikplayer konnte nicht erstellt werden: %v\n", err)
+			panic(err)
+		}
+	}
 }
 
 // --- Public ---
