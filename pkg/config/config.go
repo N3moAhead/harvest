@@ -14,7 +14,8 @@ const (
 	WIDTH_IN_TILES = 40
 	// Initial Player Speed
 	INITIAL_PLAYER_SPEED = 6.0
-
+ 	AUDIO_SAMPLE_RATE    = 44100
+	// Enemy: Carrot
 	CARROT_SPEED  = 50.0
 	CARROT_HEALTH = 3
 	CARROT_DAMAGE  = 1
