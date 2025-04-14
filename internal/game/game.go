@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"math/rand/v2"
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
@@ -14,6 +13,7 @@ import (
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 var (
@@ -25,9 +25,10 @@ var (
 // --- Types ---
 
 type Game struct {
-	Player *player.Player
-	World  *world.World
-	Enemies []enemy.EnemyInterface
+	Player               *player.Player
+	World                *world.World
+	Enemies              []enemy.EnemyInterface
+	Spawner              *world.EnemySpawner
 	previousSpacePressed bool // TODO remove this later, just for testing
 }
 
@@ -59,28 +60,34 @@ func (g *Game) Update() error {
 	}
 	g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
 
-	/// --- SFX TEST PLS REMOVE LATER IN THE GAME ---
+	/// --- SFX TEST && ENEMY TEST PLS REMOVE LATER IN THE GAME ---
 	// For Testing pressing the space button will play a lazer sound
-	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+	spacePressed := ebiten.IsKeyPressed(ebiten.KeySpace)
+	if spacePressed {
 		laserSfx, ok := assetStore.GetSFXData("laser")
 		if ok {
 			sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
 			sfxPlayer.Play()
 		}
-	}
+		if !g.previousSpacePressed {
+			padding := component.Vector2D{X: 50, Y: 0}
+			// e := g.Spawner.SpawnCarrotEnemyRandom()
+			// g.Enemies = append(g.Enemies, e)
 
-	/// --- ENEMY TEST PLS REMOVE LATER IN THE GAME ---
-	spacePressed := ebiten.IsKeyPressed(ebiten.KeySpace)
-	if spacePressed  && !g.previousSpacePressed {
-		pos := component.NewVector2D(rand.Float64()*500, rand.Float64()*500)
-		// pos := component.NewVector2D(100, 100)
-		e := enemy.NewCarrotEnemy(pos)
-		g.Enemies = append(g.Enemies, e)
+			// newEnemies := g.Spawner.SpawnCircle(g.Player, 150, 8)
 
-		laserSfx, ok := assetStore.GetSFXData("laser")
-		if ok {
-			sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
-			sfxPlayer.Play()
+			// ZigZag
+			newEnemies := g.Spawner.SpawnZigZag(g.Player.Pos.Add(padding), 6, 40, 30)
+
+			// Linie
+			// newEnemies := g.Spawner.SpawnLine(g.Player.Pos.Add(padding), 5, 30, 0)
+
+			// Zufällig
+			// newEnemies := g.Spawner.SpawnRandom(10)
+
+			for _, enemy := range newEnemies {
+				g.Enemies = append(g.Enemies, enemy)
+			}
 		}
 	}
 	g.previousSpacePressed = spacePressed
@@ -109,6 +116,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			e.Draw(screen, mapOffsetX, mapOffsetY)
 		}
 	}
+	ebitenutil.DebugPrintAt(screen, "FPS: "+fmt.Sprintf("HP: %d / %d\n", g.Player.Health.HP, g.Player.Health.MaxHP), 10, 10)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -168,12 +176,12 @@ func init() {
 func NewGame() *Game {
 	p := player.NewPlayer()
 	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
-	pos := component.NewVector2D(100, 100)// TODO remove this later, just for testing
-	e := enemy.NewCarrotEnemy(pos)
+	s := world.NewEnemySpawner()
 	g := &Game{
-		Player: p,
-		World:  w,
-		Enemies: []enemy.EnemyInterface{e},// TODO remove e later, just for testing
+		Player:  p,
+		World:   w,
+		Enemies: []enemy.EnemyInterface{s.SpawnCarrotEnemyRandom()}, // TODO remove s later, just for testing
+		Spawner: s,
 	}
 	return g
 }

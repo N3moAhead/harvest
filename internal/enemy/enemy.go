@@ -2,6 +2,7 @@ package enemy
 
 import (
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -13,12 +14,12 @@ type EnemyInterface interface {
 	IsAlive() bool
 }
 type Enemy struct {
-	Pos    component.Vector2D
-	Health component.Health
-	Speed  float64
-	Damage int
-	AttackCooldown  float64
-	attackTimer     float64
+	entity.Entity
+	Health         component.Health
+	Speed          float64
+	Damage         int
+	AttackCooldown float64
+	attackTimer    float64
 }
 
 func (e *Enemy) MoveTowards(target component.Vector2D, dt float64) {
@@ -39,7 +40,7 @@ func (e *Enemy) GetPosition() component.Vector2D {
 
 // seperation into these types must be discussed
 type MeleeEnemyData struct {
-	AttackRange    float64
+	AttackRange float64
 }
 
 type RangedEnemyData struct {

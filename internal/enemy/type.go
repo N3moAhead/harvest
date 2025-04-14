@@ -4,6 +4,7 @@ import (
 	"image/color"
 
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,17 +17,18 @@ type CarrotEnemy struct {
 }
 
 func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
+	baseEntity := entity.NewEntity(pos.X, pos.Y)
 	return &CarrotEnemy{
 		Enemy: Enemy{
-			Pos:    pos,
-			Speed:  config.CARROT_SPEED,
-			Health: component.NewHealth(config.CARROT_HEALTH),
-			Damage: config.CARROT_DAMAGE,
+			Entity:         *baseEntity,
+			Speed:          config.CARROT_SPEED,
+			Health:         component.NewHealth(config.CARROT_HEALTH),
+			Damage:         config.CARROT_DAMAGE,
 			AttackCooldown: config.CARROT_ATTACK_COOLDOWN,
-			attackTimer:   config.CARROT_ATTACK_START,
+			attackTimer:    config.CARROT_ATTACK_START,
 		},
 		MeleeEnemyData: MeleeEnemyData{
-			AttackRange:    config.CARROT_ATTACK_RANGE,
+			AttackRange: config.CARROT_ATTACK_RANGE,
 		},
 	}
 }
