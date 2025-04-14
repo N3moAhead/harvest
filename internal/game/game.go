@@ -2,8 +2,10 @@ package game
 
 import (
 	"errors"
+	"math/rand/v2"
 
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/enemy"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
@@ -15,6 +17,8 @@ import (
 type Game struct {
 	Player *player.Player
 	World  *world.World
+	Enemies []enemy.EnemyInterface
+	previousSpacePressed bool // TODO remove this later, just for testing
 }
 
 func (g *Game) Update() error {
@@ -45,8 +49,22 @@ func (g *Game) Update() error {
 	}
 	g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
 
+	/// --- ENEMY TEST PLS REMOVE LATER IN THE GAME ---
+	spacePressed := ebiten.IsKeyPressed(ebiten.KeySpace)
+	if spacePressed  && !g.previousSpacePressed {
+		pos := component.NewVector2D(rand.Float64()*500, rand.Float64()*500)
+		// pos := component.NewVector2D(100, 100)
+		e := enemy.NewCarrotEnemy(pos)
+		g.Enemies = append(g.Enemies, e)
+	}
+	g.previousSpacePressed = spacePressed
 	// --- World ---
 	g.World.Update(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
+
+	// --- Enemies ---
+	for _, e := range g.Enemies {
+		e.Update(g.Player, dt)
+	}
 
 	return nil
 }
@@ -58,6 +76,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// --- Drawing the Player ---
 	cameraPosX, cameraPosY := g.World.GetCameraPosition()
 	g.Player.Draw(screen, cameraPosX, cameraPosY)
+
+	// --- Drawing the Enemies ---
+	for _, e := range g.Enemies {
+		if e.IsAlive() {
+			e.Draw(screen, cameraPosX, cameraPosY)
+		}
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -77,9 +102,12 @@ func init() {
 func NewGame() *Game {
 	p := player.NewPlayer()
 	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
+	pos := component.NewVector2D(100, 100)// TODO remove this later, just for testing
+	e := enemy.NewCarrotEnemy(pos)
 	g := &Game{
 		Player: p,
 		World:  w,
+		Enemies: []enemy.EnemyInterface{e},// TODO remove e later, just for testing
 	}
 	return g
 }

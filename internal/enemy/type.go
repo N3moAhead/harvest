@@ -11,13 +11,13 @@ import (
 )
 
 type CarrotEnemy struct {
-	BaseEnemy
+	Enemy
 	MeleeEnemyData
 }
 
 func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 	return &CarrotEnemy{
-		BaseEnemy: BaseEnemy{
+		Enemy: Enemy{
 			Pos:    pos,
 			Speed:  config.CARROT_SPEED,
 			Health: component.NewHealth(config.CARROT_HEALTH),
@@ -46,7 +46,15 @@ func (e *CarrotEnemy) Draw(screen *ebiten.Image, camX, camY float64) {
 	vector.DrawFilledRect(screen, float32(x), float32(y), float32(16), float32(16), color.RGBA{255, 128, 0, 255}, false)
 }
 
+func (e *CarrotEnemy) IsAlive() bool {
+	return e.Enemy.IsAlive()
+}
+
+func (e *CarrotEnemy) GetPosition() component.Vector2D {
+	return e.Enemy.GetPosition()
+}
+
 type PeashooterEnemy struct {
-	BaseEnemy
+	Enemy
 	RangedEnemyData
 }

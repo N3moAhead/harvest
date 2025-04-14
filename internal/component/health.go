@@ -5,7 +5,7 @@ type Health struct {
 	MaxHP int
 }
 
-func (h *Health) damage(amount int) (alive bool) {
+func (h *Health) Damage(amount int) (alive bool) {
 	if amount > h.HP {
 		h.HP = 0
 		return false
@@ -14,7 +14,7 @@ func (h *Health) damage(amount int) (alive bool) {
 	return true
 }
 
-func (h *Health) heal(amount int) {
+func (h *Health) Heal(amount int) {
 	if h.HP+amount > h.MaxHP {
 		h.HP = h.MaxHP
 	} else {
