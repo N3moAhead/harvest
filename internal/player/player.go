@@ -4,13 +4,15 @@ import (
 	"image/color"
 
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type Player struct {
-	Pos    component.Vector2D
+	entity.Entity
+
 	Speed  float64
 	Health component.Health
 }
@@ -34,9 +36,11 @@ func (p *Player) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float
 // TODO: implement a LoadPlayer function to get the saved
 // game state from the past
 func NewPlayer() *Player {
+	baseEntity := entity.NewEntity(config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2)
+
 	p := &Player{
+		Entity: *baseEntity,
 		Speed:  config.INITIAL_PLAYER_SPEED,
-		Pos:    component.NewVector2D(config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2),
 		Health: component.NewHealth(100),
 	}
 	return p
