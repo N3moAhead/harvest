@@ -1,20 +1,15 @@
 package item
 
-type ItemType int
+import "github.com/N3moAhead/harvest/internal/itemtype"
 
-const (
-	Carrot ItemType = iota
-	Potato
-)
-
-func NewCarrot() *Item {
-	newItem := newItemBase()
-	newItem.Type = Carrot
+func NewCarrot(posX float64, posY float64) *Item {
+	newItem := newItemBase(posX, posY)
+	newItem.Type = itemtype.Carrot
 	return newItem
 }
 
-func NewPotato() *Item {
-	newItem := newItemBase()
-	newItem.Type = Potato
+func NewPotato(posX float64, posY float64) *Item {
+	newItem := newItemBase(posX, posY)
+	newItem.Type = itemtype.Potato
 	return newItem
 }

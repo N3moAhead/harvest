@@ -4,15 +4,19 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"math/rand/v2"
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/inventory"
 	"github.com/N3moAhead/harvest/internal/item"
+	"github.com/N3moAhead/harvest/internal/itemtype"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 var (
@@ -24,9 +28,10 @@ var (
 // --- Types ---
 
 type Game struct {
-	Player *player.Player
-	World  *world.World
-	items  []*item.Item
+	Player    *player.Player
+	World     *world.World
+	items     []*item.Item
+	inventory *inventory.Inventory
 }
 
 func (g *Game) Update() error {
@@ -59,27 +64,59 @@ func (g *Game) Update() error {
 
 	for i := range len(g.items) {
 		item := g.items[i]
-		item.Update(g.Player)
+		removeItem := item.Update(g.Player, g.inventory)
+		if removeItem {
+
+		}
 	}
 
-	var spacePressed bool = false
-	/// --- SFX TEST PLS REMOVE LATER IN THE GAME ---
-	// For Testing pressing the space button will play a lazer sound
-	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		spacePressed = true
-		for range 50 {
-			g.items = append(g.items, item.NewCarrot())
+	/// --- Update Items on the Ground ---
+	// TODO maybe we should move this code out of the game.go file to keep it clean
+	n := 0
+	for i := range g.items {
+		item := g.items[i]
+		// The update function also puts collected items into the inventory
+		removeItem := item.Update(g.Player, g.inventory)
+		// Remove items after
+		// the player picked them up
+		if !removeItem {
+			if n != i {
+				g.items[n] = item
+			}
+			n++
 		}
-		// laserSfx, ok := assetStore.GetSFXData("laser")
-		// if ok {
-		// 	sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
-		// 	sfxPlayer.Play()
-		// }
+	}
+	g.items = g.items[:n]
+
+	// TODO Testing spawning items pls remove for production!
+	// Pressing K will spawn items
+	if ebiten.IsKeyPressed(ebiten.KeyK) {
+		for range 10 {
+			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+			g.items = append(g.items, item.NewCarrot(posX, posY))
+		}
+		for range 10 {
+			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+			g.items = append(g.items, item.NewPotato(posX, posY))
+		}
+	}
+
+	// Testing sfx Remove for production
+	// Pressing L will play a lazer sound
+	if ebiten.IsKeyPressed(ebiten.KeyL) {
+		laserSfx, ok := assetStore.GetSFXData("laser")
+		if ok {
+			sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
+			sfxPlayer.Play()
+		}
 	}
 
 	// --- World ---
 	// TODO remove this code just for testing you can display fancy camera movement
-	if spacePressed {
+	// Pressing space will move the camera to the top left
+	if ebiten.IsKeyPressed(ebiten.KeySpace) {
 		g.World.Update(component.Vector2D{X: 0.0, Y: 0.0}, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
 	} else {
 		g.World.Update(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
@@ -103,6 +140,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// --- Drawing the Player ---
 	g.Player.Draw(screen, assetStore, mapOffsetX, mapOffsetY)
 
+	// --- Drawing the HUD ---
+	if amount, ok := g.inventory.Vegtables[itemtype.Potato]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Potato.String(), amount), 10, 10)
+	}
+	if amount, ok := g.inventory.Vegtables[itemtype.Carrot]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 30)
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -162,9 +206,11 @@ func init() {
 func NewGame() *Game {
 	p := player.NewPlayer()
 	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
+	i := inventory.NewInventory()
 	g := &Game{
-		Player: p,
-		World:  w,
+		Player:    p,
+		World:     w,
+		inventory: i,
 	}
 	return g
 }

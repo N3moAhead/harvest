@@ -14,9 +14,9 @@ const (
 	WIDTH_IN_TILES  = 40 // The number of tiles in the Y direction.
 	/// --- Player Settings ---
 	INITIAL_PLAYER_SPEED           = 6.0 // Initial Player Speed
-	INITIAL_PLAYER_MAGNET_RADIUS   = 150.0
-	PLAYER_PICKUP_RADIUS           = 50.0 // The radius in which items will be picked up into the players inventory
-	PLAYER_MAGNET_ATTRACTION_SPEED = 10.0 // Determines how fast items move towards the player
+	INITIAL_PLAYER_MAGNET_RADIUS   = 50.0
+	PLAYER_PICKUP_RADIUS           = 5.0 // The radius in which items will be picked up into the players inventory
+	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0 // Determines how fast items move towards the player
 	/// --- Audio Settings ---
 	AUDIO_SAMPLE_RATE = 44100
 )
