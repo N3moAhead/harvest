@@ -70,24 +70,30 @@ func (g *Game) Update() error {
 			sfxPlayer.Play()
 		}
 		if !g.previousSpacePressed {
-			padding := component.Vector2D{X: 50, Y: 0}
-			// e := g.Spawner.SpawnCarrotEnemyRandom()
-			// g.Enemies = append(g.Enemies, e)
 
-			// newEnemies := g.Spawner.SpawnCircle(g.Player, 150, 8)
+			// Circle Pattern
+			newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
+			fmt.Println("New Enemies Spawned:", newEnemies)
 
-			// ZigZag
-			newEnemies := g.Spawner.SpawnZigZag(g.Player.Pos.Add(padding), 6, 40, 30)
+			g.Enemies = append(g.Enemies, newEnemies...)
 
-			// Linie
-			// newEnemies := g.Spawner.SpawnLine(g.Player.Pos.Add(padding), 5, 30, 0)
+			// ZigZag Pattern
+			// padding := component.Vector2D{X: 50, Y: 0}
+			// newEnemies = g.Spawner.SpawnZigZag("carrot", g.Player.Pos.Add(padding), 6, 40, 30)
+			// g.Enemies = append(g.Enemies, newEnemies...)
 
-			// Zufällig
-			// newEnemies := g.Spawner.SpawnRandom(10)
+			// Line Pattern
+			// newEnemies = g.Spawner.SpawnLine("carrot", g.Player.Pos.Add(padding), 5, 30, 0)
 
-			for _, enemy := range newEnemies {
-				g.Enemies = append(g.Enemies, enemy)
-			}
+			// Random Pattern
+			// newEnemies = g.Spawner.SpawnMoreRandom(10, "carrot")
+
+			// Gegner der aktuellen Welle zur World hinzufügen
+			// g.Enemies = append(g.Enemies, newEnemies...)
+
+			// for _, enemy := range newEnemies {
+			// 	g.Enemies = append(g.Enemies, enemy)
+			// }
 		}
 	}
 	g.previousSpacePressed = spacePressed
@@ -174,13 +180,19 @@ func init() {
 // --- Public ---
 
 func NewGame() *Game {
+
 	p := player.NewPlayer()
 	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
 	s := world.NewEnemySpawner()
+
+	// register enemy factories
+	s.RegisterFactory("carrot", func(pos component.Vector2D) enemy.EnemyInterface { // maybe put enemy name to config?
+		return enemy.NewCarrotEnemy(pos)
+	})
 	g := &Game{
 		Player:  p,
 		World:   w,
-		Enemies: []enemy.EnemyInterface{s.SpawnCarrotEnemyRandom()}, // TODO remove s later, just for testing
+		Enemies: []enemy.EnemyInterface{},
 		Spawner: s,
 	}
 	return g
