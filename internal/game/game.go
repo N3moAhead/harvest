@@ -7,6 +7,7 @@ import (
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/item"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
@@ -25,6 +26,7 @@ var (
 type Game struct {
 	Player *player.Player
 	World  *world.World
+	items  []*item.Item
 }
 
 func (g *Game) Update() error {
@@ -55,18 +57,33 @@ func (g *Game) Update() error {
 	}
 	g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
 
+	for i := range len(g.items) {
+		item := g.items[i]
+		item.Update(g.Player)
+	}
+
+	var spacePressed bool = false
 	/// --- SFX TEST PLS REMOVE LATER IN THE GAME ---
 	// For Testing pressing the space button will play a lazer sound
 	if ebiten.IsKeyPressed(ebiten.KeySpace) {
-		laserSfx, ok := assetStore.GetSFXData("laser")
-		if ok {
-			sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
-			sfxPlayer.Play()
+		spacePressed = true
+		for range 50 {
+			g.items = append(g.items, item.NewCarrot())
 		}
+		// laserSfx, ok := assetStore.GetSFXData("laser")
+		// if ok {
+		// 	sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
+		// 	sfxPlayer.Play()
+		// }
 	}
 
 	// --- World ---
-	g.World.Update(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
+	// TODO remove this code just for testing you can display fancy camera movement
+	if spacePressed {
+		g.World.Update(component.Vector2D{X: 0.0, Y: 0.0}, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
+	} else {
+		g.World.Update(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
+	}
 
 	return nil
 }
@@ -75,9 +92,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// --- Drawing the Map ---
 	g.World.Draw(screen)
 
-	// --- Drawing the Player ---
 	mapOffsetX, mapOffsetY := g.World.GetCameraPosition()
+
+	// --- Drawing all Items ---
+	// Warning currently it's not getting checked if an item is on screen or not
+	for _, item := range g.items {
+		item.Draw(screen, mapOffsetX, mapOffsetY)
+	}
+
+	// --- Drawing the Player ---
 	g.Player.Draw(screen, assetStore, mapOffsetX, mapOffsetY)
+
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
