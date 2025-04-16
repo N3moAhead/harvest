@@ -77,8 +77,7 @@ func (g *Game) Update() error {
 		item := g.items[i]
 		// The update function also puts collected items into the inventory
 		removeItem := item.Update(g.Player, g.inventory)
-		// Remove items after
-		// the player picked them up
+		// Remove items after the player picked them up
 		if !removeItem {
 			if n != i {
 				g.items[n] = item

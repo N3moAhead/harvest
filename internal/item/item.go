@@ -21,15 +21,22 @@ type Item struct {
 func (i *Item) Update(player *player.Player, inventory *inventory.Inventory) (removeItem bool) {
 	diff := player.Pos.Sub(i.Pos)
 	len := diff.Len() // the distance from player to item
+	if len < config.PLAYER_PICKUP_RADIUS {
+		// Picking up the item into the inventory
+		inventory.AddVegtable(i.Type)
+		return true
+	}
 	if len < player.MagnetRadius {
-		dir := diff.Normalize()
-		// Moving the item towards the player using the correct speed
-		i.Pos = i.Pos.Add(dir.Mul(config.PLAYER_MAGNET_ATTRACTION_SPEED))
-		if len < config.PLAYER_PICKUP_RADIUS {
-			// Picking up the item into the inventory
-			inventory.AddVegtable(i.Type)
-			return true
+		dir := diff.Normalize() // Direction towards the player
+		// Calculating movement towards the player with the correct speed
+		moveStep := dir.Mul(config.PLAYER_MAGNET_ATTRACTION_SPEED)
+		// Avoid overshooting the target
+		if moveStep.Len() > len {
+			i.Pos = player.Pos
+		} else {
+			i.Pos = i.Pos.Add(moveStep)
 		}
+
 	}
 	return false
 }
