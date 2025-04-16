@@ -6,7 +6,7 @@ type ItemCategory int
 
 const (
 	CategoryUndefined ItemCategory = iota
-	CategoryVegtable
+	CategoryVegetable
 	CategoryWeopon
 	CategorySoup // Or could also be named buff
 )
@@ -15,7 +15,7 @@ func (ic ItemCategory) String() string {
 	switch ic {
 	case CategoryUndefined:
 		return "Undefined"
-	case CategoryVegtable:
+	case CategoryVegetable:
 		return "Vegtable"
 	case CategoryWeopon:
 		return "Weopon"
@@ -40,8 +40,8 @@ var itemInfo = map[ItemType]struct {
 	DisplayName string
 	Category    ItemCategory
 }{
-	Potato: {"Potato", CategoryVegtable},
-	Carrot: {"Carrot", CategoryVegtable},
+	Potato: {"Potato", CategoryVegetable},
+	Carrot: {"Carrot", CategoryVegetable},
 }
 
 func (it ItemType) String() string {
@@ -59,7 +59,7 @@ func (it ItemType) Category() ItemCategory {
 }
 
 func (it ItemType) IsVegtable() bool {
-	return it.Category() == CategoryVegtable
+	return it.Category() == CategoryVegetable
 }
 
 func (it ItemType) IsWeopon() bool {
