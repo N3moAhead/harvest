@@ -19,4 +19,19 @@ const (
 	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0 // Determines how fast items move towards the player
 	/// --- Audio Settings ---
 	AUDIO_SAMPLE_RATE = 44100
+	/// --- Enemy Settings ---
+	// Enemy: Carrot
+	CARROT_SPEED           = 50.0
+	CARROT_HEALTH          = 3
+	CARROT_DAMAGE          = 5
+	CARROT_ATTACK_COOLDOWN = 1.0
+	CARROT_ATTACK_RANGE    = 20.0
+	CARROT_ATTACK_START    = 0.0
+	// Carrot Style
+	CARROT_WIDTH   = 16
+	CARROT_HEIGHT  = 16
+	CARROT_COLOR_R = 255
+	CARROT_COLOR_G = 128
+	CARROT_COLOR_B = 0
+	CARROT_COLOR_A = 255
 )
