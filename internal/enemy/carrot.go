@@ -48,8 +48,8 @@ func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
 }
 
 func (e *CarrotEnemy) Draw(screen *ebiten.Image, camX, camY float64) {
-	e.DefaultDraw(screen, e.Pos.X-camX, e.Pos.Y-camY, config.CARROT_WIDTH, config.CARROT_HEIGHT,
-		color.RGBA{R: config.CARROT_COLOR_R, G: config.CARROT_COLOR_G, B: config.CARROT_COLOR_B, A: 255}) // TODO maybe add width, height and color to a shape struct component??
+	e.DefaultDraw(screen, camX, camY, config.CARROT_WIDTH, config.CARROT_HEIGHT,
+		color.RGBA{R: config.CARROT_COLOR_R, G: config.CARROT_COLOR_G, B: config.CARROT_COLOR_B, A: 255})
 }
 
 func (e *CarrotEnemy) IsAlive() bool {

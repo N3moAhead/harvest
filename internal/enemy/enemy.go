@@ -45,10 +45,16 @@ type Enemy struct {
 }
 
 func (e *Enemy) MoveTowards(target component.Vector2D, dt float64) {
-	dir := target.Sub(e.Pos)
-	if dir.Len() > 1 {
-		dir = dir.Normalize()
-		e.Pos = e.Pos.Add(dir.Mul(e.Speed * dt))
+	diff := target.Sub(e.Pos)
+	dist := diff.Len()
+
+	dir := diff.Normalize()
+	step := dir.Mul(e.Speed * dt)
+
+	if step.Len() > dist { // if overstep, set to target
+		e.Pos = target
+	} else {
+		e.Pos = e.Pos.Add(step)
 	}
 }
 
