@@ -8,8 +8,12 @@ import (
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
+
+// type PeashooterEnemy struct { Different example
+// 	Enemy
+// 	RangedEnemyData
+// }
 
 type CarrotEnemy struct {
 	Enemy
@@ -44,8 +48,8 @@ func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
 }
 
 func (e *CarrotEnemy) Draw(screen *ebiten.Image, camX, camY float64) {
-	x, y := e.Pos.X-camX, e.Pos.Y-camY
-	vector.DrawFilledRect(screen, float32(x), float32(y), float32(16), float32(16), color.RGBA{255, 128, 0, 255}, false)
+	e.DefaultDraw(screen, e.Pos.X-camX, e.Pos.Y-camY, config.CARROT_WIDTH, config.CARROT_HEIGHT,
+		color.RGBA{R: config.CARROT_COLOR_R, G: config.CARROT_COLOR_G, B: config.CARROT_COLOR_B, A: 255}) // TODO maybe add width, height and color to a shape struct component??
 }
 
 func (e *CarrotEnemy) IsAlive() bool {
@@ -54,9 +58,4 @@ func (e *CarrotEnemy) IsAlive() bool {
 
 func (e *CarrotEnemy) GetPosition() component.Vector2D {
 	return e.Enemy.GetPosition()
-}
-
-type PeashooterEnemy struct {
-	Enemy
-	RangedEnemyData
 }

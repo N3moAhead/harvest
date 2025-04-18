@@ -186,7 +186,7 @@ func NewGame() *Game {
 	s := world.NewEnemySpawner()
 
 	// register enemy factories
-	s.RegisterFactory("carrot", func(pos component.Vector2D) enemy.EnemyInterface { // maybe put enemy name to config?
+	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewCarrotEnemy(pos)
 	})
 	g := &Game{
