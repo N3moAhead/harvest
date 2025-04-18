@@ -7,7 +7,7 @@ type ItemCategory int
 const (
 	CategoryUndefined ItemCategory = iota
 	CategoryVegetable
-	CategoryWeopon
+	CategoryWeapon
 	CategorySoup // Or could also be named buff
 )
 
@@ -17,8 +17,8 @@ func (ic ItemCategory) String() string {
 		return "Undefined"
 	case CategoryVegetable:
 		return "Vegtable"
-	case CategoryWeopon:
-		return "Weopon"
+	case CategoryWeapon:
+		return "Weapon"
 	case CategorySoup:
 		return "Soup"
 	default:
@@ -62,8 +62,8 @@ func (it ItemType) IsVegtable() bool {
 	return it.Category() == CategoryVegetable
 }
 
-func (it ItemType) IsWeopon() bool {
-	return it.Category() == CategoryWeopon
+func (it ItemType) IsWeapon() bool {
+	return it.Category() == CategoryWeapon
 }
 
 func (it ItemType) IsSoup() bool {
