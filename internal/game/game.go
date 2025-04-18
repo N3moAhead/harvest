@@ -4,10 +4,14 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"math/rand/v2"
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/enemy"
+	"github.com/N3moAhead/harvest/internal/inventory"
+	"github.com/N3moAhead/harvest/internal/item"
+	"github.com/N3moAhead/harvest/internal/itemtype"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
@@ -30,6 +34,8 @@ type Game struct {
 	Enemies              []enemy.EnemyInterface
 	Spawner              *world.EnemySpawner
 	previousSpacePressed bool // TODO remove this later, just for testing
+	items                []*item.Item
+	inventory            *inventory.Inventory
 }
 
 func (g *Game) Update() error {
@@ -63,42 +69,84 @@ func (g *Game) Update() error {
 	/// --- SFX TEST && ENEMY TEST PLS REMOVE LATER IN THE GAME ---
 	// For Testing pressing the space button will play a lazer sound
 	spacePressed := ebiten.IsKeyPressed(ebiten.KeySpace)
-	if spacePressed {
+	if spacePressed && !g.previousSpacePressed {
+		// Circle Pattern
+		newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
+		fmt.Println("New Enemies Spawned:", newEnemies)
+
+		g.Enemies = append(g.Enemies, newEnemies...)
+
+		// ZigZag Pattern
+		// padding := component.Vector2D{X: 50, Y: 0}
+		// newEnemies = g.Spawner.SpawnZigZag("carrot", g.Player.Pos.Add(padding), 6, 40, 30)
+		// g.Enemies = append(g.Enemies, newEnemies...)
+
+		// Line Pattern
+		// newEnemies = g.Spawner.SpawnLine("carrot", g.Player.Pos.Add(padding), 5, 30, 0)
+
+		// Random Pattern
+		// newEnemies = g.Spawner.SpawnMoreRandom(10, "carrot")
+
+		// Appends new enemies to the world
+		// g.Enemies = append(g.Enemies, newEnemies...)
+
+		// for _, enemy := range newEnemies {
+		// 	g.Enemies = append(g.Enemies, enemy)
+		// }
+	}
+	g.previousSpacePressed = spacePressed
+
+	/// --- Update Items on the Ground ---
+	// TODO maybe we should move this code out of the game.go file to keep it clean
+	n := 0
+	for i := range g.items {
+		item := g.items[i]
+		// The update function also puts collected items into the inventory
+		removeItem := item.Update(g.Player, g.inventory)
+		// Remove items after the player picked them up
+		if !removeItem {
+			if n != i {
+				g.items[n] = item
+			}
+			n++
+		}
+	}
+	g.items = g.items[:n]
+
+	// TODO Testing spawning items pls remove for production!
+	// Pressing K will spawn items
+	if ebiten.IsKeyPressed(ebiten.KeyK) {
+		for range 10 {
+			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+			g.items = append(g.items, item.NewCarrot(posX, posY))
+		}
+		for range 10 {
+			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+			g.items = append(g.items, item.NewPotato(posX, posY))
+		}
+	}
+
+	// Testing sfx Remove for production
+	// Pressing L will play a lazer sound
+	if ebiten.IsKeyPressed(ebiten.KeyL) {
 		laserSfx, ok := assetStore.GetSFXData("laser")
 		if ok {
 			sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
 			sfxPlayer.Play()
 		}
-		if !g.previousSpacePressed {
 
-			// Circle Pattern
-			newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
-			fmt.Println("New Enemies Spawned:", newEnemies)
-
-			g.Enemies = append(g.Enemies, newEnemies...)
-
-			// ZigZag Pattern
-			// padding := component.Vector2D{X: 50, Y: 0}
-			// newEnemies = g.Spawner.SpawnZigZag("carrot", g.Player.Pos.Add(padding), 6, 40, 30)
-			// g.Enemies = append(g.Enemies, newEnemies...)
-
-			// Line Pattern
-			// newEnemies = g.Spawner.SpawnLine("carrot", g.Player.Pos.Add(padding), 5, 30, 0)
-
-			// Random Pattern
-			// newEnemies = g.Spawner.SpawnMoreRandom(10, "carrot")
-
-			// Gegner der aktuellen Welle zur World hinzufügen
-			// g.Enemies = append(g.Enemies, newEnemies...)
-
-			// for _, enemy := range newEnemies {
-			// 	g.Enemies = append(g.Enemies, enemy)
-			// }
-		}
 	}
-	g.previousSpacePressed = spacePressed
+
 	// --- World ---
-	g.World.Update(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
+	// TODO remove this code just for testing you can display fancy camera movement
+	// Pressing J will move the camera to the top left
+	if ebiten.IsKeyPressed(ebiten.KeyJ) {
+		g.World.Update(component.Vector2D{X: 0.0, Y: 0.0}, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
+	} else {
+		g.World.Update(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, dt)
+	}
 
 	// --- Enemies ---
 	for _, e := range g.Enemies {
@@ -112,8 +160,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	// --- Drawing the Map ---
 	g.World.Draw(screen)
 
-	// --- Drawing the Player ---
 	mapOffsetX, mapOffsetY := g.World.GetCameraPosition()
+
+	// --- Drawing all Items ---
+	// Warning currently it's not getting checked if an item is on screen or not
+	for _, item := range g.items {
+		item.Draw(screen, mapOffsetX, mapOffsetY)
+	}
+
+	// --- Drawing the Player ---
 	g.Player.Draw(screen, assetStore, mapOffsetX, mapOffsetY)
 
 	// --- Drawing the Enemies ---
@@ -122,7 +177,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 			e.Draw(screen, mapOffsetX, mapOffsetY)
 		}
 	}
-	ebitenutil.DebugPrintAt(screen, "FPS: "+fmt.Sprintf("HP: %d / %d\n", g.Player.Health.HP, g.Player.Health.MaxHP), 10, 10)
+
+	// --- Drawing the HUD ---
+	ebitenutil.DebugPrintAt(screen, "FPS: "+fmt.Sprintf("HP: %d / %d\n", g.Player.Health.HP, g.Player.Health.MaxHP), 10, 5)
+	if amount, ok := g.inventory.Vegtables[itemtype.Potato]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Potato.String(), amount), 10, 20)
+	}
+	if amount, ok := g.inventory.Vegtables[itemtype.Carrot]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 35)
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -180,20 +243,22 @@ func init() {
 // --- Public ---
 
 func NewGame() *Game {
-
 	p := player.NewPlayer()
 	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
 	s := world.NewEnemySpawner()
+	i := inventory.NewInventory()
 
 	// register enemy factories
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewCarrotEnemy(pos)
 	})
 	g := &Game{
-		Player:  p,
-		World:   w,
-		Enemies: []enemy.EnemyInterface{},
-		Spawner: s,
+		Player:    p,
+		World:     w,
+		Enemies:   []enemy.EnemyInterface{},
+		Spawner:   s,
+		inventory: i,
 	}
+
 	return g
 }
