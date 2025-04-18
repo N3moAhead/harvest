@@ -14,8 +14,9 @@ import (
 type Player struct {
 	entity.Entity
 
-	Speed  float64
-	Health component.Health
+	Speed        float64
+	MagnetRadius float64
+	Health       component.Health
 }
 
 // The player is currently just drawn as a rectangle.
@@ -49,9 +50,10 @@ func NewPlayer() *Player {
 	baseEntity := entity.NewEntity(config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2)
 
 	p := &Player{
-		Entity: *baseEntity,
-		Speed:  config.INITIAL_PLAYER_SPEED,
-		Health: component.NewHealth(100),
+		Entity:       *baseEntity,
+		MagnetRadius: config.INITIAL_PLAYER_MAGNET_RADIUS,
+		Speed:        config.INITIAL_PLAYER_SPEED,
+		Health:       component.NewHealth(100),
 	}
 	return p
 }
