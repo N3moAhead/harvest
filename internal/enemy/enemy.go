@@ -15,6 +15,7 @@ type EnemyInterface interface {
 	Draw(screen *ebiten.Image, camX, camY float64)
 	GetPosition() component.Vector2D
 	IsAlive() bool
+	TakeDamage(damage float64)
 }
 
 type EnemyType int
@@ -39,7 +40,7 @@ type Enemy struct {
 	entity.Entity
 	Health         component.Health
 	Speed          float64
-	Damage         int
+	Damage         float64
 	AttackCooldown float64
 	attackTimer    float64
 }
@@ -72,6 +73,10 @@ func (e *Enemy) DefaultDraw(screen *ebiten.Image, camX, camY float64, width int,
 
 func (e *Enemy) IsAlive() bool {
 	return e.Health.HP > 0
+}
+
+func (e *Enemy) TakeDamage(damage float64) {
+	e.Health.Damage(damage)
 }
 
 func (e *Enemy) GetPosition() component.Vector2D {

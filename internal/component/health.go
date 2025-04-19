@@ -1,11 +1,11 @@
 package component
 
 type Health struct {
-	HP    int
-	MaxHP int
+	HP    float64
+	MaxHP float64
 }
 
-func (h *Health) Damage(amount int) (alive bool) {
+func (h *Health) Damage(amount float64) (alive bool) {
 	if amount > h.HP {
 		h.HP = 0
 		return false
@@ -14,7 +14,7 @@ func (h *Health) Damage(amount int) (alive bool) {
 	return true
 }
 
-func (h *Health) Heal(amount int) {
+func (h *Health) Heal(amount float64) {
 	if h.HP+amount > h.MaxHP {
 		h.HP = h.MaxHP
 	} else {
@@ -22,7 +22,7 @@ func (h *Health) Heal(amount int) {
 	}
 }
 
-func NewHealth(maxHP int) Health {
+func NewHealth(maxHP float64) Health {
 	return Health{
 		HP:    maxHP,
 		MaxHP: maxHP,

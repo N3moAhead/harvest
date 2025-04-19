@@ -19,6 +19,8 @@ const (
 	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0 // Determines how fast items move towards the player
 	/// --- Audio Settings ---
 	AUDIO_SAMPLE_RATE = 44100
+	/// --- Inventory Settings ---
+	MAX_WEAPONS = 5
 	/// --- Enemy Settings ---
 	// Enemy: Carrot
 	CARROT_SPEED           = 50.0

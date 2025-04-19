@@ -13,7 +13,7 @@ import (
 // direction: Normalized vector of the attack direction.
 // angle: Total angle of the sector (e.g., math.Pi for 180 degrees).
 // enemies: The list of enemies to check.
-func findEnemiesInArc(
+func FindEnemiesInArc(
 	center component.Vector2D,
 	radius float64,
 	direction component.Vector2D,
