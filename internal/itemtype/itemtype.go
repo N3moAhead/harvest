@@ -1,6 +1,10 @@
 package itemtype
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/N3moAhead/harvest/internal/component"
+)
 
 type ItemCategory int
 
@@ -32,6 +36,9 @@ const (
 	Undefined ItemType = iota
 	Potato
 	Carrot
+	DamageSoup
+	MagnetRadiusSoup
+	SpeedSoup
 )
 
 // Saves meta information for each item type
@@ -39,9 +46,29 @@ const (
 var itemInfo = map[ItemType]struct {
 	DisplayName string
 	Category    ItemCategory
+	Buff        component.BuffType
 }{
-	Potato: {"Potato", CategoryVegetable},
-	Carrot: {"Carrot", CategoryVegetable},
+	Potato:           {"Potato", CategoryVegetable, 0},
+	Carrot:           {"Carrot", CategoryVegetable, 0},
+	DamageSoup:       {"Damge enhancing Soup", CategorySoup, component.Damage},
+	MagnetRadiusSoup: {"Soup", CategorySoup, component.MagnetRadius},
+	SpeedSoup:        {"Soup", CategorySoup, component.Speed},
+}
+
+func ItemInfo(t ItemType) (info struct {
+	DisplayName string
+	Category    ItemCategory
+	Buff        component.BuffType
+}) {
+	if info, ok := itemInfo[t]; ok {
+		return info
+	}
+	// default value if not found??
+	return struct {
+		DisplayName string
+		Category    ItemCategory
+		Buff        component.BuffType
+	}{CategoryUndefined.String(), CategoryUndefined, 0}
 }
 
 func (it ItemType) String() string {
