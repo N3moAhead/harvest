@@ -36,11 +36,29 @@ type Spoon struct {
 func NewSpoon(assetStore *assets.Store) *Spoon {
 	stats := []WeaponStats{
 		// Level 1
-		{Damage: 5, Cooldown: 700 * time.Millisecond, AreaSize: 1.0, Pierce: 3},
+		{
+			Damage:    1,
+			Cooldown:  700 * time.Millisecond,
+			AreaSize:  1.0,
+			Pierce:    3,
+			Knockback: 20.0,
+		},
 		// Level 2
-		{Damage: 15, Cooldown: 650 * time.Millisecond, AreaSize: 1.1, Pierce: 4},
+		{
+			Damage:    2,
+			Cooldown:  650 * time.Millisecond,
+			AreaSize:  1.1,
+			Pierce:    4,
+			Knockback: 25.0,
+		},
 		// Level 3
-		{Damage: 25, Cooldown: 650 * time.Millisecond, AreaSize: 1.1, Pierce: 5},
+		{
+			Damage:    5,
+			Cooldown:  650 * time.Millisecond,
+			AreaSize:  1.1,
+			Pierce:    5,
+			Knockback: 30.0,
+		},
 	}
 
 	spoonIcon, ok := assetStore.GetImage("spoon_icon")
@@ -96,6 +114,7 @@ func (s *Spoon) Update(player *player.Player, enemies []enemy.EnemyInterface, dt
 				break
 			}
 			enemy.TakeDamage(stats.Damage)
+			enemy.AddKnockback(&player.Pos, stats.Knockback)
 			// TODO play spoon_hit sound
 		}
 

@@ -16,6 +16,7 @@ type EnemyInterface interface {
 	GetPosition() component.Vector2D
 	IsAlive() bool
 	TakeDamage(damage float64)
+	AddKnockback(from *component.Vector2D, distance float64)
 }
 
 type EnemyType int
@@ -39,6 +40,7 @@ func (t EnemyType) String() string {
 type Enemy struct {
 	entity.Entity
 	Health         component.Health
+	Knockback      component.Knockback
 	Speed          float64
 	Damage         float64
 	AttackCooldown float64
@@ -57,6 +59,14 @@ func (e *Enemy) MoveTowards(target component.Vector2D, dt float64) {
 	} else {
 		e.Pos = e.Pos.Add(step)
 	}
+}
+
+func (e *Enemy) AddKnockback(from *component.Vector2D, dist float64) {
+	e.Knockback.Init(from, &e.Pos, dist)
+}
+
+func (e *Enemy) UpdateKnockback() {
+	e.Knockback.Update(&e.Pos)
 }
 
 func (e *Enemy) DefaultDraw(screen *ebiten.Image, camX, camY float64, width int, height int, color color.RGBA) {

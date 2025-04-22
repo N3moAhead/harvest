@@ -38,6 +38,7 @@ func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 }
 
 func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
+	e.UpdateKnockback()
 	e.MoveTowards(player.Pos, dt)
 
 	e.attackTimer -= dt

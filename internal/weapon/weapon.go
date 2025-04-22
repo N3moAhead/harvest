@@ -32,6 +32,7 @@ type WeaponStats struct {
 	Cooldown        time.Duration
 	AreaSize        float64
 	ProjectileSpeed float64
+	Knockback       float64
 	ProjectileCount int
 	Pierce          int
 	Duration        time.Duration
