@@ -22,12 +22,12 @@ type Player struct {
 
 // The player is currently just drawn as a rectangle.
 // TODO: Draw the player with assets
-func (p *Player) Draw(screen *ebiten.Image, assetStore *assets.Store, mapOffsetX float64, mapOffsetY float64) {
+func (p *Player) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float64) {
 	// TODO move the player rect size to the config or somewhere else
 	rectSize := 32.0
 	var halfRectSize float64 = rectSize / 2
 
-	if playerImg, ok := assetStore.GetImage("player"); ok {
+	if playerImg, ok := assets.AssetStore.GetImage("player"); ok {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(p.Pos.X-mapOffsetX-halfRectSize, p.Pos.Y-mapOffsetY-halfRectSize)
 		screen.DrawImage(playerImg, op)

@@ -1,7 +1,6 @@
 package game
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"math/rand/v2"
@@ -18,14 +17,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-)
-
-var (
-	assetStore   *assets.Store
-	audioContext *audio.Context
-	musicPlayer  *audio.Player
 )
 
 // --- Types ---
@@ -127,7 +119,7 @@ func (g *Game) Update() error {
 			case itemtype.CategoryWeapon:
 				switch item.Type {
 				case itemtype.Spoon:
-					newWeapon := weapon.NewSpoon(assetStore)
+					newWeapon := weapon.NewSpoon()
 					added := g.inventory.AddWeapon(newWeapon)
 					if !added {
 						fmt.Printf("Inventory is full or weapon '%s' already exists\n", newWeapon.Name())
@@ -179,12 +171,11 @@ func (g *Game) Update() error {
 	// Testing sfx Remove for production
 	// Pressing L will play a lazer sound
 	if ebiten.IsKeyPressed(ebiten.KeyL) {
-		laserSfx, ok := assetStore.GetSFXData("laser")
+		laserSfx, ok := assets.AssetStore.GetSFXData("laser")
 		if ok {
-			sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
+			sfxPlayer := assets.AudioContext.NewPlayerFromBytes(laserSfx)
 			sfxPlayer.Play()
 		}
-
 	}
 
 	// --- World ---
@@ -217,7 +208,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// --- Drawing the Player ---
-	g.Player.Draw(screen, assetStore, mapOffsetX, mapOffsetY)
+	g.Player.Draw(screen, mapOffsetX, mapOffsetY)
 
 	// --- Drawing the Enemies ---
 	for _, e := range g.Enemies {
@@ -249,46 +240,6 @@ func init() {
 	ebiten.SetWindowSize(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
 	ebiten.SetWindowTitle("Harvest by Wurzelwerk")
 	ebiten.SetTPS(60)
-
-	// TODO Move all this assetStore init stuff into
-	// a seperate file to keep the game.go file clean
-
-	// A new Audio Context
-	audioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
-	// Initing the asset store
-	assetStore = assets.NewStore()
-
-	// Always image name to path
-	imagesToLoad := map[string]string{
-		"player": "assets/images/CookTestImage.png",
-	}
-	sfxToLoad := map[string]string{
-		"laser": "assets/audio/sfx/laserTest.wav",
-	}
-	musicToLoad := map[string]string{
-		"menu": "assets/audio/music/8bitMenuMusic.mp3",
-	}
-
-	err := assetStore.Load(imagesToLoad, sfxToLoad, musicToLoad, config.AUDIO_SAMPLE_RATE)
-	if err != nil {
-		panic(err)
-	}
-
-	// TODO REMOVE or change this section
-	// This here should just be a test to test running music :)
-	music, ok := assetStore.GetMusicData("menu")
-	if ok {
-		musicBytesReader := bytes.NewReader(music)
-		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
-
-		musicPlayer, err = audioContext.NewPlayer(loop)
-		if err == nil {
-			musicPlayer.Play()
-		} else {
-			err = fmt.Errorf("Musikplayer konnte nicht erstellt werden: %v\n", err)
-			panic(err)
-		}
-	}
 }
 
 // --- Public ---

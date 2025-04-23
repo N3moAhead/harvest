@@ -23,7 +23,7 @@ type Spoon struct {
 	attackDisplayTimer time.Duration
 }
 
-func NewSpoon(assetStore *assets.Store) *Spoon {
+func NewSpoon() *Spoon {
 	stats := []WeaponStats{
 		// Level 1
 		{
@@ -51,7 +51,7 @@ func NewSpoon(assetStore *assets.Store) *Spoon {
 		},
 	}
 
-	spoonIcon, ok := assetStore.GetImage("spoon_icon")
+	spoonIcon, ok := assets.AssetStore.GetImage("spoon_icon")
 	if !ok {
 		fmt.Println("Warning: Spoon icon not found")
 	}
