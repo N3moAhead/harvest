@@ -2,7 +2,6 @@ package weapon
 
 import (
 	"fmt"
-	"image/color"
 	"math"
 	"time"
 
@@ -13,20 +12,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-var whitePixelImage *ebiten.Image
-
 const (
 	baseSpoonRadius       = 100.0                  // Basic range of the hit in pixels
 	spoonAttackAngle      = math.Pi                // 180 degrees
 	attackDisplayDuration = 100 * time.Millisecond // How long the animation will be displayed
 )
-
-func init() {
-	if whitePixelImage == nil {
-		whitePixelImage = ebiten.NewImage(1, 1)
-		whitePixelImage.Fill(color.White)
-	}
-}
 
 type Spoon struct {
 	BaseWeapon
@@ -41,7 +31,7 @@ func NewSpoon(assetStore *assets.Store) *Spoon {
 			Cooldown:  700 * time.Millisecond,
 			AreaSize:  1.0,
 			Pierce:    3,
-			Knockback: 20.0,
+			Knockback: 300.0,
 		},
 		// Level 2
 		{
@@ -115,6 +105,7 @@ func (s *Spoon) Update(player *player.Player, enemies []enemy.EnemyInterface, dt
 			}
 			enemy.TakeDamage(stats.Damage)
 			enemy.AddKnockback(&player.Pos, stats.Knockback)
+			hits++
 			// TODO play spoon_hit sound
 		}
 
