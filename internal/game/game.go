@@ -234,7 +234,8 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// --- Drawing the HUD ---
-	ebitenutil.DebugPrintAt(screen, "FPS: "+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, 5)
+	fpsText := fmt.Sprintf("FPS: %.1f ", ebiten.ActualFPS())
+	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, 5)
 	g.inventory.Draw(screen)
 }
 
