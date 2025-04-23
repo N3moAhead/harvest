@@ -25,7 +25,7 @@ func (k *Knockback) Update(pos *Vector2D) {
 	if k.Flying {
 		flyDistance := k.Distance * dampingFactor
 		k.Distance -= flyDistance
-		if flyDistance < stopFlyingDistance {
+		if k.Distance < stopFlyingDistance {
 			k.Flying = false
 		}
 		*pos = pos.Add(k.Dir.Mul(flyDistance))
