@@ -1,9 +1,6 @@
 package assets
 
 import (
-	"bytes"
-	"fmt"
-
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2/audio"
 )
@@ -26,8 +23,10 @@ func init() {
 		"spoon_slash": "assets/images/weapons/spoon/spoon_slash.png",
 	}
 	sfxToLoad := map[string]string{
-		"laser": "assets/audio/sfx/laserTest.wav",
+		"laser":       "assets/audio/sfx/laserTest.wav",
+		"spoon_slash": "assets/audio/sfx/spoon_slash.mp3",
 	}
+	// TODO Renable music
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
 	}
@@ -37,19 +36,20 @@ func init() {
 		panic(err)
 	}
 
+	// TODO Renable music
 	// TODO REMOVE or change this section
 	// This here should just be a test to test running music :)
-	music, ok := AssetStore.GetMusicData("menu")
-	if ok {
-		musicBytesReader := bytes.NewReader(music)
-		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
+	// music, ok := AssetStore.GetMusicData("menu")
+	// if ok {
+	// 	musicBytesReader := bytes.NewReader(music)
+	// 	loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
 
-		MusicPlayer, err = AudioContext.NewPlayer(loop)
-		if err == nil {
-			MusicPlayer.Play()
-		} else {
-			err = fmt.Errorf("Musikplayer konnte nicht erstellt werden: %v\n", err)
-			panic(err)
-		}
-	}
+	// 	MusicPlayer, err = AudioContext.NewPlayer(loop)
+	// 	if err == nil {
+	// 		MusicPlayer.Play()
+	// 	} else {
+	// 		err = fmt.Errorf("Musikplayer konnte nicht erstellt werden: %v\n", err)
+	// 		panic(err)
+	// 	}
+	// }
 }

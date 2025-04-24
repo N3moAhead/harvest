@@ -2,25 +2,35 @@ package weapon
 
 import (
 	"fmt"
+	"image"
 	"math"
 	"time"
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/collision"
+	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/enemy"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 const (
-	baseSpoonRadius       = 100.0                  // Basic range of the hit in pixels
-	spoonAttackAngle      = math.Pi                // 180 degrees
-	attackDisplayDuration = 100 * time.Millisecond // How long the animation will be displayed
+	baseSpoonRadius  = 100.0   // Basic range of the hit in pixels
+	spoonAttackAngle = math.Pi // 180 degrees
+	frameWidth       = 64      // The height of each slash animation frame
+	frameHeight      = 48      // The width of each slash animation frame
+	frameCount       = 4       // The amount of existing frames
+	animationSpeed   = 8       // Ticks for each frame
 )
 
 type Spoon struct {
 	BaseWeapon
-	attackDisplayTimer time.Duration
+	slashImage   *ebiten.Image
+	slashSound   []byte
+	frameTimer   int
+	currentFrame int
+	displaySlash bool
+	hitDirection component.Vector2D
 }
 
 func NewSpoon() *Spoon {
@@ -28,7 +38,7 @@ func NewSpoon() *Spoon {
 		// Level 1
 		{
 			Damage:    1,
-			Cooldown:  700 * time.Millisecond,
+			Cooldown:  2 * time.Second,
 			AreaSize:  1.0,
 			Pierce:    3,
 			Knockback: 300.0,
@@ -36,7 +46,7 @@ func NewSpoon() *Spoon {
 		// Level 2
 		{
 			Damage:    2,
-			Cooldown:  650 * time.Millisecond,
+			Cooldown:  1500 * time.Millisecond,
 			AreaSize:  1.1,
 			Pierce:    4,
 			Knockback: 25.0,
@@ -55,6 +65,14 @@ func NewSpoon() *Spoon {
 	if !ok {
 		fmt.Println("Warning: Spoon icon not found")
 	}
+	slashImage, ok := assets.AssetStore.GetImage("spoon_slash")
+	if !ok {
+		fmt.Println("Warning: Spoon slash image not found")
+	}
+	slashSound, ok := assets.AssetStore.GetSFXData("spoon_slash")
+	if !ok {
+		fmt.Println("Warning: Spoon slash sound not found")
+	}
 	return &Spoon{
 		BaseWeapon: BaseWeapon{
 			name:          "Spoon",
@@ -65,7 +83,8 @@ func NewSpoon() *Spoon {
 			statsPerLevel: stats,
 			icon:          spoonIcon,
 		},
-		attackDisplayTimer: 0,
+		slashImage: slashImage,
+		slashSound: slashSound,
 	}
 }
 
@@ -73,9 +92,15 @@ func (s *Spoon) Update(player *player.Player, enemies []enemy.EnemyInterface, dt
 	// Update the cooldown
 	canAttack := s.UpdateCooldown(dt)
 
-	// Update animation timer
-	if s.attackDisplayTimer > 0 {
-		s.attackDisplayTimer -= dt
+	// Update the animation frames
+	s.frameTimer++
+	if s.frameTimer >= animationSpeed {
+		s.frameTimer = 0 // Reset the frame timer
+		if s.currentFrame == frameCount-1 {
+			s.displaySlash = false
+		} else {
+			s.currentFrame = (s.currentFrame + 1) % frameCount
+		}
 	}
 
 	if canAttack {
@@ -109,18 +134,56 @@ func (s *Spoon) Update(player *player.Player, enemies []enemy.EnemyInterface, dt
 			// TODO play spoon_hit sound
 		}
 
-		if hits > 0 {
-			// TODO remove just debugging
-			fmt.Printf("Spoon did hit %d enemies. \n", hits)
-		}
-
 		// Start the animation
-		s.attackDisplayTimer = attackDisplayDuration
-		// TODO Play spoon swing sound
+		s.displaySlash = true
+		s.currentFrame = 0
+		s.frameTimer = 0
+		s.hitDirection = player.GetFacingDirection()
+
+		// Play the sound
+		sfxPlayer := assets.AudioContext.NewPlayerFromBytes(s.slashSound)
+		sfxPlayer.Play()
 	}
 }
 
-func (s *Spoon) Draw(screen *ebiten.Image, owner *player.Player, mapOffsetX float64, mapOffsetY float64) {
-	// TODO implement the logic for drawing the swinging animation
-	// currently its invisible
+func (s *Spoon) Draw(screen *ebiten.Image, player *player.Player, mapOffsetX float64, mapOffsetY float64) {
+	if s.slashImage == nil {
+		return
+	}
+
+	if s.displaySlash {
+		sx := s.currentFrame * frameWidth
+		sy := 0
+		frameRect := image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)
+
+		bounds := s.slashImage.Bounds()
+		if !frameRect.In(bounds) {
+			fmt.Printf("Error: Frame rect %v out of bounds %v\n", frameRect, bounds)
+			return
+		}
+		frameImage := s.slashImage.SubImage(frameRect).(*ebiten.Image)
+
+		pivotX := float64(frameWidth) / 2.0
+		pivotY := float64(frameHeight) / 2.0
+		angle := math.Atan2(s.hitDirection.Y, s.hitDirection.X)
+
+		stats := s.CurrentStats(player)
+		currentRadius := baseSpoonRadius * stats.AreaSize
+		calculatedScale := currentRadius / float64(frameHeight)
+
+		finalScreen := component.NewVector2D(player.Pos.X-mapOffsetX, player.Pos.Y-mapOffsetY)
+		// Moving the animation to the outside of the player
+		finalScreen = finalScreen.Add(s.hitDirection.Mul(frameWidth / 2)) // TODO i dont know if frameWidth / 2 is the correct value
+
+		op := &ebiten.DrawImageOptions{}
+
+		op.GeoM.Translate(-pivotX, -pivotY)
+		if calculatedScale != 1.0 {
+			op.GeoM.Scale(calculatedScale, calculatedScale)
+		}
+		op.GeoM.Rotate(angle)
+		op.GeoM.Translate(finalScreen.X, finalScreen.Y)
+
+		screen.DrawImage(frameImage, op)
+	}
 }
