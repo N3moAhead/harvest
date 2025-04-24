@@ -17,10 +17,10 @@ import (
 const (
 	baseSpoonRadius  = 100.0   // Basic range of the hit in pixels
 	spoonAttackAngle = math.Pi // 180 degrees
-	frameWidth       = 64      // The height of each slash animation frame
-	frameHeight      = 48      // The width of each slash animation frame
+	frameWidth       = 32      // The height of each slash animation frame
+	frameHeight      = 64      // The width of each slash animation frame
 	frameCount       = 4       // The amount of existing frames
-	animationSpeed   = 8       // Ticks for each frame
+	animationSpeed   = 6       // Ticks for each frame
 )
 
 type Spoon struct {
@@ -40,7 +40,7 @@ func NewSpoon() *Spoon {
 			Damage:    1,
 			Cooldown:  2 * time.Second,
 			AreaSize:  1.0,
-			Pierce:    3,
+			Pierce:    10,
 			Knockback: 300.0,
 		},
 		// Level 2
@@ -48,15 +48,15 @@ func NewSpoon() *Spoon {
 			Damage:    2,
 			Cooldown:  1500 * time.Millisecond,
 			AreaSize:  1.1,
-			Pierce:    4,
+			Pierce:    12,
 			Knockback: 25.0,
 		},
 		// Level 3
 		{
 			Damage:    5,
 			Cooldown:  650 * time.Millisecond,
-			AreaSize:  1.1,
-			Pierce:    5,
+			AreaSize:  1.2,
+			Pierce:    15,
 			Knockback: 30.0,
 		},
 	}
@@ -169,7 +169,7 @@ func (s *Spoon) Draw(screen *ebiten.Image, player *player.Player, mapOffsetX flo
 
 		stats := s.CurrentStats(player)
 		currentRadius := baseSpoonRadius * stats.AreaSize
-		calculatedScale := currentRadius / float64(frameHeight)
+		calculatedScale := currentRadius / float64(frameWidth)
 
 		finalScreen := component.NewVector2D(player.Pos.X-mapOffsetX, player.Pos.Y-mapOffsetY)
 		// Moving the animation to the outside of the player
