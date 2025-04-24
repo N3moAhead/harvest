@@ -1,12 +1,17 @@
 package component
 
 import (
+	"fmt"
 	"math"
 )
 
 // Vector2D represents a 2-dimensional vector with float64 components.
 type Vector2D struct {
 	X, Y float64
+}
+
+func (v Vector2D) String() string {
+	return fmt.Sprintf("Vector2D{X: %f, Y: %f}", v.X, v.Y)
 }
 
 // NewVector2D constructs a new Vector2D with the given x and y components.
