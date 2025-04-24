@@ -4,8 +4,8 @@ package config
 // TODO: Implement functions to read the config from a toml or json file
 const (
 	/// --- Window Settings ---
-	SCREEN_WIDTH  = 700
-	SCREEN_HEIGHT = 700
+	SCREEN_WIDTH  = 896
+	SCREEN_HEIGHT = 504
 	/// --- Camera Settings ---
 	CAMERA_SPEED = 4.0
 	/// --- World Settings ---

@@ -240,6 +240,7 @@ func init() {
 	ebiten.SetWindowSize(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
 	ebiten.SetWindowTitle("Harvest by Wurzelwerk")
 	ebiten.SetTPS(60)
+	ebiten.SetFullscreen(true)
 }
 
 // --- Public ---
