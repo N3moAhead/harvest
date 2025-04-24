@@ -2,9 +2,7 @@ package item
 
 import (
 	"image/color"
-	"time"
 
-	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/inventory"
 	"github.com/N3moAhead/harvest/internal/itemtype"
@@ -24,15 +22,11 @@ func (i *Item) Update(player *player.Player, inventory *inventory.Inventory) (re
 	len := diff.Len() // the distance from player to item
 
 	if len < config.PLAYER_PICKUP_RADIUS {
-		info := itemtype.ItemInfo(i.Type)
+		info := itemtype.RetrieveItemInfo(i.Type)
 		if info.Category == itemtype.CategorySoup {
-			inventory.AddSoup(info.Buff)
-			expiry := time.Now().Add(component.BuffDefs[info.Buff].Duration)
-			player.ExtendOrAddBuff(component.Buff{
-				Type:      info.Buff,
-				Level:     1,
-				ExpiresAt: expiry,
-			})
+			buff := itemtype.ItemInfos[i.Type].Buff
+			inventory.AddSoup(buff.Type)
+			player.ExtendOrAddBuff(i.Type, inventory)
 		} else {
 			// Picking up the item into the inventory
 			inventory.AddVegtable(i.Type)
@@ -65,6 +59,8 @@ func (i *Item) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float64
 		itemColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
 	case i.Type == itemtype.MagnetRadiusSoup:
 		itemColor = color.RGBA{R: 0, G: 255, B: 0, A: 255}
+	case i.Type == itemtype.SpeedSoup:
+		itemColor = color.RGBA{R: 0, G: 0, B: 255, A: 255}
 	default:
 		itemColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
 	}

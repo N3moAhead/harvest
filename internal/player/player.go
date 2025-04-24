@@ -8,6 +8,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/inventory"
+	"github.com/N3moAhead/harvest/internal/itemtype"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -46,24 +47,38 @@ func (p *Player) Draw(screen *ebiten.Image, assetStore *assets.Store, mapOffsetX
 	}
 }
 
-func (p *Player) ExtendOrAddBuff(newBuff component.Buff) {
-	def := component.BuffDefs[newBuff.Type]
+func (p *Player) ExtendOrAddBuff(itemType itemtype.ItemType, inventory *inventory.Inventory) {
+	info := itemtype.RetrieveItemInfo(itemType)
+	def := info.Buff
 	now := time.Now()
-	for idx, b := range p.Buffs {
-		if b.Type == newBuff.Type {
-			// extend duration or new
-			if now.Before(b.ExpiresAt) {
-				p.Buffs[idx].ExpiresAt = b.ExpiresAt.Add(def.Duration)
+	if def == nil {
+		return
+	}
+
+	inventory.AddSoup(info.Buff.Type)
+
+	for i := range p.Buffs {
+		if p.Buffs[i].Type == def.Type {
+			if now.Before(p.Buffs[i].ExpiresAt) {
+				p.Buffs[i].ExpiresAt = p.Buffs[i].ExpiresAt.Add(def.Duration)
 			} else {
-				p.Buffs[idx].ExpiresAt = now.Add(def.Duration)
+				p.Buffs[i].ExpiresAt = now.Add(def.Duration)
 			}
+			// p.Buffs[i].Level++
 			return
 		}
+	}
+
+	newBuff := component.Buff{
+		Type:         def.Type,
+		BuffPerLevel: def.BuffPerLevel,
+		Duration:     def.Duration,
+		ExpiresAt:    now.Add(def.Duration),
 	}
 	p.Buffs = append(p.Buffs, newBuff)
 }
 
-func (p *Player) Update(dt float64, inventory *inventory.Inventory) { //TODO remove expired buffs from inventory
+func (p *Player) Update(dt float64, inventory *inventory.Inventory) { //TODO maybe add inventory to player struct?
 	now := time.Now()
 	aliveBuffs := p.Buffs[:0]
 	for _, b := range p.Buffs { // filter out expired buffs ⏲️
@@ -75,18 +90,18 @@ func (p *Player) Update(dt float64, inventory *inventory.Inventory) { //TODO rem
 	}
 	p.Buffs = aliveBuffs
 
+	// reset player stats to default/base values
+	p.MagnetRadius = config.INITIAL_PLAYER_MAGNET_RADIUS
+	p.Speed = config.INITIAL_PLAYER_SPEED
+
 	for _, b := range p.Buffs {
-		def := component.BuffDefs[b.Type]
-		buffVal := float64(def.BuffPerLevel) * float64(b.Level)
-		switch b.Type { // do we need switch case, maybe later?
-		case component.MagnetRadius:
+		buffVal := float64(b.BuffPerLevel)
+		// buffVal := float64(def.BuffPerLevel) * float64(b.Level)
+		switch b.Type {
+		case component.MagnetRadiusBuff:
 			p.MagnetRadius += buffVal
-		case component.Speed:
+		case component.SpeedBuff:
 			p.Speed += buffVal
-			// case component.Damage:
-			// 	p.Damage += b.Level * 1
-			// case component.Defense:
-			// 	p.Defense += b.Level * 1
 		}
 	}
 }

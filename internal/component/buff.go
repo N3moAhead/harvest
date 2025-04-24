@@ -6,35 +6,17 @@ import "time"
 type BuffType int // TODO adjust naming either to BUFF or SOUPS
 
 const (
-	Speed BuffType = iota
-	MagnetRadius
-	Damage  // example
-	Defense // example
+	SpeedBuff BuffType = iota
+	MagnetRadiusBuff
+	DamageBuff  // example
+	DefenseBuff // example
 	// …
 )
 
 type Buff struct {
-	Type      BuffType
-	Level     int
-	ExpiresAt time.Time
-}
-
-type BuffDefinition struct {
+	Type         BuffType // maybe set to itemtype hmm :/
 	BuffPerLevel float32
-	Duration     time.Duration
-}
-
-var BuffDefs = map[BuffType]BuffDefinition{
-	Speed: {
-		BuffPerLevel: 0.5,
-		Duration:     2 * time.Second,
-	},
-	MagnetRadius: {
-		BuffPerLevel: 0.5,
-		Duration:     2 * time.Second,
-	},
-	Damage: { // example
-		BuffPerLevel: 1,
-		Duration:     5 * time.Second,
-	},
+	// Level        int
+	Duration  time.Duration
+	ExpiresAt time.Time
 }

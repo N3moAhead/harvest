@@ -128,6 +128,21 @@ func (g *Game) Update() error {
 		}
 	}
 
+	if ebiten.IsKeyPressed(ebiten.KeyB) {
+		// to test speed
+		// for range 3 {
+		// 	posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+		// 	posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+		// 	g.items = append(g.items, item.NewSoup(posX, posY, itemtype.SpeedSoup))
+		// }
+		// to test magnet
+		for range 3 {
+			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+			g.items = append(g.items, item.NewSoup(posX, posY, itemtype.MagnetRadiusSoup))
+		}
+	}
+
 	// Testing sfx Remove for production
 	// Pressing L will play a lazer sound
 	if ebiten.IsKeyPressed(ebiten.KeyL) {
@@ -152,6 +167,8 @@ func (g *Game) Update() error {
 	for _, e := range g.Enemies {
 		e.Update(g.Player, dt)
 	}
+
+	g.Player.Update(dt, g.inventory)
 
 	return nil
 }
@@ -185,6 +202,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 	if amount, ok := g.inventory.Vegtables[itemtype.Carrot]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 35)
+	}
+	if amount, ok := g.inventory.Soups[component.BuffType(0)]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.SpeedSoup.String(), amount), 10, 45)
+	}
+	if amount, ok := g.inventory.Soups[component.BuffType(1)]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.MagnetRadiusSoup.String(), amount), 10, 55)
 	}
 }
 

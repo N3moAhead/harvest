@@ -2,6 +2,7 @@ package itemtype
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/N3moAhead/harvest/internal/component"
 )
@@ -41,45 +42,74 @@ const (
 	SpeedSoup
 )
 
-// Saves meta information for each item type
-// To help us connect Categories and ItemTypes
-var itemInfo = map[ItemType]struct {
+type ItemInfo struct {
 	DisplayName string
 	Category    ItemCategory
-	Buff        component.BuffType
-}{
-	Potato:           {"Potato", CategoryVegetable, 0},
-	Carrot:           {"Carrot", CategoryVegetable, 0},
-	DamageSoup:       {"Damge enhancing Soup", CategorySoup, component.Damage},
-	MagnetRadiusSoup: {"Soup", CategorySoup, component.MagnetRadius},
-	SpeedSoup:        {"Soup", CategorySoup, component.Speed},
+	Buff        *component.Buff
 }
 
-func ItemInfo(t ItemType) (info struct {
-	DisplayName string
-	Category    ItemCategory
-	Buff        component.BuffType
-}) {
-	if info, ok := itemInfo[t]; ok {
+// Saves meta information for each item type
+// To help us connect Categories and ItemTypes
+var ItemInfos = map[ItemType]ItemInfo{
+	Potato: {
+		DisplayName: "Potato",
+		Category:    CategoryVegetable,
+		Buff:        nil,
+	},
+	Carrot: {
+		DisplayName: "Carrot",
+		Category:    CategoryVegetable,
+		Buff:        nil,
+	},
+	DamageSoup: {
+		DisplayName: "Damage Soup",
+		Category:    CategorySoup,
+		Buff: &component.Buff{
+			Type:         component.DamageBuff,
+			BuffPerLevel: 5,
+			Duration:     5 * time.Second,
+		},
+	},
+	MagnetRadiusSoup: {
+		DisplayName: "Magnet Soup",
+		Category:    CategorySoup,
+		Buff: &component.Buff{
+			Type:         component.MagnetRadiusBuff,
+			BuffPerLevel: 200,
+			Duration:     2 * time.Second,
+		},
+	},
+	SpeedSoup: {
+		DisplayName: "Speed Soup",
+		Category:    CategorySoup,
+		Buff: &component.Buff{
+			Type:         component.SpeedBuff,
+			BuffPerLevel: 20,
+			Duration:     2 * time.Second,
+		},
+	},
+}
+
+func RetrieveItemInfo(t ItemType) (info ItemInfo) {
+	if info, ok := ItemInfos[t]; ok {
 		return info
 	}
-	// default value if not found??
-	return struct {
-		DisplayName string
-		Category    ItemCategory
-		Buff        component.BuffType
-	}{CategoryUndefined.String(), CategoryUndefined, 0}
+	return ItemInfo{
+		DisplayName: CategoryUndefined.String(),
+		Category:    CategoryUndefined,
+		Buff:        nil,
+	}
 }
 
 func (it ItemType) String() string {
-	if info, ok := itemInfo[it]; ok {
+	if info, ok := ItemInfos[it]; ok {
 		return info.DisplayName
 	}
 	return fmt.Sprintf("ItemType(%d)", it)
 }
 
 func (it ItemType) Category() ItemCategory {
-	if info, ok := itemInfo[it]; ok {
+	if info, ok := ItemInfos[it]; ok {
 		return info.Category
 	}
 	return CategoryUndefined
