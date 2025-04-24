@@ -81,8 +81,9 @@ func (m *World) Update(targetWorldPos component.Vector2D, screenWidth, screenHei
 	// But using dt makes it frame-independent:
 	moveStep := diff.Mul(m.cameraSpeed * dt)
 
+	moveStepLen := moveStep.Len()
 	// Avoid "overshooting" at high frame rate/speed - move at most the difference
-	if moveStep.Len() > diff.Len() {
+	if moveStepLen > diff.Len() || moveStepLen < 0.1 {
 		m.cameraPos = m.cameraTarget
 	} else {
 		m.cameraPos = m.cameraPos.Add(moveStep)
