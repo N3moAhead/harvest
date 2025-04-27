@@ -40,7 +40,7 @@ func NewSpoon() *Spoon {
 			Damage:    1,
 			Cooldown:  2 * time.Second,
 			AreaSize:  1.0,
-			Pierce:    10,
+			Pierce:    1000,
 			Knockback: 300.0,
 		},
 		// Level 2
