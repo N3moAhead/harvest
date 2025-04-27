@@ -1,7 +1,6 @@
 package item
 
 import (
-	"fmt"
 	"image/color"
 
 	"github.com/N3moAhead/harvest/internal/entity"
@@ -16,12 +15,6 @@ type Item struct {
 	entity.Entity
 
 	Type itemtype.ItemType
-}
-
-func (i *Item) convert2Weopon() {
-	if i.Type.Category() != itemtype.CategoryWeapon {
-		panic(fmt.Errorf("Can't convert item: %s from category %s to weopon.", i.Type.String(), i.Type.Category().String()))
-	}
 }
 
 func (i *Item) Update(player *player.Player) (itemPickedUp bool) {
