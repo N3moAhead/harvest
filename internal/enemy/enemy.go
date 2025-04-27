@@ -3,6 +3,7 @@ package enemy
 import (
 	"image/color"
 
+	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/player"
@@ -45,6 +46,7 @@ type Enemy struct {
 	Damage         float64
 	AttackCooldown float64
 	attackTimer    float64
+	animationStore *animation.AnimationStore
 }
 
 func (e *Enemy) MoveTowards(target component.Vector2D, dt float64) {
