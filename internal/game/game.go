@@ -1,10 +1,10 @@
 package game
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"math/rand/v2"
+	"time"
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
@@ -13,17 +13,11 @@ import (
 	"github.com/N3moAhead/harvest/internal/item"
 	"github.com/N3moAhead/harvest/internal/itemtype"
 	"github.com/N3moAhead/harvest/internal/player"
+	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
-)
-
-var (
-	assetStore   *assets.Store
-	audioContext *audio.Context
-	musicPlayer  *audio.Player
 )
 
 // --- Types ---
@@ -41,6 +35,7 @@ type Game struct {
 func (g *Game) Update() error {
 	// --- Delta Time Update ---
 	dt := 1.0 / float64(ebiten.TPS())
+	dtDuration := time.Second / time.Duration(ebiten.TPS())
 
 	// --- Check for Exit ---
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
@@ -49,22 +44,34 @@ func (g *Game) Update() error {
 
 	// --- Player Input & Movement ---
 	moveDir := component.Vector2D{X: 0, Y: 0}
+	moved := false
 	if ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyUp) {
 		moveDir.Y -= 1
+		moved = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyDown) {
 		moveDir.Y += 1
+		moved = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		moveDir.X -= 1
+		moved = true
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyRight) {
 		moveDir.X += 1
+		moved = true
 	}
 	if moveDir.Y != 0 && moveDir.X != 0 {
 		moveDir = moveDir.Normalize()
+		moved = true
 	}
-	g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
+
+	// If the player moved update the facingDirection and the player position
+	if moved {
+		normalizedMoveDirection := moveDir.Normalize()
+		g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
+		g.Player.FacingDirection = normalizedMoveDirection
+	}
 
 	/// --- SFX TEST && ENEMY TEST PLS REMOVE LATER IN THE GAME ---
 	// For Testing pressing the space button will play a lazer sound
@@ -102,9 +109,34 @@ func (g *Game) Update() error {
 	for i := range g.items {
 		item := g.items[i]
 		// The update function also puts collected items into the inventory
-		removeItem := item.Update(g.Player, g.inventory)
-		// Remove items after the player picked them up
-		if !removeItem {
+		itemPickedUp := item.Update(g.Player)
+		if itemPickedUp {
+			// Add picked up items into the inventory
+			switch item.Type.Category() {
+			case itemtype.CategoryVegetable:
+				g.inventory.AddVegtable(item.Type)
+				break
+			case itemtype.CategoryWeapon:
+				switch item.Type {
+				case itemtype.Spoon:
+					newWeapon := weapon.NewSpoon()
+					added := g.inventory.AddWeapon(newWeapon)
+					if !added {
+						fmt.Printf("Inventory is full or weapon '%s' already exists\n", newWeapon.Name())
+					} else {
+						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
+					}
+					break
+				default:
+					fmt.Printf("Warning: Unknown weapon type: %s", item.Type.String())
+					break
+				}
+				break
+			default:
+				panic(fmt.Errorf("Unhandeld item category: %s in items update", item.Type.Category().String()))
+			}
+		} else {
+			// Remove items after the player picked them up
 			if n != i {
 				g.items[n] = item
 			}
@@ -113,15 +145,23 @@ func (g *Game) Update() error {
 	}
 	g.items = g.items[:n]
 
+	/// --- Update the Weopons ---
+	// TODO check for copy usage
+	for _, weapon := range g.inventory.Weapons {
+		if weapon != nil {
+			weapon.Update(g.Player, g.Enemies, dtDuration)
+		}
+	}
+
 	// TODO Testing spawning items pls remove for production!
 	// Pressing K will spawn items
 	if ebiten.IsKeyPressed(ebiten.KeyK) {
-		for range 10 {
+		for range 50 {
 			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
 			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
 			g.items = append(g.items, item.NewCarrot(posX, posY))
 		}
-		for range 10 {
+		for range 50 {
 			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
 			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
 			g.items = append(g.items, item.NewPotato(posX, posY))
@@ -146,12 +186,11 @@ func (g *Game) Update() error {
 	// Testing sfx Remove for production
 	// Pressing L will play a lazer sound
 	if ebiten.IsKeyPressed(ebiten.KeyL) {
-		laserSfx, ok := assetStore.GetSFXData("laser")
+		laserSfx, ok := assets.AssetStore.GetSFXData("laser")
 		if ok {
-			sfxPlayer := audioContext.NewPlayerFromBytes(laserSfx)
+			sfxPlayer := assets.AudioContext.NewPlayerFromBytes(laserSfx)
 			sfxPlayer.Play()
 		}
-
 	}
 
 	// --- World ---
@@ -186,7 +225,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	// --- Drawing the Player ---
-	g.Player.Draw(screen, assetStore, mapOffsetX, mapOffsetY)
+	g.Player.Draw(screen, mapOffsetX, mapOffsetY)
 
 	// --- Drawing the Enemies ---
 	for _, e := range g.Enemies {
@@ -195,20 +234,17 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	}
 
+	// -- Drawing Weapon Effects ---
+	for _, w := range g.inventory.Weapons {
+		if w != nil {
+			w.Draw(screen, g.Player, mapOffsetX, mapOffsetY)
+		}
+	}
+
 	// --- Drawing the HUD ---
-	ebitenutil.DebugPrintAt(screen, "FPS: "+fmt.Sprintf("HP: %d / %d\n", g.Player.Health.HP, g.Player.Health.MaxHP), 10, 5)
-	if amount, ok := g.inventory.Vegtables[itemtype.Potato]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Potato.String(), amount), 10, 20)
-	}
-	if amount, ok := g.inventory.Vegtables[itemtype.Carrot]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 35)
-	}
-	if amount, ok := g.inventory.Soups[component.SoupType(0)]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.SpeedSoup.String(), amount), 10, 45)
-	}
-	if amount, ok := g.inventory.Soups[component.SoupType(1)]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.MagnetRadiusSoup.String(), amount), 10, 55)
-	}
+	fpsText := fmt.Sprintf("FPS: %.1f ", ebiten.ActualFPS())
+	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, 5)
+	g.inventory.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -221,46 +257,7 @@ func init() {
 	ebiten.SetWindowSize(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
 	ebiten.SetWindowTitle("Harvest by Wurzelwerk")
 	ebiten.SetTPS(60)
-
-	// TODO Move all this assetStore init stuff into
-	// a seperate file to keep the game.go file clean
-
-	// A new Audio Context
-	audioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
-	// Initing the asset store
-	assetStore = assets.NewStore()
-
-	// Always image name to path
-	imagesToLoad := map[string]string{
-		"player": "assets/images/CookTestImage.png",
-	}
-	sfxToLoad := map[string]string{
-		"laser": "assets/audio/sfx/laserTest.wav",
-	}
-	musicToLoad := map[string]string{
-		"menu": "assets/audio/music/8bitMenuMusic.mp3",
-	}
-
-	err := assetStore.Load(imagesToLoad, sfxToLoad, musicToLoad, config.AUDIO_SAMPLE_RATE)
-	if err != nil {
-		panic(err)
-	}
-
-	// TODO REMOVE or change this section
-	// This here should just be a test to test running music :)
-	music, ok := assetStore.GetMusicData("menu")
-	if ok {
-		musicBytesReader := bytes.NewReader(music)
-		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
-
-		musicPlayer, err = audioContext.NewPlayer(loop)
-		if err == nil {
-			musicPlayer.Play()
-		} else {
-			err = fmt.Errorf("Musikplayer konnte nicht erstellt werden: %v\n", err)
-			panic(err)
-		}
-	}
+	ebiten.SetFullscreen(true)
 }
 
 // --- Public ---
@@ -270,6 +267,9 @@ func NewGame() *Game {
 	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
 	s := world.NewEnemySpawner()
 	i := inventory.NewInventory()
+	items := []*item.Item{
+		item.NewSpoon(50, 50),
+	}
 
 	// register enemy factories
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
@@ -281,6 +281,7 @@ func NewGame() *Game {
 		Enemies:   []enemy.EnemyInterface{},
 		Spawner:   s,
 		inventory: i,
+		items:     items,
 	}
 
 	return g

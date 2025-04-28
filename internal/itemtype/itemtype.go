@@ -37,6 +37,7 @@ const (
 	Undefined ItemType = iota
 	Potato
 	Carrot
+	Spoon
 	DamageSoup
 	MagnetRadiusSoup
 	SpeedSoup
@@ -58,6 +59,11 @@ var ItemInfos = map[ItemType]ItemInfo{
 	},
 	Carrot: {
 		DisplayName: "Carrot",
+		Category:    CategoryVegetable,
+		Soup:        nil,
+	},
+	Spoon: {
+		DisplayName: "Spoon",
 		Category:    CategoryVegetable,
 		Soup:        nil,
 	},

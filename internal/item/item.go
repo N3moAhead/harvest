@@ -4,7 +4,6 @@ import (
 	"image/color"
 
 	"github.com/N3moAhead/harvest/internal/entity"
-	"github.com/N3moAhead/harvest/internal/inventory"
 	"github.com/N3moAhead/harvest/internal/itemtype"
 	"github.com/N3moAhead/harvest/internal/player"
 	"github.com/N3moAhead/harvest/pkg/config"
@@ -17,7 +16,7 @@ type Item struct {
 	Type itemtype.ItemType
 }
 
-func (i *Item) Update(player *player.Player, inventory *inventory.Inventory) (removeItem bool) {
+func (i *Item) Update(player *player.Player) (itemPickedUp bool) {
 	diff := player.Pos.Sub(i.Pos)
 	len := diff.Len() // the distance from player to item
 
@@ -55,6 +54,8 @@ func (i *Item) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float64
 		itemColor = color.RGBA{R: 230, G: 126, B: 34, A: 255}
 	case i.Type == itemtype.Potato:
 		itemColor = color.RGBA{R: 183, G: 146, B: 104, A: 255}
+	case i.Type == itemtype.Spoon:
+		itemColor = color.RGBA{R: 128, G: 128, B: 128, A: 255}
 	case i.Type == itemtype.DamageSoup:
 		itemColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
 	case i.Type == itemtype.MagnetRadiusSoup:

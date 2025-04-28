@@ -37,3 +37,7 @@ func (e *Entity) GetId() uuid.UUID {
 func (e *Entity) GetIdString() string {
 	return e.ID.String()
 }
+
+func (e *Entity) GetPosition() component.Vector2D {
+	return e.Pos
+}
