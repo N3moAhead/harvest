@@ -1,25 +1,15 @@
 package world
 
 import (
-	"image/color"
 	"math"
 
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
-)
-
-type TileType int
-
-const (
-	TileGround TileType = iota
-	TileWater
-	TileWall
 )
 
 type World struct {
-	tiles        [][]TileType
+	tiles        [][]Tile
 	tileWidth    int
 	tileHeight   int
 	mapWidthPx   int
@@ -32,21 +22,7 @@ type World struct {
 func NewWorld(widthInTiles, heightInTiles int) *World {
 	tileW, tileH := config.TILE_SIZE, config.TILE_SIZE
 
-	tiles := make([][]TileType, heightInTiles)
-
-	// Currently its just a small brown map with a small lake
-	for y := range tiles {
-		tiles[y] = make([]TileType, widthInTiles)
-		for x := range tiles[y] {
-			if x == 0 || y == 0 || x == widthInTiles-1 || y == heightInTiles-1 {
-				tiles[y][x] = TileWall
-			} else if x > 10 && x < 15 && y > 5 && y < 10 {
-				tiles[y][x] = TileWater
-			} else {
-				tiles[y][x] = TileGround
-			}
-		}
-	}
+	tiles := NewMap()
 
 	m := &World{
 		tiles:        tiles,
@@ -117,7 +93,7 @@ func (m *World) Draw(screen *ebiten.Image) {
 	// Drawing the visible tiles
 	for y := startTileY; y < endTileY; y++ {
 		for x := startTileX; x < endTileX; x++ {
-			tileType := m.tiles[y][x]
+			tile := m.tiles[y][x]
 
 			worldX := float64(x * m.tileWidth)
 			worldY := float64(y * m.tileHeight)
@@ -125,27 +101,17 @@ func (m *World) Draw(screen *ebiten.Image) {
 			screenX := float32(worldX - camX)
 			screenY := float32(worldY - camY)
 
-			var tileColor color.RGBA
-			switch tileType {
-			case TileGround:
-				tileColor = color.RGBA{R: 139, G: 69, B: 19, A: 255} // Brown
-			case TileWater:
-				tileColor = color.RGBA{R: 0, G: 0, B: 200, A: 255} // Blue
-			case TileWall:
-				tileColor = color.RGBA{R: 100, G: 100, B: 100, A: 255} // Gray
-			default:
-				tileColor = color.RGBA{R: 255, G: 0, B: 255, A: 255} // Magenta
-			}
+			tile.Draw(screen, float64(screenX), float64(screenY))
 
-			vector.DrawFilledRect(
-				screen,
-				screenX,
-				screenY,
-				float32(m.tileWidth),
-				float32(m.tileHeight),
-				tileColor,
-				false,
-			)
+			// vector.DrawFilledRect(
+			// 	screen,
+			// 	screenX,
+			// 	screenY,
+			// 	float32(m.tileWidth),
+			// 	float32(m.tileHeight),
+			// 	tileColor,
+			// 	false,
+			// )
 		}
 	}
 }
