@@ -7,11 +7,11 @@ const (
 	SCREEN_WIDTH  = 896
 	SCREEN_HEIGHT = 504
 	/// --- Camera Settings ---
-	CAMERA_SPEED = 4.0
+	CAMERA_SPEED = 6.0
 	/// --- World Settings ---
-	TILE_SIZE       = 32 // TILE_SIZE is the size of a tile in pixels.
-	HEIGHT_IN_TILES = 40 // The number of tiles in the X direction.
-	WIDTH_IN_TILES  = 40 // The number of tiles in the Y direction.
+	TILE_SIZE       = 16  // TILE_SIZE is the size of a tile in pixels.
+	HEIGHT_IN_TILES = 200 // The number of tiles in the X direction.
+	WIDTH_IN_TILES  = 200 // The number of tiles in the Y direction.
 	/// --- Player Settings ---
 	INITIAL_PLAYER_SPEED           = 6.0 // Initial Player Speed
 	INITIAL_PLAYER_MAGNET_RADIUS   = 50.0
