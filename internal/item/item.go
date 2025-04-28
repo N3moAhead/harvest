@@ -24,9 +24,9 @@ func (i *Item) Update(player *player.Player, inventory *inventory.Inventory) (re
 	if len < config.PLAYER_PICKUP_RADIUS {
 		info := itemtype.RetrieveItemInfo(i.Type)
 		if info.Category == itemtype.CategorySoup {
-			buff := itemtype.ItemInfos[i.Type].Buff
-			inventory.AddSoup(buff.Type)
-			player.ExtendOrAddBuff(i.Type, inventory)
+			soup := itemtype.ItemInfos[i.Type].Soup
+			inventory.AddSoup(soup.Type)
+			player.ExtendOrAddSoup(i.Type, inventory)
 		} else {
 			// Picking up the item into the inventory
 			inventory.AddVegtable(i.Type)

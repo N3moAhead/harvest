@@ -16,7 +16,7 @@ import (
 
 type Player struct {
 	entity.Entity
-	Buffs        []component.Buff
+	Soups        []component.Soup
 	Speed        float64
 	MagnetRadius float64
 	Health       component.Health
@@ -47,60 +47,60 @@ func (p *Player) Draw(screen *ebiten.Image, assetStore *assets.Store, mapOffsetX
 	}
 }
 
-func (p *Player) ExtendOrAddBuff(itemType itemtype.ItemType, inventory *inventory.Inventory) {
+func (p *Player) ExtendOrAddSoup(itemType itemtype.ItemType, inventory *inventory.Inventory) {
 	info := itemtype.RetrieveItemInfo(itemType)
-	def := info.Buff
+	def := info.Soup
 	now := time.Now()
 	if def == nil {
 		return
 	}
 
-	inventory.AddSoup(info.Buff.Type)
+	inventory.AddSoup(info.Soup.Type)
 
-	for i := range p.Buffs {
-		if p.Buffs[i].Type == def.Type {
-			if now.Before(p.Buffs[i].ExpiresAt) {
-				p.Buffs[i].ExpiresAt = p.Buffs[i].ExpiresAt.Add(def.Duration)
+	for i := range p.Soups {
+		if p.Soups[i].Type == def.Type {
+			if now.Before(p.Soups[i].ExpiresAt) {
+				p.Soups[i].ExpiresAt = p.Soups[i].ExpiresAt.Add(def.Duration)
 			} else {
-				p.Buffs[i].ExpiresAt = now.Add(def.Duration)
+				p.Soups[i].ExpiresAt = now.Add(def.Duration)
 			}
 			// p.Buffs[i].Level++
 			return
 		}
 	}
 
-	newBuff := component.Buff{
+	newSoup := component.Soup{
 		Type:         def.Type,
 		BuffPerLevel: def.BuffPerLevel,
 		Duration:     def.Duration,
 		ExpiresAt:    now.Add(def.Duration),
 	}
-	p.Buffs = append(p.Buffs, newBuff)
+	p.Soups = append(p.Soups, newSoup)
 }
 
 func (p *Player) Update(dt float64, inventory *inventory.Inventory) { //TODO maybe add inventory to player struct?
 	now := time.Now()
-	aliveBuffs := p.Buffs[:0]
-	for _, b := range p.Buffs { // filter out expired buffs ⏲️
+	activeSoups := p.Soups[:0]
+	for _, b := range p.Soups { // filter out expired buffs ⏲️
 		if now.Before(b.ExpiresAt) {
-			aliveBuffs = append(aliveBuffs, b)
+			activeSoups = append(activeSoups, b)
 		} else {
 			inventory.RemoveSoup(b.Type)
 		}
 	}
-	p.Buffs = aliveBuffs
+	p.Soups = activeSoups
 
 	// reset player stats to default/base values
 	p.MagnetRadius = config.INITIAL_PLAYER_MAGNET_RADIUS
 	p.Speed = config.INITIAL_PLAYER_SPEED
 
-	for _, b := range p.Buffs {
+	for _, b := range p.Soups {
 		buffVal := float64(b.BuffPerLevel)
 		// buffVal := float64(def.BuffPerLevel) * float64(b.Level)
 		switch b.Type {
-		case component.MagnetRadiusBuff:
+		case component.MagnetSoup:
 			p.MagnetRadius += buffVal
-		case component.SpeedBuff:
+		case component.SpeedSoup:
 			p.Speed += buffVal
 		}
 	}

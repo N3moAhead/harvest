@@ -203,10 +203,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	if amount, ok := g.inventory.Vegtables[itemtype.Carrot]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 35)
 	}
-	if amount, ok := g.inventory.Soups[component.BuffType(0)]; ok {
+	if amount, ok := g.inventory.Soups[component.SoupType(0)]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.SpeedSoup.String(), amount), 10, 45)
 	}
-	if amount, ok := g.inventory.Soups[component.BuffType(1)]; ok {
+	if amount, ok := g.inventory.Soups[component.SoupType(1)]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.MagnetRadiusSoup.String(), amount), 10, 55)
 	}
 }

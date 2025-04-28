@@ -45,7 +45,7 @@ const (
 type ItemInfo struct {
 	DisplayName string
 	Category    ItemCategory
-	Buff        *component.Buff
+	Soup        *component.Soup
 }
 
 // Saves meta information for each item type
@@ -54,18 +54,18 @@ var ItemInfos = map[ItemType]ItemInfo{
 	Potato: {
 		DisplayName: "Potato",
 		Category:    CategoryVegetable,
-		Buff:        nil,
+		Soup:        nil,
 	},
 	Carrot: {
 		DisplayName: "Carrot",
 		Category:    CategoryVegetable,
-		Buff:        nil,
+		Soup:        nil,
 	},
 	DamageSoup: {
 		DisplayName: "Damage Soup",
 		Category:    CategorySoup,
-		Buff: &component.Buff{
-			Type:         component.DamageBuff,
+		Soup: &component.Soup{
+			Type:         component.DamageSoup,
 			BuffPerLevel: 5,
 			Duration:     5 * time.Second,
 		},
@@ -73,8 +73,8 @@ var ItemInfos = map[ItemType]ItemInfo{
 	MagnetRadiusSoup: {
 		DisplayName: "Magnet Soup",
 		Category:    CategorySoup,
-		Buff: &component.Buff{
-			Type:         component.MagnetRadiusBuff,
+		Soup: &component.Soup{
+			Type:         component.MagnetSoup,
 			BuffPerLevel: 200,
 			Duration:     2 * time.Second,
 		},
@@ -82,8 +82,8 @@ var ItemInfos = map[ItemType]ItemInfo{
 	SpeedSoup: {
 		DisplayName: "Speed Soup",
 		Category:    CategorySoup,
-		Buff: &component.Buff{
-			Type:         component.SpeedBuff,
+		Soup: &component.Soup{
+			Type:         component.SpeedSoup,
 			BuffPerLevel: 20,
 			Duration:     2 * time.Second,
 		},
@@ -97,7 +97,7 @@ func RetrieveItemInfo(t ItemType) (info ItemInfo) {
 	return ItemInfo{
 		DisplayName: CategoryUndefined.String(),
 		Category:    CategoryUndefined,
-		Buff:        nil,
+		Soup:        nil,
 	}
 }
 
