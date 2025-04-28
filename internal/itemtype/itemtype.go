@@ -32,6 +32,7 @@ const (
 	Undefined ItemType = iota
 	Potato
 	Carrot
+	Spoon
 )
 
 // Saves meta information for each item type
@@ -42,6 +43,7 @@ var itemInfo = map[ItemType]struct {
 }{
 	Potato: {"Potato", CategoryVegetable},
 	Carrot: {"Carrot", CategoryVegetable},
+	Spoon:  {"Spoon", CategoryWeapon},
 }
 
 func (it ItemType) String() string {

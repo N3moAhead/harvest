@@ -4,8 +4,8 @@ package config
 // TODO: Implement functions to read the config from a toml or json file
 const (
 	/// --- Window Settings ---
-	SCREEN_WIDTH  = 700
-	SCREEN_HEIGHT = 700
+	SCREEN_WIDTH  = 896
+	SCREEN_HEIGHT = 504
 	/// --- Camera Settings ---
 	CAMERA_SPEED = 4.0
 	/// --- World Settings ---
@@ -19,6 +19,8 @@ const (
 	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0 // Determines how fast items move towards the player
 	/// --- Audio Settings ---
 	AUDIO_SAMPLE_RATE = 44100
+	/// --- Inventory Settings ---
+	MAX_WEAPONS = 5
 	/// --- Enemy Settings ---
 	// Enemy: Carrot
 	CARROT_SPEED           = 50.0
