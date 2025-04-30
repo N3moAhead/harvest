@@ -3,7 +3,6 @@ package inventory
 import (
 	"fmt"
 
-	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/itemtype"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/pkg/config"
@@ -12,14 +11,14 @@ import (
 )
 
 type Inventory struct {
-	Vegtables  map[itemtype.ItemType]int  // Mapping the item type to the amount
-	Soups      map[component.SoupType]int // same here, but for soups
+	Vegetables map[itemtype.ItemType]int // Mapping the item type to the amount
+	Soups      map[itemtype.ItemType]int // same here, but for soups
 	Weapons    []weapon.Weapon
 	MaxWeapons int
 }
 
 func (i *Inventory) AddVegtable(itemType itemtype.ItemType) {
-	i.Vegtables[itemType]++
+	i.Vegetables[itemType]++
 }
 
 func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
@@ -44,19 +43,19 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 }
 
 func (i *Inventory) Draw(screen *ebiten.Image) {
-	if amount, ok := i.Vegtables[itemtype.Potato]; ok {
+	if amount, ok := i.Vegetables[itemtype.Potato]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Potato.String(), amount), 10, 20)
 	}
-	if amount, ok := i.Vegtables[itemtype.Carrot]; ok {
+	if amount, ok := i.Vegetables[itemtype.Carrot]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 35)
 	}
 }
 
-func (i *Inventory) AddSoup(soupType component.SoupType) {
+func (i *Inventory) AddSoup(soupType itemtype.ItemType) {
 	i.Soups[soupType]++
 }
 
-func (i *Inventory) RemoveSoup(soupType component.SoupType) {
+func (i *Inventory) RemoveSoup(soupType itemtype.ItemType) {
 	i.Soups[soupType]--
 	if i.Soups[soupType] <= 0 {
 		delete(i.Soups, soupType)
@@ -65,8 +64,8 @@ func (i *Inventory) RemoveSoup(soupType component.SoupType) {
 
 func NewInventory() *Inventory {
 	return &Inventory{
-		Vegtables:  make(map[itemtype.ItemType]int),
-		Soups:      make(map[component.SoupType]int),
+		Vegetables: make(map[itemtype.ItemType]int),
+		Soups:      make(map[itemtype.ItemType]int),
 		Weapons:    make([]weapon.Weapon, config.MAX_WEAPONS),
 		MaxWeapons: config.MAX_WEAPONS,
 	}

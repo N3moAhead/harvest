@@ -116,6 +116,10 @@ func (g *Game) Update() error {
 			case itemtype.CategoryVegetable:
 				g.inventory.AddVegtable(item.Type)
 				break
+			case itemtype.CategorySoup:
+				g.inventory.AddSoup(item.Type)
+				g.Player.ExtendOrAddSoup(item.Type, g.inventory)
+				break
 			case itemtype.CategoryWeapon:
 				switch item.Type {
 				case itemtype.Spoon:

@@ -21,15 +21,6 @@ func (i *Item) Update(player *player.Player) (itemPickedUp bool) {
 	len := diff.Len() // the distance from player to item
 
 	if len < config.PLAYER_PICKUP_RADIUS {
-		info := itemtype.RetrieveItemInfo(i.Type)
-		if info.Category == itemtype.CategorySoup {
-			soup := itemtype.ItemInfos[i.Type].Soup
-			inventory.AddSoup(soup.Type)
-			player.ExtendOrAddSoup(i.Type, inventory)
-		} else {
-			// Picking up the item into the inventory
-			inventory.AddVegtable(i.Type)
-		}
 		return true
 	}
 	if len < player.MagnetRadius {

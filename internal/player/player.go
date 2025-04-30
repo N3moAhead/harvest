@@ -7,7 +7,6 @@ import (
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
-	"github.com/N3moAhead/harvest/internal/inventory"
 	"github.com/N3moAhead/harvest/internal/itemtype"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,11 +15,16 @@ import (
 
 type Player struct {
 	entity.Entity
-	Soups           []component.Soup
+	Soups           []itemtype.Soup
 	Speed           float64
 	MagnetRadius    float64
 	Health          component.Health
 	FacingDirection component.Vector2D
+}
+
+type InventoryProvider interface {
+	AddSoup(soupType itemtype.ItemType)
+	RemoveSoup(soupType itemtype.ItemType)
 }
 
 // The player is currently just drawn as a rectangle.
@@ -58,7 +62,7 @@ func (p *Player) GetFacingDirection() component.Vector2D {
 	return p.FacingDirection
 }
 
-func (p *Player) ExtendOrAddSoup(itemType itemtype.ItemType, inventory *inventory.Inventory) {
+func (p *Player) ExtendOrAddSoup(itemType itemtype.ItemType, inventory InventoryProvider) {
 	info := itemtype.RetrieveItemInfo(itemType)
 	def := info.Soup
 	now := time.Now()
@@ -80,7 +84,7 @@ func (p *Player) ExtendOrAddSoup(itemType itemtype.ItemType, inventory *inventor
 		}
 	}
 
-	newSoup := component.Soup{
+	newSoup := itemtype.Soup{
 		Type:         def.Type,
 		BuffPerLevel: def.BuffPerLevel,
 		Duration:     def.Duration,
@@ -89,7 +93,7 @@ func (p *Player) ExtendOrAddSoup(itemType itemtype.ItemType, inventory *inventor
 	p.Soups = append(p.Soups, newSoup)
 }
 
-func (p *Player) Update(dt float64, inventory *inventory.Inventory) { //TODO maybe add inventory to player struct?
+func (p *Player) Update(dt float64, inventory InventoryProvider) { //TODO maybe add inventory to player struct?
 	now := time.Now()
 	activeSoups := p.Soups[:0]
 	for _, b := range p.Soups { // filter out expired buffs ⏲️
@@ -105,13 +109,13 @@ func (p *Player) Update(dt float64, inventory *inventory.Inventory) { //TODO may
 	p.MagnetRadius = config.INITIAL_PLAYER_MAGNET_RADIUS
 	p.Speed = config.INITIAL_PLAYER_SPEED
 
-	for _, b := range p.Soups {
-		buffVal := float64(b.BuffPerLevel)
+	for _, soup := range p.Soups {
+		buffVal := float64(soup.BuffPerLevel)
 		// buffVal := float64(def.BuffPerLevel) * float64(b.Level)
-		switch b.Type {
-		case component.MagnetSoup:
+		switch soup.Type {
+		case itemtype.MagnetRadiusSoup:
 			p.MagnetRadius += buffVal
-		case component.SpeedSoup:
+		case itemtype.SpeedSoup:
 			p.Speed += buffVal
 		}
 	}

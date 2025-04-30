@@ -3,8 +3,6 @@ package itemtype
 import (
 	"fmt"
 	"time"
-
-	"github.com/N3moAhead/harvest/internal/component"
 )
 
 type ItemCategory int
@@ -43,10 +41,18 @@ const (
 	SpeedSoup
 )
 
+type Soup struct {
+	Type         ItemType // maybe set to itemtype hmm :/
+	BuffPerLevel float32
+	// Level        int
+	Duration  time.Duration
+	ExpiresAt time.Time
+}
+
 type ItemInfo struct {
 	DisplayName string
 	Category    ItemCategory
-	Soup        *component.Soup
+	Soup        *Soup
 }
 
 // Saves meta information for each item type
@@ -70,8 +76,8 @@ var ItemInfos = map[ItemType]ItemInfo{
 	DamageSoup: {
 		DisplayName: "Damage Soup",
 		Category:    CategorySoup,
-		Soup: &component.Soup{
-			Type:         component.DamageSoup,
+		Soup: &Soup{
+			Type:         DamageSoup,
 			BuffPerLevel: 5,
 			Duration:     5 * time.Second,
 		},
@@ -79,8 +85,8 @@ var ItemInfos = map[ItemType]ItemInfo{
 	MagnetRadiusSoup: {
 		DisplayName: "Magnet Soup",
 		Category:    CategorySoup,
-		Soup: &component.Soup{
-			Type:         component.MagnetSoup,
+		Soup: &Soup{
+			Type:         MagnetRadiusSoup,
 			BuffPerLevel: 200,
 			Duration:     2 * time.Second,
 		},
@@ -88,8 +94,8 @@ var ItemInfos = map[ItemType]ItemInfo{
 	SpeedSoup: {
 		DisplayName: "Speed Soup",
 		Category:    CategorySoup,
-		Soup: &component.Soup{
-			Type:         component.SpeedSoup,
+		Soup: &Soup{
+			Type:         SpeedSoup,
 			BuffPerLevel: 20,
 			Duration:     2 * time.Second,
 		},
