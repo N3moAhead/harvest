@@ -8,6 +8,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/itemtype"
+	"github.com/N3moAhead/harvest/internal/soups"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -15,7 +16,7 @@ import (
 
 type Player struct {
 	entity.Entity
-	Soups           []itemtype.Soup
+	Soups           []soups.Soup
 	Speed           float64
 	MagnetRadius    float64
 	Health          component.Health
@@ -62,33 +63,26 @@ func (p *Player) GetFacingDirection() component.Vector2D {
 	return p.FacingDirection
 }
 
-func (p *Player) ExtendOrAddSoup(itemType itemtype.ItemType, inventory InventoryProvider) {
-	info := itemtype.RetrieveItemInfo(itemType)
-	def := info.Soup
+func (p *Player) ExtendOrAddSoup(soup *soups.Soup) {
 	now := time.Now()
-	if def == nil {
-		return
-	}
-
-	inventory.AddSoup(info.Soup.Type)
 
 	for i := range p.Soups {
-		if p.Soups[i].Type == def.Type {
+		if p.Soups[i].Type == soup.Type {
 			if now.Before(p.Soups[i].ExpiresAt) {
-				p.Soups[i].ExpiresAt = p.Soups[i].ExpiresAt.Add(def.Duration)
+				p.Soups[i].ExpiresAt = p.Soups[i].ExpiresAt.Add(soup.Duration)
 			} else {
-				p.Soups[i].ExpiresAt = now.Add(def.Duration)
+				p.Soups[i].ExpiresAt = now.Add(soup.Duration)
 			}
 			// p.Buffs[i].Level++
 			return
 		}
 	}
 
-	newSoup := itemtype.Soup{
-		Type:         def.Type,
-		BuffPerLevel: def.BuffPerLevel,
-		Duration:     def.Duration,
-		ExpiresAt:    now.Add(def.Duration),
+	newSoup := soups.Soup{
+		Type:         soup.Type,
+		BuffPerLevel: soup.BuffPerLevel,
+		Duration:     soup.Duration,
+		ExpiresAt:    now.Add(soup.Duration),
 	}
 	p.Soups = append(p.Soups, newSoup)
 }
@@ -96,11 +90,11 @@ func (p *Player) ExtendOrAddSoup(itemType itemtype.ItemType, inventory Inventory
 func (p *Player) Update(dt float64, inventory InventoryProvider) { //TODO maybe add inventory to player struct?
 	now := time.Now()
 	activeSoups := p.Soups[:0]
-	for _, b := range p.Soups { // filter out expired buffs ⏲️
-		if now.Before(b.ExpiresAt) {
-			activeSoups = append(activeSoups, b)
+	for _, soup := range p.Soups { // filter out expired buffs
+		if now.Before(soup.ExpiresAt) {
+			activeSoups = append(activeSoups, soup)
 		} else {
-			inventory.RemoveSoup(b.Type)
+			inventory.RemoveSoup(soup.Type)
 		}
 	}
 	p.Soups = activeSoups
