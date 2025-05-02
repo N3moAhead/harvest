@@ -50,6 +50,12 @@ func (i *Inventory) Draw(screen *ebiten.Image) {
 	if amount, ok := i.Vegetables[itemtype.Carrot]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", item.DisplayName(itemtype.Carrot), amount), 10, 35)
 	}
+	if amount, ok := i.Soups[itemtype.MagnetRadiusSoup]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", item.DisplayName(itemtype.MagnetRadiusSoup), amount), 10, 50)
+	}
+	if amount, ok := i.Soups[itemtype.SpeedSoup]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", item.DisplayName(itemtype.SpeedSoup), amount), 10, 65)
+	}
 }
 
 func (i *Inventory) AddSoup(soupType itemtype.ItemType) {
@@ -61,6 +67,10 @@ func (i *Inventory) RemoveSoup(soupType itemtype.ItemType) {
 	if i.Soups[soupType] <= 0 {
 		delete(i.Soups, soupType)
 	}
+}
+
+func (i *Inventory) RemoveAllSoups(soupType itemtype.ItemType) {
+	delete(i.Soups, soupType)
 }
 
 func NewInventory() *Inventory {

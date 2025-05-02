@@ -24,8 +24,7 @@ type Player struct {
 }
 
 type InventoryProvider interface {
-	AddSoup(soupType itemtype.ItemType)
-	RemoveSoup(soupType itemtype.ItemType)
+	RemoveAllSoups(soupType itemtype.ItemType)
 }
 
 // The player is currently just drawn as a rectangle.
@@ -94,7 +93,7 @@ func (p *Player) Update(dt float64, inventory InventoryProvider) { //TODO maybe 
 		if now.Before(soup.ExpiresAt) {
 			activeSoups = append(activeSoups, soup)
 		} else {
-			inventory.RemoveSoup(soup.Type)
+			inventory.RemoveAllSoups(soup.Type)
 		}
 	}
 	p.Soups = activeSoups
