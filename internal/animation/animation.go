@@ -121,12 +121,11 @@ func (a *Animation) Update() bool {
 			if a.Loops {
 				// Loop back to the first frame
 				a.CurrentFrame = 0
-				animationFinishedThisTick = true // Completed a cycle
 			} else {
 				// Stay on the last frame and mark as finished
 				a.hasFinished = true
-				animationFinishedThisTick = true // Reached the end
 			}
+			animationFinishedThisTick = true // Completed a cycle
 		} else {
 			// Advance to the next frame
 			a.CurrentFrame++
