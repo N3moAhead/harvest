@@ -13,6 +13,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+const (
+	WALK_RIGHT string = "walkRight"
+	WALK_LEFT  string = "walkLeft"
+	ATTACK     string = "attack"
+	SPAWN      string = "spawn"
+	DEATH      string = "death"
+)
+
 type CarrotEnemy struct {
 	Enemy
 	MeleeEnemyData
@@ -24,26 +32,26 @@ func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 	if ok {
 		walkRightAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 32, 8, 6, true)
 		if err == nil {
-			animationStore.AddAnimation("walkRight", walkRightAnimation)
+			animationStore.AddAnimation(WALK_RIGHT, walkRightAnimation)
 		}
 		walkLeftAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 6*32, 8, 6, true)
 		if err == nil {
-			animationStore.AddAnimation("walkLeft", walkLeftAnimation)
+			animationStore.AddAnimation(WALK_LEFT, walkLeftAnimation)
 		}
 		attackAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 4*32, 2, 6, false)
 		if err == nil {
-			animationStore.AddAnimation("attack", attackAnimation)
+			animationStore.AddAnimation(ATTACK, attackAnimation)
 		}
 		spawnAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 2*32, 6, 10, false)
 		if err == nil {
-			animationStore.AddAnimation("spawn", spawnAnimation)
+			animationStore.AddAnimation(SPAWN, spawnAnimation)
 		}
 		deathAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 7*32, 6, 10, false)
 		if err == nil {
-			animationStore.AddAnimation("death", deathAnimation)
+			animationStore.AddAnimation(DEATH, deathAnimation)
 		}
 
-		ok := animationStore.SetCurrentAnimation("spawn")
+		ok := animationStore.SetCurrentAnimation(SPAWN)
 		if !ok {
 			fmt.Println("Warning: Unable to start the spawning animation")
 		}
@@ -68,11 +76,11 @@ func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 func (e *CarrotEnemy) SetWalkingAnimation(player *player.Player) {
 	dir := player.Pos.Sub(e.Pos)
 	if dir.X > 0 {
-		if ok := e.animationStore.SetCurrentAnimation("walkRight"); !ok {
+		if ok := e.animationStore.SetCurrentAnimation(WALK_RIGHT); !ok {
 			fmt.Println("Warning: Unable to start the carrot walkRight animation")
 		}
 	} else {
-		if ok := e.animationStore.SetCurrentAnimation("walkLeft"); !ok {
+		if ok := e.animationStore.SetCurrentAnimation(WALK_LEFT); !ok {
 			fmt.Println("Warning: Unable to start the carrot walkLeft animation")
 		}
 	}
@@ -86,7 +94,7 @@ func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
 		// Set current animation to walking if no animation is currently running
 		// Or Update the type of running animation if currently the animation is running
 		animationName := e.animationStore.GetCurrentAnimationName()
-		updateRunningType := animationName == "walkLeft" || animationName == "walkRight"
+		updateRunningType := animationName == WALK_LEFT || animationName == WALK_RIGHT
 		if e.animationStore.GetCurrentAnimation().IsFinished() || updateRunningType {
 			e.SetWalkingAnimation(player)
 		}
@@ -101,7 +109,7 @@ func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
 				player.Health.Damage(e.Damage)
 				e.attackTimer = e.AttackCooldown
 				// Starting the attack animation
-				if ok := e.animationStore.SetCurrentAnimation("attack"); !ok {
+				if ok := e.animationStore.SetCurrentAnimation(ATTACK); !ok {
 					fmt.Println("Warning: Unable to start the carrot attack animation")
 				}
 			}
@@ -109,7 +117,7 @@ func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
 	} else {
 		// The carrot is dead
 		// So we start the death animation
-		e.animationStore.SetCurrentAnimation("death")
+		e.animationStore.SetCurrentAnimation(DEATH)
 		// We still want to see the knockback happening
 		// It just feels way better when playing :)
 		e.UpdateKnockback()
