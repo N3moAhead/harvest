@@ -21,6 +21,7 @@ func init() {
 	imagesToLoad := map[string]string{
 		"player":      "assets/images/CookTestImage.png",
 		"spoon_slash": "assets/images/weapons/spoon/spoon_slash3.png",
+		"carrot":      "assets/images/carrot.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":       "assets/audio/sfx/laserTest.wav",
