@@ -29,6 +29,13 @@ func NewStore() *Store {
 	}
 }
 
+// --- SETTERS ---
+
+func (s *Store) addImageToStore(name string, img *ebiten.Image) {
+	s.images[name] = img
+	fmt.Printf("Image added to store: %s\n", name)
+}
+
 // --- GETTERS ---
 
 func (s *Store) GetMusicData(name string) (music []byte, musicFound bool) {
