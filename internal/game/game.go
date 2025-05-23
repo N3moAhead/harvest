@@ -14,6 +14,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
+	"github.com/N3moAhead/harvest/internal/input"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
@@ -45,39 +46,11 @@ func (g *Game) Update() error {
 		return errors.New("Game Quit!")
 	}
 
-	/// --- Update UI ---
-	g.ui.Update()
+	/// --- Get User Input ---
+	inputState := input.GetInputState()
 
-	// --- Player Input & Movement ---
-	moveDir := component.Vector2D{X: 0, Y: 0}
-	moved := false
-	if ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyUp) {
-		moveDir.Y -= 1
-		moved = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyDown) {
-		moveDir.Y += 1
-		moved = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		moveDir.X -= 1
-		moved = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyRight) {
-		moveDir.X += 1
-		moved = true
-	}
-	if moveDir.Y != 0 && moveDir.X != 0 {
-		moveDir = moveDir.Normalize()
-		moved = true
-	}
-
-	// If the player moved update the facingDirection and the player position
-	if moved {
-		normalizedMoveDirection := moveDir.Normalize()
-		g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
-		g.Player.FacingDirection = normalizedMoveDirection
-	}
+	// --- Player Update ---
+	g.Player.Update(inputState)
 
 	/// --- SFX TEST && ENEMY TEST PLS REMOVE LATER IN THE GAME ---
 	// For Testing pressing the space button will play a lazer sound
