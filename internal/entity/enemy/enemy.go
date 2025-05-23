@@ -6,7 +6,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
-	"github.com/N3moAhead/harvest/internal/player"
+	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )

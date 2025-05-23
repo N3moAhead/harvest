@@ -3,7 +3,7 @@ package inventory
 import (
 	"fmt"
 
-	"github.com/N3moAhead/harvest/internal/itemtype"
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
