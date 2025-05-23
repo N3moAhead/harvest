@@ -1,6 +1,7 @@
 package item
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/N3moAhead/harvest/internal/entity"
@@ -66,11 +67,40 @@ func (i *Item) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float64
 		true,
 	)
 }
-
 func newItemBase(posX float64, posY float64) *Item {
 	baseClass := entity.NewEntity(posX, posY)
 	return &Item{
 		Entity: *baseClass,
 		Type:   itemtype.Undefined,
 	}
+}
+
+func (i *Item) RetrieveItemInfo() ItemInfo {
+	if info, ok := ItemInfos[i.Type]; ok {
+		return info
+	}
+	return ItemInfo{
+		DisplayName: fmt.Sprintf("ItemType(%d)", i.Type),
+		Category:    itemtype.CategoryUndefined,
+		Soup:        nil,
+	}
+}
+
+func (i *Item) DisplayName() string {
+	return i.RetrieveItemInfo().DisplayName
+}
+
+func (i *Item) CategoryOf() itemtype.ItemCategory {
+	return i.RetrieveItemInfo().Category
+}
+
+func (i *Item) IsVegetable() bool {
+	return i.CategoryOf() == itemtype.CategoryVegetable
+}
+func (i *Item) IsWeapon() bool {
+	return i.CategoryOf() == itemtype.CategoryWeapon
+}
+
+func (i *Item) IsSoup() bool {
+	return i.CategoryOf() == itemtype.CategorySoup
 }

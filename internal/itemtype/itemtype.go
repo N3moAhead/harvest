@@ -35,3 +35,24 @@ const (
 	MagnetRadiusSoup
 	SpeedSoup
 )
+
+func (it ItemType) String() string {
+	switch it {
+	case Undefined:
+		return "Undefined"
+	case Potato:
+		return "Potato"
+	case Carrot:
+		return "Carrot"
+	case Spoon:
+		return "Spoon"
+	case DamageSoup:
+		return "Damage Soup"
+	case MagnetRadiusSoup:
+		return "Magnet Radius Soup"
+	case SpeedSoup:
+		return "Speed Soup"
+	default:
+		return "Unknown"
+	}
+}

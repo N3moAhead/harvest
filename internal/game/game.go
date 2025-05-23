@@ -112,12 +112,12 @@ func (g *Game) Update() error {
 		itemPickedUp := gItem.Update(g.Player)
 		if itemPickedUp {
 			// Add picked up items into the inventory
-			switch item.CategoryOf(gItem.Type) {
+			switch gItem.CategoryOf() {
 			case itemtype.CategoryVegetable:
 				g.inventory.AddVegtable(gItem.Type)
 			case itemtype.CategorySoup:
 				g.inventory.AddSoup(gItem.Type)
-				soup := item.RetrieveItemInfo(gItem.Type).Soup
+				soup := gItem.RetrieveItemInfo().Soup
 				g.Player.ExtendOrAddSoup(soup)
 			case itemtype.CategoryWeapon:
 				switch gItem.Type {
@@ -130,10 +130,10 @@ func (g *Game) Update() error {
 						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
 					}
 				default:
-					fmt.Printf("Warning: Unknown weapon type: %s", item.DisplayName(gItem.Type))
+					fmt.Printf("Warning: Unknown weapon type: %s", gItem.DisplayName())
 				}
 			default:
-				panic(fmt.Errorf("unhandeld item category: %s in items update", item.CategoryOf(gItem.Type).String()))
+				panic(fmt.Errorf("unhandeld item category: %s in items update", gItem.CategoryOf().String()))
 			}
 		} else {
 			// Remove items after the player picked them up

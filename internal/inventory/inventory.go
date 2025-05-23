@@ -3,7 +3,6 @@ package inventory
 import (
 	"fmt"
 
-	"github.com/N3moAhead/harvest/internal/item"
 	"github.com/N3moAhead/harvest/internal/itemtype"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/pkg/config"
@@ -45,16 +44,16 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 
 func (i *Inventory) Draw(screen *ebiten.Image) {
 	if amount, ok := i.Vegetables[itemtype.Potato]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", item.DisplayName(itemtype.Potato), amount), 10, 20)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Potato.String(), amount), 10, 20)
 	}
 	if amount, ok := i.Vegetables[itemtype.Carrot]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", item.DisplayName(itemtype.Carrot), amount), 10, 35)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 35)
 	}
 	if amount, ok := i.Soups[itemtype.MagnetRadiusSoup]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", item.DisplayName(itemtype.MagnetRadiusSoup), amount), 10, 50)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", itemtype.MagnetRadiusSoup.String(), amount), 10, 50)
 	}
 	if amount, ok := i.Soups[itemtype.SpeedSoup]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", item.DisplayName(itemtype.SpeedSoup), amount), 10, 65)
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", itemtype.SpeedSoup.String(), amount), 10, 65)
 	}
 }
 
