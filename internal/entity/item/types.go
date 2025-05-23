@@ -1,6 +1,6 @@
 package item
 
-import "github.com/N3moAhead/harvest/internal/itemtype"
+import "github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 
 /// --- Vegtables ---
 

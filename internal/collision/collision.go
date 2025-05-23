@@ -4,7 +4,7 @@ import (
 	"math"
 
 	"github.com/N3moAhead/harvest/internal/component"
-	"github.com/N3moAhead/harvest/internal/enemy"
+	"github.com/N3moAhead/harvest/internal/entity/enemy"
 )
 
 // findEnemiesInArc searches for enemies within an arc.
