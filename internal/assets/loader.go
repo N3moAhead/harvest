@@ -12,13 +12,15 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio/vorbis"
 	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
 
 type Store struct {
 	images map[string]*ebiten.Image
 	sfx    map[string][]byte
 	music  map[string][]byte
-	// fonts  map[string]font.Face TODO maybe we will have to add fonts
+	fonts  map[string]font.Face
 }
 
 func NewStore() *Store {
@@ -26,6 +28,7 @@ func NewStore() *Store {
 		images: make(map[string]*ebiten.Image),
 		sfx:    make(map[string][]byte),
 		music:  make(map[string][]byte),
+		fonts:  make(map[string]font.Face),
 	}
 }
 
@@ -46,9 +49,15 @@ func (s *Store) GetImage(name string) (image *ebiten.Image, imageFound bool) {
 	return img, ok
 }
 
+func (s *Store) GetFont(name string) (fontFace font.Face, fontFound bool) {
+	fontFace, ok := s.fonts[name]
+	return fontFace, ok
+}
+
 func (s *Store) Load(
 	imageFiles map[string]string,
 	sfxFiles map[string]string,
+	fontFiles map[string]string,
 	musicFiles map[string]string,
 	audioSampleRate int,
 ) error {
@@ -85,6 +94,21 @@ func (s *Store) Load(
 		}
 		s.sfx[name] = data
 		fmt.Printf("SFX '%s' loaded: %s\n", name, path)
+	}
+
+	fmt.Println("Loading font files...")
+	for name, path := range fontFiles {
+		if _, exists := s.fonts[name]; exists {
+			continue
+		}
+		font, loadErr := loadFontFile(path, 24, 72, font.HintingFull)
+		if loadErr != nil {
+			err = fmt.Errorf("Error while loading the font'%s' (%s): %w", name, path, loadErr)
+			fmt.Println(err)
+			continue
+		}
+		s.fonts[name] = font
+		fmt.Printf("Font '%s' loaded: %s\n", name, path)
 	}
 
 	// Loading music is very slow because currently its getting loaded
@@ -155,4 +179,26 @@ func loadAudioFile(path string, sampleRate int) ([]byte, error) {
 	default:
 		return nil, fmt.Errorf("Unknown Audio Format: %s", ext)
 	}
+}
+
+func loadFontFile(path string, size float64, dpi float64, hinting font.Hinting) (font.Face, error) {
+	fontBytes, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	tt, err := opentype.Parse(fontBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	myFontFace, err := opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    size,
+		DPI:     dpi,
+		Hinting: hinting,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return myFontFace, nil
 }
