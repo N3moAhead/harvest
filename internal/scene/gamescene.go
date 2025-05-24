@@ -1,4 +1,4 @@
-package game
+package scene
 
 import (
 	"errors"
@@ -25,7 +25,7 @@ import (
 
 // --- Types ---
 
-type Game struct {
+type GameScene struct {
 	Player               *player.Player
 	World                *world.World
 	Enemies              []enemy.EnemyInterface
@@ -34,9 +34,10 @@ type Game struct {
 	items                []*item.Item
 	inventory            *inventory.Inventory
 	ui                   *ui.UIManager
+	isRunning            bool
 }
 
-func (g *Game) Update() error {
+func (g *GameScene) Update() error {
 	// --- Delta Time Update ---
 	dt := 1.0 / float64(ebiten.TPS())
 	dtDuration := time.Second / time.Duration(ebiten.TPS())
@@ -51,6 +52,9 @@ func (g *Game) Update() error {
 
 	// --- Player Update ---
 	g.Player.Update(inputState)
+
+	/// --- UI Update ---
+	g.ui.Update()
 
 	/// --- SFX TEST && ENEMY TEST PLS REMOVE LATER IN THE GAME ---
 	// For Testing pressing the space button will play a lazer sound
@@ -174,7 +178,7 @@ func (g *Game) Update() error {
 	return nil
 }
 
-func (g *Game) Draw(screen *ebiten.Image) {
+func (g *GameScene) Draw(screen *ebiten.Image) {
 	// --- Drawing the Map ---
 	g.World.Draw(screen)
 
@@ -210,22 +214,21 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.ui.Draw(screen)
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+func (g *GameScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return config.SCREEN_WIDTH, config.SCREEN_HEIGHT
 }
 
-// --- Internal ---
+func (g *GameScene) IsRunning() bool {
+	return g.isRunning
+}
 
-func init() {
-	ebiten.SetWindowSize(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
-	ebiten.SetWindowTitle("Harvest by Wurzelwerk")
-	ebiten.SetTPS(60)
-	ebiten.SetFullscreen(true)
+func (g *GameScene) SetIsRunning(running bool) {
+	g.isRunning = running
 }
 
 // --- Public ---
 
-func NewGame() *Game {
+func NewGameScene() *GameScene {
 	p := player.NewPlayer()
 	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
 	s := world.NewEnemySpawner()
@@ -244,16 +247,6 @@ func NewGame() *Game {
 	label3 := ui.NewLabel(200, 400, "Tanzen", fontFace, color.RGBA{R: 0, G: 255, B: 0, A: 255})
 	label4 := ui.NewLabel(200, 200, "Welt", fontFace, color.RGBA{R: 0, G: 255, B: 255, A: 255})
 
-	button1 := ui.NewButton(300, 300, 250, 50, "Press Me!", fontFace, func() { fmt.Println("Button Pressed!") })
-	button2 := ui.NewButton(300, 200, 250, 50, "Button 2", fontFace, func() { fmt.Println("Button 2 Pressed!") })
-
-	container1 := ui.NewContainer(5, 150, &ui.ContainerOptions{
-		Direction: ui.Col,
-		Gap:       10,
-	})
-	container1.AddChild(button1)
-	container1.AddChild(button2)
-
 	container2 := ui.NewContainer(300, 5, &ui.ContainerOptions{
 		Direction: ui.Row,
 		Gap:       10,
@@ -263,14 +256,14 @@ func NewGame() *Game {
 	container2.AddChild(label3)
 	container2.AddChild(label4)
 
-	uiManager.AddElement(container1)
 	uiManager.AddElement(container2)
 
 	// register enemy factories
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewCarrotEnemy(pos)
 	})
-	g := &Game{
+
+	newGameScene := &GameScene{
 		Player:    p,
 		World:     w,
 		Enemies:   []enemy.EnemyInterface{},
@@ -278,7 +271,17 @@ func NewGame() *Game {
 		inventory: i,
 		items:     items,
 		ui:        uiManager,
+		isRunning: true,
 	}
 
-	return g
+	nextSceneButton := ui.NewButton(300, 300, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+
+	container1 := ui.NewContainer(5, 150, &ui.ContainerOptions{
+		Direction: ui.Col,
+		Gap:       10,
+	})
+	container1.AddChild(nextSceneButton)
+	uiManager.AddElement(container1)
+
+	return newGameScene
 }
