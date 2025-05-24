@@ -7,12 +7,17 @@ import (
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
-	"github.com/N3moAhead/harvest/internal/itemtype"
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
+	"github.com/N3moAhead/harvest/internal/input"
 	"github.com/N3moAhead/harvest/internal/soups"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
+
+type InventoryProvider interface {
+	RemoveAllSoups(soupType itemtype.ItemType)
+}
 
 type Player struct {
 	entity.Entity
@@ -21,10 +26,6 @@ type Player struct {
 	MagnetRadius    float64
 	Health          component.Health
 	FacingDirection component.Vector2D
-}
-
-type InventoryProvider interface {
-	RemoveAllSoups(soupType itemtype.ItemType)
 }
 
 // The player is currently just drawn as a rectangle.
@@ -86,8 +87,41 @@ func (p *Player) ExtendOrAddSoup(soup *soups.Soup) {
 	p.Soups = append(p.Soups, newSoup)
 }
 
-func (p *Player) Update(dt float64, inventory InventoryProvider) { //TODO maybe add inventory to player struct?
+func (p *Player) Update(inputState *input.InputState, dt float64, inventory InventoryProvider) { //TODO maybe add inventory to player struct?
 	now := time.Now()
+
+	// Update player position
+	moveDir := component.Vector2D{X: 0, Y: 0}
+	moved := false
+	if inputState.Up {
+		moveDir.Y -= 1
+		moved = true
+	}
+	if inputState.Down {
+		moveDir.Y += 1
+		moved = true
+	}
+	if inputState.Left {
+		moveDir.X -= 1
+		moved = true
+	}
+	if inputState.Right {
+		moveDir.X += 1
+		moved = true
+	}
+
+	if moveDir.Y != 0 && moveDir.X != 0 {
+		moveDir = moveDir.Normalize()
+		moved = true
+	}
+
+	// If the player moved update the facingDirection and the player position
+	if moved {
+		p.Pos = p.Pos.Add(moveDir.Mul(p.Speed))
+		p.FacingDirection = moveDir
+	}
+
+	// Update soups
 	activeSoups := p.Soups[:0]
 	for _, soup := range p.Soups { // filter out expired buffs
 		if now.Before(soup.ExpiresAt) {

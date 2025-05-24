@@ -1,7 +1,7 @@
 package item
 
 import (
-	"github.com/N3moAhead/harvest/internal/itemtype"
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/soups"
 )
 
@@ -25,7 +25,7 @@ var ItemInfos = map[itemtype.ItemType]ItemInfo{
 	},
 	itemtype.Spoon: {
 		DisplayName: "Spoon",
-		Category:    itemtype.CategoryVegetable,
+		Category:    itemtype.CategoryWeapon,
 		Soup:        nil,
 	},
 	itemtype.DamageSoup: {

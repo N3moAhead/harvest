@@ -1,7 +1,6 @@
-package game
+package scene
 
 import (
-	"errors"
 	"fmt"
 	"image/color"
 	"math/rand/v2"
@@ -9,11 +8,12 @@ import (
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
-	"github.com/N3moAhead/harvest/internal/enemy"
-	"github.com/N3moAhead/harvest/internal/inventory"
-	"github.com/N3moAhead/harvest/internal/item"
-	"github.com/N3moAhead/harvest/internal/itemtype"
-	"github.com/N3moAhead/harvest/internal/player"
+	"github.com/N3moAhead/harvest/internal/entity/enemy"
+	"github.com/N3moAhead/harvest/internal/entity/item"
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
+	"github.com/N3moAhead/harvest/internal/entity/player"
+	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
+	"github.com/N3moAhead/harvest/internal/input"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
@@ -24,7 +24,7 @@ import (
 
 // --- Types ---
 
-type Game struct {
+type GameScene struct {
 	Player               *player.Player
 	World                *world.World
 	Enemies              []enemy.EnemyInterface
@@ -33,51 +33,22 @@ type Game struct {
 	items                []*item.Item
 	inventory            *inventory.Inventory
 	ui                   *ui.UIManager
+	isRunning            bool
 }
 
-func (g *Game) Update() error {
+func (g *GameScene) Update() error {
 	// --- Delta Time Update ---
 	dt := 1.0 / float64(ebiten.TPS())
 	dtDuration := time.Second / time.Duration(ebiten.TPS())
 
-	// --- Check for Exit ---
-	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
-		return errors.New("Game Quit!")
-	}
+	/// --- Get User Input ---
+	inputState := input.GetInputState()
 
-	/// --- Update UI ---
+	// --- Player Update ---
+	g.Player.Update(inputState, dt, g.inventory)
+
+	/// --- UI Update ---
 	g.ui.Update()
-
-	// --- Player Input & Movement ---
-	moveDir := component.Vector2D{X: 0, Y: 0}
-	moved := false
-	if ebiten.IsKeyPressed(ebiten.KeyW) || ebiten.IsKeyPressed(ebiten.KeyUp) {
-		moveDir.Y -= 1
-		moved = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyDown) {
-		moveDir.Y += 1
-		moved = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyLeft) {
-		moveDir.X -= 1
-		moved = true
-	}
-	if ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyRight) {
-		moveDir.X += 1
-		moved = true
-	}
-	if moveDir.Y != 0 && moveDir.X != 0 {
-		moveDir = moveDir.Normalize()
-		moved = true
-	}
-
-	// If the player moved update the facingDirection and the player position
-	if moved {
-		normalizedMoveDirection := moveDir.Normalize()
-		g.Player.Pos = g.Player.Pos.Add(moveDir.Mul(g.Player.Speed))
-		g.Player.FacingDirection = normalizedMoveDirection
-	}
 
 	/// --- SFX TEST && ENEMY TEST PLS REMOVE LATER IN THE GAME ---
 	// For Testing pressing the space button will play a lazer sound
@@ -213,12 +184,10 @@ func (g *Game) Update() error {
 		e.Update(g.Player, dt)
 	}
 
-	g.Player.Update(dt, g.inventory)
-
 	return nil
 }
 
-func (g *Game) Draw(screen *ebiten.Image) {
+func (g *GameScene) Draw(screen *ebiten.Image) {
 	// --- Drawing the Map ---
 	g.World.Draw(screen)
 
@@ -254,22 +223,21 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.ui.Draw(screen)
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+func (g *GameScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return config.SCREEN_WIDTH, config.SCREEN_HEIGHT
 }
 
-// --- Internal ---
+func (g *GameScene) IsRunning() bool {
+	return g.isRunning
+}
 
-func init() {
-	ebiten.SetWindowSize(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
-	ebiten.SetWindowTitle("Harvest by Wurzelwerk")
-	ebiten.SetTPS(60)
-	ebiten.SetFullscreen(true)
+func (g *GameScene) SetIsRunning(running bool) {
+	g.isRunning = running
 }
 
 // --- Public ---
 
-func NewGame() *Game {
+func NewGameScene() *GameScene {
 	p := player.NewPlayer()
 	w := world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES)
 	s := world.NewEnemySpawner()
@@ -288,16 +256,6 @@ func NewGame() *Game {
 	label3 := ui.NewLabel(200, 400, "Tanzen", fontFace, color.RGBA{R: 0, G: 255, B: 0, A: 255})
 	label4 := ui.NewLabel(200, 200, "Welt", fontFace, color.RGBA{R: 0, G: 255, B: 255, A: 255})
 
-	button1 := ui.NewButton(300, 300, 250, 50, "Press Me!", fontFace, func() { fmt.Println("Button Pressed!") })
-	button2 := ui.NewButton(300, 200, 250, 50, "Button 2", fontFace, func() { fmt.Println("Button 2 Pressed!") })
-
-	container1 := ui.NewContainer(5, 150, &ui.ContainerOptions{
-		Direction: ui.Col,
-		Gap:       10,
-	})
-	container1.AddChild(button1)
-	container1.AddChild(button2)
-
 	container2 := ui.NewContainer(300, 5, &ui.ContainerOptions{
 		Direction: ui.Row,
 		Gap:       10,
@@ -307,14 +265,14 @@ func NewGame() *Game {
 	container2.AddChild(label3)
 	container2.AddChild(label4)
 
-	uiManager.AddElement(container1)
 	uiManager.AddElement(container2)
 
 	// register enemy factories
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewCarrotEnemy(pos)
 	})
-	g := &Game{
+
+	newGameScene := &GameScene{
 		Player:    p,
 		World:     w,
 		Enemies:   []enemy.EnemyInterface{},
@@ -322,7 +280,17 @@ func NewGame() *Game {
 		inventory: i,
 		items:     items,
 		ui:        uiManager,
+		isRunning: true,
 	}
 
-	return g
+	nextSceneButton := ui.NewButton(300, 300, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+
+	container1 := ui.NewContainer(5, 150, &ui.ContainerOptions{
+		Direction: ui.Col,
+		Gap:       10,
+	})
+	container1.AddChild(nextSceneButton)
+	uiManager.AddElement(container1)
+
+	return newGameScene
 }

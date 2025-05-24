@@ -1,9 +1,8 @@
 package item
 
-import (
-	"github.com/N3moAhead/harvest/internal/itemtype"
-	/// --- Vegtables ---
-)
+import "github.com/N3moAhead/harvest/internal/entity/item/itemtype"
+
+/// --- Vegtables ---
 
 func NewCarrot(posX float64, posY float64) *Item {
 	newItem := newItemBase(posX, posY)
