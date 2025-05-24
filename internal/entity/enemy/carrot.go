@@ -7,9 +7,9 @@ import (
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/entity/player"
-	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

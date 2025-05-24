@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"image"
 
-	"github.com/N3moAhead/harvest/pkg/config"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/pkg/util"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"

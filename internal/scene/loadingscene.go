@@ -4,7 +4,7 @@ import (
 	"image/color"
 
 	"github.com/N3moAhead/harvest/internal/assets"
-	"github.com/N3moAhead/harvest/pkg/config"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
