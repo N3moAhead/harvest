@@ -30,6 +30,7 @@ type CookStation struct {
 	Used           bool
 	CostFactor     float64 // to scale the cost of ingredients with the game difficulty
 	animationStore *animation.AnimationStore
+	showRecipe     bool
 }
 
 var RecipeDefinitions = map[itemtype.ItemType]Recipe{
@@ -49,7 +50,8 @@ var RecipeDefinitions = map[itemtype.ItemType]Recipe{
 	itemtype.SpeedSoup: {
 		Soup: itemtype.SpeedSoup,
 		Ingredients: map[itemtype.ItemType]int{
-			itemtype.Potato: 2,
+			itemtype.Carrot: 1,
+			itemtype.Potato: 1,
 		},
 	},
 	// ...
@@ -83,28 +85,29 @@ func NewCookStation(x, y float64, recipe Recipe, costFactor float64) *CookStatio
 
 func (cookStation *CookStation) Update(player *player.Player, inv *inventory.Inventory) {
 	if cookStation.Used {
+		cookStation.showRecipe = false
 		return
 	}
 	cookStation.animationStore.Update()
-	cookStation.animationStore.SetCurrentAnimation("default")
 	diff := player.Pos.Sub(cookStation.Pos)
-	if diff.Len() < config.PLAYER_PICKUP_RADIUS { // TODO maybe change to own e.g. PLAYER_INTERACT_RADIUS ?
+	cookStation.showRecipe = diff.Len() < config.SHOW_RECIPE_RANGE
+
+	if diff.Len() < config.PLAYER_INTERACT_RADIUS { // TODO maybe change to own e.g. PLAYER_INTERACT_RADIUS, oder einfach PLAYER_PICKUP_RADIUS ?
 		ok := true
 		for t, amt := range cookStation.Recipe.Ingredients {
+			// fmt.Printf(" REQUIRED: %s x%d\n", t.String(), int(float64(amt)*cookStation.CostFactor))
 			if inv.Vegetables[t] < int(float64(amt)*cookStation.CostFactor) {
 				ok = false
 			}
 		}
 		if ok {
-			// g.inventory.AddSoup(gItem.Type)
-			// soup := gItem.RetrieveItemInfo().Soup
-			// g.Player.ExtendOrAddSoup(soup)
 			for t, amt := range cookStation.Recipe.Ingredients {
-				inv.Vegetables[t] -= int(float64(amt) * cookStation.CostFactor)
+				inv.RemoveNVegetables(t, int(float64(amt)*cookStation.CostFactor))
 			}
 			inv.AddSoup(cookStation.Recipe.Soup)
 			player.ExtendOrAddSoup(soups.Definitions[cookStation.Recipe.Soup])
 			cookStation.Used = true
+			cookStation.showRecipe = false
 		}
 	}
 }
@@ -126,15 +129,17 @@ func (cs *CookStation) Draw(screen *ebiten.Image, camX, camY float64) {
 
 	// TODO other way to draw text recept
 	// recept sign?
-	x := float32(cs.Pos.X - camX + 20)
-	y := float32(cs.Pos.Y - camY - 20)
-	textRecipe := cs.Recipe.Soup.String() + ": "
-	for t, amt := range cs.Recipe.Ingredients {
-		textRecipe += fmt.Sprintf("%s x%d\n", t.String(), int(float64(amt)*cs.CostFactor))
-	}
+	if cs.showRecipe {
+		x := float32(cs.Pos.X - camX + 20)
+		y := float32(cs.Pos.Y - camY - 20)
+		textRecipe := cs.Recipe.Soup.String() + ": "
+		for t, amt := range cs.Recipe.Ingredients {
+			textRecipe += fmt.Sprintf("%s x%d\n", t.String(), int(float64(amt)*cs.CostFactor))
+		}
 
-	var fontFace font.Face = basicfont.Face7x13
-	text.Draw(screen, textRecipe, fontFace, int(x), int(y), color.White)
+		var fontFace font.Face = basicfont.Face7x13
+		text.Draw(screen, textRecipe, fontFace, int(x), int(y), color.White)
+	}
 
 }
 

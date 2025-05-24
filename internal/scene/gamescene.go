@@ -169,8 +169,9 @@ func (g *GameScene) Update() error {
 			g.cookStations = append(g.cookStations, cooking.NewCookStation(
 				posX,
 				posY,
-				cooking.RecipeDefinitions[itemtype.MagnetRadiusSoup],
-				1.2, // cost factor?
+				// cooking.RecipeDefinitions[itemtype.MagnetRadiusSoup],
+				cooking.RecipeDefinitions[itemtype.SpeedSoup],
+				1.0, // cost factor?
 			))
 		}
 	}
