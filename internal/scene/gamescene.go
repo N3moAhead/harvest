@@ -8,6 +8,7 @@ import (
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/cooking"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
 	"github.com/N3moAhead/harvest/internal/entity/item"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
@@ -34,6 +35,7 @@ type GameScene struct {
 	inventory            *inventory.Inventory
 	ui                   *ui.UIManager
 	isRunning            bool
+	cookStations         []*cooking.CookStation
 }
 
 func (g *GameScene) Update() error {
@@ -160,6 +162,19 @@ func (g *GameScene) Update() error {
 		// }
 	}
 
+	if ebiten.IsKeyPressed(ebiten.KeyC) {
+		for range 3 {
+			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+			g.cookStations = append(g.cookStations, cooking.NewCookStation(
+				posX,
+				posY,
+				cooking.RecipeDefinitions[itemtype.MagnetRadiusSoup],
+				1.2, // cost factor?
+			))
+		}
+	}
+
 	// Testing sfx Remove for production
 	// Pressing L will play a lazer sound
 	if ebiten.IsKeyPressed(ebiten.KeyL) {
@@ -182,6 +197,10 @@ func (g *GameScene) Update() error {
 	// --- Enemies ---
 	for _, e := range g.Enemies {
 		e.Update(g.Player, dt)
+	}
+
+	for _, cookStation := range g.cookStations {
+		cookStation.Update(g.Player, g.inventory)
 	}
 
 	return nil
@@ -214,6 +233,10 @@ func (g *GameScene) Draw(screen *ebiten.Image) {
 		if w != nil {
 			w.Draw(screen, g.Player, mapOffsetX, mapOffsetY)
 		}
+	}
+
+	for _, cookStation := range g.cookStations {
+		cookStation.Draw(screen, mapOffsetX, mapOffsetY)
 	}
 
 	// --- Drawing the HUD ---
@@ -273,14 +296,15 @@ func NewGameScene() *GameScene {
 	})
 
 	newGameScene := &GameScene{
-		Player:    p,
-		World:     w,
-		Enemies:   []enemy.EnemyInterface{},
-		Spawner:   s,
-		inventory: i,
-		items:     items,
-		ui:        uiManager,
-		isRunning: true,
+		Player:       p,
+		World:        w,
+		Enemies:      []enemy.EnemyInterface{},
+		Spawner:      s,
+		inventory:    i,
+		items:        items,
+		ui:           uiManager,
+		isRunning:    true,
+		cookStations: []*cooking.CookStation{},
 	}
 
 	nextSceneButton := ui.NewButton(300, 300, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
