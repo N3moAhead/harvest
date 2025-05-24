@@ -2,10 +2,13 @@ package player
 
 import (
 	"image/color"
+	"time"
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
+	"github.com/N3moAhead/harvest/internal/itemtype"
+	"github.com/N3moAhead/harvest/internal/soups"
 	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -13,11 +16,15 @@ import (
 
 type Player struct {
 	entity.Entity
-
+	Soups           []soups.Soup
 	Speed           float64
 	MagnetRadius    float64
 	Health          component.Health
 	FacingDirection component.Vector2D
+}
+
+type InventoryProvider interface {
+	RemoveAllSoups(soupType itemtype.ItemType)
 }
 
 // The player is currently just drawn as a rectangle.
@@ -53,6 +60,58 @@ func (p *Player) GetFacingDirection() component.Vector2D {
 	// Its important that this direction is normalized
 	// but im making sure it is when setting it in the game.go file
 	return p.FacingDirection
+}
+
+func (p *Player) ExtendOrAddSoup(soup *soups.Soup) {
+	now := time.Now()
+
+	for i := range p.Soups {
+		if p.Soups[i].Type == soup.Type {
+			if now.Before(p.Soups[i].ExpiresAt) {
+				p.Soups[i].ExpiresAt = p.Soups[i].ExpiresAt.Add(soup.Duration)
+			} else {
+				p.Soups[i].ExpiresAt = now.Add(soup.Duration)
+			}
+			// p.Buffs[i].Level++
+			return
+		}
+	}
+
+	newSoup := soups.Soup{
+		Type:         soup.Type,
+		BuffPerLevel: soup.BuffPerLevel,
+		Duration:     soup.Duration,
+		ExpiresAt:    now.Add(soup.Duration),
+	}
+	p.Soups = append(p.Soups, newSoup)
+}
+
+func (p *Player) Update(dt float64, inventory InventoryProvider) { //TODO maybe add inventory to player struct?
+	now := time.Now()
+	activeSoups := p.Soups[:0]
+	for _, soup := range p.Soups { // filter out expired buffs
+		if now.Before(soup.ExpiresAt) {
+			activeSoups = append(activeSoups, soup)
+		} else {
+			inventory.RemoveAllSoups(soup.Type)
+		}
+	}
+	p.Soups = activeSoups
+
+	// reset player stats to default/base values
+	p.MagnetRadius = config.INITIAL_PLAYER_MAGNET_RADIUS
+	p.Speed = config.INITIAL_PLAYER_SPEED
+
+	for _, soup := range p.Soups {
+		buffVal := float64(soup.BuffPerLevel)
+		// buffVal := float64(def.BuffPerLevel) * float64(b.Level)
+		switch soup.Type {
+		case itemtype.MagnetRadiusSoup:
+			p.MagnetRadius += buffVal
+		case itemtype.SpeedSoup:
+			p.Speed += buffVal
+		}
+	}
 }
 
 // TODO: implement a LoadPlayer function to get the saved

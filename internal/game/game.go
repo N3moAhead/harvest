@@ -113,17 +113,20 @@ func (g *Game) Update() error {
 	// TODO maybe we should move this code out of the game.go file to keep it clean
 	n := 0
 	for i := range g.items {
-		item := g.items[i]
+		gItem := g.items[i]
 		// The update function also puts collected items into the inventory
-		itemPickedUp := item.Update(g.Player)
+		itemPickedUp := gItem.Update(g.Player)
 		if itemPickedUp {
 			// Add picked up items into the inventory
-			switch item.Type.Category() {
+			switch gItem.CategoryOf() {
 			case itemtype.CategoryVegetable:
-				g.inventory.AddVegtable(item.Type)
-				break
+				g.inventory.AddVegtable(gItem.Type)
+			case itemtype.CategorySoup:
+				g.inventory.AddSoup(gItem.Type)
+				soup := gItem.RetrieveItemInfo().Soup
+				g.Player.ExtendOrAddSoup(soup)
 			case itemtype.CategoryWeapon:
-				switch item.Type {
+				switch gItem.Type {
 				case itemtype.Spoon:
 					newWeapon := weapon.NewSpoon()
 					added := g.inventory.AddWeapon(newWeapon)
@@ -132,19 +135,16 @@ func (g *Game) Update() error {
 					} else {
 						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
 					}
-					break
 				default:
-					fmt.Printf("Warning: Unknown weapon type: %s", item.Type.String())
-					break
+					fmt.Printf("Warning: Unknown weapon type: %s", gItem.DisplayName())
 				}
-				break
 			default:
-				panic(fmt.Errorf("Unhandeld item category: %s in items update", item.Type.Category().String()))
+				panic(fmt.Errorf("unhandeld item category: %s in items update", gItem.CategoryOf().String()))
 			}
 		} else {
 			// Remove items after the player picked them up
 			if n != i {
-				g.items[n] = item
+				g.items[n] = gItem
 			}
 			n++
 		}
@@ -174,6 +174,21 @@ func (g *Game) Update() error {
 		}
 	}
 
+	if ebiten.IsKeyPressed(ebiten.KeyB) {
+		// to test speed
+		for range 3 {
+			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+			g.items = append(g.items, item.NewSoup(posX, posY, itemtype.SpeedSoup))
+		}
+		// to test magnet
+		// for range 3 {
+		// 	posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
+		// 	posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
+		// 	g.items = append(g.items, item.NewSoup(posX, posY, itemtype.MagnetRadiusSoup))
+		// }
+	}
+
 	// Testing sfx Remove for production
 	// Pressing L will play a lazer sound
 	if ebiten.IsKeyPressed(ebiten.KeyL) {
@@ -197,6 +212,8 @@ func (g *Game) Update() error {
 	for _, e := range g.Enemies {
 		e.Update(g.Player, dt)
 	}
+
+	g.Player.Update(dt, g.inventory)
 
 	return nil
 }

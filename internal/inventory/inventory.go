@@ -11,13 +11,14 @@ import (
 )
 
 type Inventory struct {
-	Vegtables  map[itemtype.ItemType]int // Mapping the item type to the amount
+	Vegetables map[itemtype.ItemType]int // Mapping the item type to the amount
+	Soups      map[itemtype.ItemType]int // same here, but for soups
 	Weapons    []weapon.Weapon
 	MaxWeapons int
 }
 
 func (i *Inventory) AddVegtable(itemType itemtype.ItemType) {
-	i.Vegtables[itemType]++
+	i.Vegetables[itemType]++
 }
 
 func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
@@ -42,17 +43,39 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 }
 
 func (i *Inventory) Draw(screen *ebiten.Image) {
-	if amount, ok := i.Vegtables[itemtype.Potato]; ok {
+	if amount, ok := i.Vegetables[itemtype.Potato]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Potato.String(), amount), 10, 20)
 	}
-	if amount, ok := i.Vegtables[itemtype.Carrot]; ok {
+	if amount, ok := i.Vegetables[itemtype.Carrot]; ok {
 		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 35)
 	}
+	if amount, ok := i.Soups[itemtype.MagnetRadiusSoup]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", itemtype.MagnetRadiusSoup.String(), amount), 10, 50)
+	}
+	if amount, ok := i.Soups[itemtype.SpeedSoup]; ok {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", itemtype.SpeedSoup.String(), amount), 10, 65)
+	}
+}
+
+func (i *Inventory) AddSoup(soupType itemtype.ItemType) {
+	i.Soups[soupType]++
+}
+
+func (i *Inventory) RemoveSoup(soupType itemtype.ItemType) {
+	i.Soups[soupType]--
+	if i.Soups[soupType] <= 0 {
+		delete(i.Soups, soupType)
+	}
+}
+
+func (i *Inventory) RemoveAllSoups(soupType itemtype.ItemType) {
+	delete(i.Soups, soupType)
 }
 
 func NewInventory() *Inventory {
 	return &Inventory{
-		Vegtables:  make(map[itemtype.ItemType]int),
+		Vegetables: make(map[itemtype.ItemType]int),
+		Soups:      make(map[itemtype.ItemType]int),
 		Weapons:    make([]weapon.Weapon, config.MAX_WEAPONS),
 		MaxWeapons: config.MAX_WEAPONS,
 	}
