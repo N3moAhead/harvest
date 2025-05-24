@@ -21,6 +21,27 @@ func (i *Inventory) AddVegtable(itemType itemtype.ItemType) {
 	i.Vegetables[itemType]++
 }
 
+func (i *Inventory) RemoveVegetable(itemType itemtype.ItemType) {
+	if i.Vegetables[itemType] > 0 {
+		i.Vegetables[itemType]--
+		if i.Vegetables[itemType] <= 0 {
+			delete(i.Vegetables, itemType)
+		}
+	}
+}
+
+func (i *Inventory) RemoveNVegetables(itemType itemtype.ItemType, amount int) {
+	if i.Vegetables[itemType] >= amount {
+		i.Vegetables[itemType] -= amount
+		if i.Vegetables[itemType] <= 0 {
+			delete(i.Vegetables, itemType)
+		}
+	} else {
+		delete(i.Vegetables, itemType)
+		fmt.Printf("Not enough %s in inventory to remove %d items\n", itemType.String(), amount)
+	}
+}
+
 func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 	// If the weapon already exists we level up
 	for _, existingWeapon := range inv.Weapons {
