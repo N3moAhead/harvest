@@ -3,6 +3,7 @@ package game
 import (
 	"errors"
 	"fmt"
+	"image/color"
 	"math/rand/v2"
 	"time"
 
@@ -16,6 +17,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/config"
+	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
@@ -30,6 +32,7 @@ type Game struct {
 	previousSpacePressed bool // TODO remove this later, just for testing
 	items                []*item.Item
 	inventory            *inventory.Inventory
+	ui                   *ui.UIManager
 }
 
 func (g *Game) Update() error {
@@ -41,6 +44,9 @@ func (g *Game) Update() error {
 	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
 		return errors.New("Game Quit!")
 	}
+
+	/// --- Update UI ---
+	g.ui.Update()
 
 	// --- Player Input & Movement ---
 	moveDir := component.Vector2D{X: 0, Y: 0}
@@ -228,6 +234,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	fpsText := fmt.Sprintf("FPS: %.1f ", ebiten.ActualFPS())
 	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, 5)
 	g.inventory.Draw(screen)
+	g.ui.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -253,6 +260,38 @@ func NewGame() *Game {
 	items := []*item.Item{
 		item.NewSpoon(50, 50),
 	}
+	uiManager := ui.NewUIManager()
+	fontFace, ok := assets.AssetStore.GetFont("2p")
+	if !ok {
+		panic("Font Face could not be loaded")
+	}
+
+	label1 := ui.NewLabel(50, 50, "Lachen", fontFace, color.RGBA{R: 255, G: 0, B: 0, A: 255})
+	label2 := ui.NewLabel(50, 80, "Weinen", fontFace, color.RGBA{R: 255, G: 255, B: 0, A: 255})
+	label3 := ui.NewLabel(200, 400, "Tanzen", fontFace, color.RGBA{R: 0, G: 255, B: 0, A: 255})
+	label4 := ui.NewLabel(200, 200, "Welt", fontFace, color.RGBA{R: 0, G: 255, B: 255, A: 255})
+
+	button1 := ui.NewButton(300, 300, 250, 50, "Press Me!", fontFace, func() { fmt.Println("Button Pressed!") })
+	button2 := ui.NewButton(300, 200, 250, 50, "Button 2", fontFace, func() { fmt.Println("Button 2 Pressed!") })
+
+	container1 := ui.NewContainer(5, 150, &ui.ContainerOptions{
+		Direction: ui.Col,
+		Gap:       10,
+	})
+	container1.AddChild(button1)
+	container1.AddChild(button2)
+
+	container2 := ui.NewContainer(300, 5, &ui.ContainerOptions{
+		Direction: ui.Row,
+		Gap:       10,
+	})
+	container2.AddChild(label1)
+	container2.AddChild(label2)
+	container2.AddChild(label3)
+	container2.AddChild(label4)
+
+	uiManager.AddElement(container1)
+	uiManager.AddElement(container2)
 
 	// register enemy factories
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
@@ -265,6 +304,7 @@ func NewGame() *Game {
 		Spawner:   s,
 		inventory: i,
 		items:     items,
+		ui:        uiManager,
 	}
 
 	return g

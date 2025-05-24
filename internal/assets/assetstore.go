@@ -40,7 +40,11 @@ func init() {
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
 	}
 
-	err := AssetStore.Load(imagesToLoad, sfxToLoad, musicToLoad, config.AUDIO_SAMPLE_RATE)
+	fontsToLoad := map[string]string{
+		"2p": "assets/fonts/PressStart2P-Regular.ttf",
+	}
+
+	err := AssetStore.Load(imagesToLoad, sfxToLoad, fontsToLoad, musicToLoad, config.AUDIO_SAMPLE_RATE)
 	if err != nil {
 		panic(err)
 	}
