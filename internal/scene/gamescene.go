@@ -1,7 +1,6 @@
 package scene
 
 import (
-	"errors"
 	"fmt"
 	"image/color"
 	"math/rand/v2"
@@ -42,16 +41,11 @@ func (g *GameScene) Update() error {
 	dt := 1.0 / float64(ebiten.TPS())
 	dtDuration := time.Second / time.Duration(ebiten.TPS())
 
-	// --- Check for Exit ---
-	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
-		return errors.New("Game Quit!")
-	}
-
 	/// --- Get User Input ---
 	inputState := input.GetInputState()
 
 	// --- Player Update ---
-	g.Player.Update(inputState)
+	g.Player.Update(inputState, dt, g.inventory)
 
 	/// --- UI Update ---
 	g.ui.Update()
@@ -189,8 +183,6 @@ func (g *GameScene) Update() error {
 	for _, e := range g.Enemies {
 		e.Update(g.Player, dt)
 	}
-
-	g.Player.Update(dt, g.inventory)
 
 	return nil
 }

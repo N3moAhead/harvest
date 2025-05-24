@@ -3,7 +3,7 @@ package soups
 import (
 	"time"
 
-	"github.com/N3moAhead/harvest/internal/itemtype"
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 )
 
 type Soup struct {

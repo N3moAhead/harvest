@@ -25,7 +25,7 @@ var ItemInfos = map[itemtype.ItemType]ItemInfo{
 	},
 	itemtype.Spoon: {
 		DisplayName: "Spoon",
-		Category:    itemtype.CategoryVegetable,
+		Category:    itemtype.CategoryWeapon,
 		Soup:        nil,
 	},
 	itemtype.DamageSoup: {
