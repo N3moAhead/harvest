@@ -24,9 +24,10 @@ func init() {
 
 	// Always image name to path
 	imagesToLoad := map[string]string{
-		"player":      "assets/images/CookTestImage.png",
-		"spoon_slash": "assets/images/weapons/spoon/spoon_slash3.png",
-		"carrot":      "assets/images/carrot.png",
+		"player":       "assets/images/CookTestImage.png",
+		"spoon_slash":  "assets/images/weapons/spoon/spoon_slash3.png",
+		"carrot":       "assets/images/carrot.png",
+		"cook_station": "assets/images/cookstation.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/Grass_Middle.png",
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
