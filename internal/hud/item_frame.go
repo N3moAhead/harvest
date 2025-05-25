@@ -3,9 +3,7 @@ package hud
 import (
 	"fmt"
 
-	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/config"
-	"github.com/N3moAhead/harvest/internal/entity/item"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
 	"github.com/N3moAhead/harvest/pkg/ui"
@@ -68,28 +66,6 @@ func (v *ItemDisplay) Draw(screen *ebiten.Image) {
 	if v.itemType != itemtype.Undefined && v.amount != 0 {
 		v.drawItemDisplay(screen)
 	}
-}
-
-func getItemInfo(itemType itemtype.ItemType) item.ItemInfo {
-	itemInfo, ok := item.ItemInfos[itemType]
-	if !ok {
-		fmt.Println("Warning: Could not get itemInfo for: ", itemType.String())
-	}
-	return itemInfo
-}
-
-func getItemIcon(itemInfo item.ItemInfo) *ebiten.Image {
-	var icon *ebiten.Image = nil
-	if itemIcon, ok := assets.AssetStore.GetImage(itemInfo.IconName); ok {
-		icon = itemIcon
-	} else {
-		if noIcon, ok := assets.AssetStore.GetImage("no_icon"); ok {
-			icon = noIcon
-		} else {
-			fmt.Println("Error Could not load 'no_icon' in newItemBase")
-		}
-	}
-	return icon
 }
 
 func (v *ItemDisplay) drawItemDisplay(screen *ebiten.Image) {

@@ -383,17 +383,23 @@ func NewGameScene() *GameScene {
 		lastSpawnTime: time.Now(),
 	}
 
-	nextSceneButton := ui.NewButton(10, 10, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+	nextSceneButton := ui.NewButton(config.SCREEN_WIDTH-250, config.SCREEN_HEIGHT-50, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+	uiManager.AddElement(nextSceneButton)
 
-	vegtableInventoryDisplay := hud.NewInventoryDisplay(5, 5, i)
-
-	container1 := ui.NewContainer(config.SCREEN_WIDTH-250, config.SCREEN_HEIGHT-50, &ui.ContainerOptions{
-		Direction: ui.Col,
-		Gap:       0,
+	inventoryDisplay := hud.NewInventoryDisplay(10, 10, i)
+	weaponDisplay := hud.NewWeaponDisplay(40, 10, i)
+	fmt.Println(inventoryDisplay.GetPosition())
+	fmt.Println(weaponDisplay.GetPosition())
+	frameContainer := ui.NewContainer(5, 5, &ui.ContainerOptions{
+		Direction: ui.Row,
+		Gap:       10,
 	})
-	container1.AddChild(nextSceneButton)
-	uiManager.AddElement(container1)
-	uiManager.AddElement(vegtableInventoryDisplay)
+	fmt.Println("Adding Container")
+	frameContainer.AddChild(inventoryDisplay)
+	frameContainer.AddChild(weaponDisplay)
+	fmt.Println(inventoryDisplay.GetPosition())
+	fmt.Println(weaponDisplay.GetPosition())
+	uiManager.AddElement(frameContainer)
 
 	return newGameScene
 }
