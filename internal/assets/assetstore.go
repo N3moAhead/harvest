@@ -31,6 +31,9 @@ func LoadAllAssets() {
 		// Icons
 		"carrot_icon": "assets/images/icons/carrot_icon.png",
 		"no_icon":     "assets/images/icons/no_icon.png",
+		// Hud
+		"item_frame":  "assets/images/hud/hud_item_frame.png",
+		"item_frame2": "assets/images/hud/hud_item_frame2.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":            "assets/audio/sfx/laserTest.wav",

@@ -16,6 +16,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
+	"github.com/N3moAhead/harvest/internal/hud"
 	"github.com/N3moAhead/harvest/internal/input"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/internal/world"
@@ -278,7 +279,7 @@ func (g *GameScene) Draw(screen *ebiten.Image) {
 
 	// --- Drawing the HUD ---
 	fpsText := fmt.Sprintf("FPS: %.1f ", ebiten.ActualFPS())
-	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, 5)
+	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, config.SCREEN_HEIGHT-20)
 	g.inventory.Draw(screen)
 	g.ui.Draw(screen)
 }
@@ -382,14 +383,17 @@ func NewGameScene() *GameScene {
 		lastSpawnTime: time.Now(),
 	}
 
-	nextSceneButton := ui.NewButton(300, 300, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+	nextSceneButton := ui.NewButton(10, 10, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
 
-	container1 := ui.NewContainer(5, 150, &ui.ContainerOptions{
+	vegtableInventoryDisplay := hud.NewVegtableInventoryDisplay(5, 5, i)
+
+	container1 := ui.NewContainer(config.SCREEN_WIDTH-250, config.SCREEN_HEIGHT-50, &ui.ContainerOptions{
 		Direction: ui.Col,
-		Gap:       10,
+		Gap:       0,
 	})
 	container1.AddChild(nextSceneButton)
 	uiManager.AddElement(container1)
+	uiManager.AddElement(vegtableInventoryDisplay)
 
 	return newGameScene
 }

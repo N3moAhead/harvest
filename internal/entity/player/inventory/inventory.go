@@ -64,17 +64,8 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 }
 
 func (i *Inventory) Draw(screen *ebiten.Image) {
+	// Add a soup display similiar to the vegtable display
 	offset := 0.0
-	vegtableTypes := make([]itemtype.ItemType, 0)
-	for k, _ := range i.Vegetables {
-		vegtableTypes = append(vegtableTypes, k)
-	}
-	sort.Sort(itemtype.ByItemType(vegtableTypes))
-	for _, vegtableKey := range vegtableTypes {
-		amount := i.Vegetables[vegtableKey]
-		drawItemDisplay(screen, vegtableKey, amount, offset)
-		offset += 18
-	}
 	soupTypes := make([]itemtype.ItemType, 0)
 	for k, _ := range i.Soups {
 		soupTypes = append(soupTypes, k)
