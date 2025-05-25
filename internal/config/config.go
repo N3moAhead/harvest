@@ -38,4 +38,9 @@ const (
 	CARROT_COLOR_G = 128
 	CARROT_COLOR_B = 0
 	CARROT_COLOR_A = 255
+
+	/// --- Enemy Spawning Settings ---
+	BASE_SPAWN_INTERVAL_SEC = 2.0   // Base interval (seconds) for spawning enemies
+	BASE_COUNT_PER_BATCH    = 1     // Base count of enemies per batch
+	MIX_START_SEC           = 120.0 // Time when mixing starts
 )
