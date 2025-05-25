@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"image"
 
-	"github.com/N3moAhead/harvest/pkg/config"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/pkg/util"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
@@ -16,12 +16,7 @@ var (
 	MusicPlayer  *audio.Player
 )
 
-func init() {
-	// A new Audio Context
-	AudioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
-	// Initing the asset store
-	AssetStore = NewStore()
-
+func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
 		"player":       "assets/images/CookTestImage.png",
@@ -34,8 +29,9 @@ func init() {
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
 	}
 	sfxToLoad := map[string]string{
-		"laser":       "assets/audio/sfx/laserTest.wav",
-		"spoon_slash": "assets/audio/sfx/spoon_slash.mp3",
+		"laser":            "assets/audio/sfx/laserTest.wav",
+		"spoon_slash":      "assets/audio/sfx/spoon_slash.mp3",
+		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
 	}
 	// TODO Renable music
 	musicToLoad := map[string]string{
@@ -52,6 +48,28 @@ func init() {
 	}
 
 	addDecorsFromSpritesheet()
+}
+
+func init() {
+	// A new Audio Context
+	AudioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
+	// Initing the asset store
+	AssetStore = NewStore()
+
+	// On init just load the needed stuff for the loading screen afterwards
+	// Everything else can be loaded
+	initImagesToLoad := map[string]string{}
+	initSFXToLoad := map[string]string{
+		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
+	}
+	initMusicToLoad := map[string]string{}
+	initFontsToLoad := map[string]string{
+		"2p": "assets/fonts/PressStart2P-Regular.ttf",
+	}
+	err := AssetStore.Load(initImagesToLoad, initSFXToLoad, initFontsToLoad, initMusicToLoad, config.AUDIO_SAMPLE_RATE)
+	if err != nil {
+		panic(err)
+	}
 
 	// TODO Renable music
 	// TODO REMOVE or change this section

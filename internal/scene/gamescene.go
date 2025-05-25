@@ -8,6 +8,7 @@ import (
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/cooking"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
 	"github.com/N3moAhead/harvest/internal/entity/item"
@@ -17,7 +18,6 @@ import (
 	"github.com/N3moAhead/harvest/internal/input"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/internal/world"
-	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"

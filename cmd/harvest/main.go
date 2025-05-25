@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/scene"
-	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

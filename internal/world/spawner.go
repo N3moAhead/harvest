@@ -5,9 +5,9 @@ import (
 	"math/rand"
 
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
 	"github.com/N3moAhead/harvest/internal/entity/player"
-	"github.com/N3moAhead/harvest/pkg/config"
 )
 
 // Factory for different enemies
