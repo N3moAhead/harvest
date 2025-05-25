@@ -21,7 +21,7 @@ func NewLoadingScene() *LoadingScene {
 	if !ok {
 		panic("Unable to load font '2p' in NewLoadingScene")
 	}
-	text := ui.NewLabel(50, 50, "Loading...", fontFace, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	text := ui.NewLabel(50, 50, "Insert Coin", fontFace, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 	textWidth, textHeight := text.GetSize()
 	offsetX := (config.SCREEN_WIDTH - textWidth) / 2
 	offsetY := (config.SCREEN_HEIGHT - textHeight) / 2
@@ -36,6 +36,13 @@ func NewLoadingScene() *LoadingScene {
 		BaseScene:   *NewBaseScene(),
 		uiManager:   newUiManager,
 		loadingDone: make(chan struct{}),
+	}
+
+	// Play game loading sound
+	loadSound, ok := assets.AssetStore.GetSFXData("game_loads_sound")
+	if ok {
+		sfxPlayer := assets.AudioContext.NewPlayerFromBytes(loadSound)
+		sfxPlayer.Play()
 	}
 
 	// Loading all assets in a goroutine to not block the ui updates

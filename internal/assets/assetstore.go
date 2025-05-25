@@ -27,8 +27,9 @@ func LoadAllAssets() {
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
 	}
 	sfxToLoad := map[string]string{
-		"laser":       "assets/audio/sfx/laserTest.wav",
-		"spoon_slash": "assets/audio/sfx/spoon_slash.mp3",
+		"laser":            "assets/audio/sfx/laserTest.wav",
+		"spoon_slash":      "assets/audio/sfx/spoon_slash.mp3",
+		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
 	}
 	// TODO Renable music
 	musicToLoad := map[string]string{
@@ -56,7 +57,9 @@ func init() {
 	// On init just load the needed stuff for the loading screen afterwards
 	// Everything else can be loaded
 	initImagesToLoad := map[string]string{}
-	initSFXToLoad := map[string]string{}
+	initSFXToLoad := map[string]string{
+		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
+	}
 	initMusicToLoad := map[string]string{}
 	initFontsToLoad := map[string]string{
 		"2p": "assets/fonts/PressStart2P-Regular.ttf",
