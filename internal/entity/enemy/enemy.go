@@ -2,6 +2,7 @@ package enemy
 
 import (
 	"image/color"
+	"math/rand"
 
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/component"
@@ -24,18 +25,23 @@ type EnemyType int
 
 const (
 	TypeCarrot EnemyType = iota
-	TypePeashooter
+	// TypePeashooter
+	maxEnemyType
 )
 
 func (t EnemyType) String() string {
 	switch t {
 	case TypeCarrot:
 		return "carrot"
-	case TypePeashooter:
-		return "peashooter"
+	// case TypePeashooter:
+	// 	return "peashooter"
 	default:
 		return "unknown"
 	}
+}
+
+func RandomEnemyType() EnemyType {
+	return EnemyType(rand.Intn(int(maxEnemyType)))
 }
 
 type Enemy struct {
