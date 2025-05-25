@@ -23,6 +23,9 @@ const (
 	AUDIO_SAMPLE_RATE = 44100
 	/// --- Inventory Settings ---
 	MAX_WEAPONS = 5
+	/// --- Icon Settings ---
+	ICON_SIZE               = 16.0 // The size in pixels of icon assets
+	ICON_ON_MAP_RENDER_SIZE = 16.0 // The size in pixels on how large an item icon should be rendered
 	/// --- Enemy Settings ---
 	// Enemy: Carrot
 	CARROT_SPEED                  = 50.0

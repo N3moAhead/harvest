@@ -28,6 +28,9 @@ func LoadAllAssets() {
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/Grass_Middle.png",
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
+		// Icons
+		"carrot_icon": "assets/images/icons/carrot_icon.png",
+		"no_icon":     "assets/images/icons/no_icon.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":            "assets/audio/sfx/laserTest.wav",
