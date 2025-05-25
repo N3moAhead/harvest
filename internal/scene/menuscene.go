@@ -1,10 +1,13 @@
 package scene
 
 import (
+	"bytes"
+
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 )
 
 type MenuScene struct {
@@ -39,6 +42,15 @@ func NewMenuScene() *MenuScene {
 	})
 	container.AddChild(startBtn)
 	newUiManager.AddElement(container)
+
+	music, ok := assets.AssetStore.GetMusicData("menu")
+	if ok {
+		musicBytesReader := bytes.NewReader(music)
+		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
+
+		assets.MusicPlayer, _ = assets.AudioContext.NewPlayer(loop)
+		assets.MusicPlayer.Play()
+	}
 
 	return newMenuScene
 }
