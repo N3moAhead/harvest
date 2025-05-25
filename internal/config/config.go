@@ -15,8 +15,10 @@ const (
 	/// --- Player Settings ---
 	INITIAL_PLAYER_SPEED           = 6.0 // Initial Player Speed
 	INITIAL_PLAYER_MAGNET_RADIUS   = 50.0
-	PLAYER_PICKUP_RADIUS           = 5.0 // The radius in which items will be picked up into the players inventory
-	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0 // Determines how fast items move towards the player
+	PLAYER_PICKUP_RADIUS           = 5.0   // The radius in which items will be picked up into the players inventory
+	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0   // Determines how fast items move towards the player
+	PLAYER_INTERACT_RADIUS         = 20.0  // The radius in which the player can interact with cookstations, NPCs, etc.
+	SHOW_RECIPE_RANGE              = 200.0 // The range in which the player can see the recipe of a cookstation
 	/// --- Audio Settings ---
 	AUDIO_SAMPLE_RATE = 44100
 	/// --- Inventory Settings ---
