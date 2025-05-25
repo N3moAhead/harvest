@@ -15,42 +15,36 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-const (
-	WALK_RIGHT   string = "walkRight"
-	WALK_LEFT    string = "walkLeft"
-	ATTACK       string = "attack"
-	ATTACK_RIGHT string = "attack-right"
-	ATTACK_LEFT  string = "attack-left"
-	SPAWN        string = "spawn"
-	DEATH        string = "death"
-)
-
-type CarrotEnemy struct {
+type PotatoEnemy struct {
 	Enemy
 	MeleeEnemyData
 }
 
-func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
-	carrotSprite, ok := assets.AssetStore.GetImage("carrot")
+func NewPotatoEnemy(pos component.Vector2D) *PotatoEnemy {
+	potatoSprite, ok := assets.AssetStore.GetImage("potato")
 	animationStore := animation.NewAnimationStore()
 	if ok {
-		walkRightAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 32, 8, 6, true)
+		walkRightAnimation, err := animation.NewAnimation(potatoSprite, 32, 32, 0, 1*32, 6, 6, true)
 		if err == nil {
 			animationStore.AddAnimation(WALK_RIGHT, walkRightAnimation)
 		}
-		walkLeftAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 6*32, 8, 6, true)
+		walkLeftAnimation, err := animation.NewAnimation(potatoSprite, 32, 32, 0, 4*32, 6, 6, true)
 		if err == nil {
 			animationStore.AddAnimation(WALK_LEFT, walkLeftAnimation)
 		}
-		attackAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 4*32, 2, 6, false)
+		attackRightAnimation, err := animation.NewAnimation(potatoSprite, 32, 32, 0, 3*32, 7, 7, false)
 		if err == nil {
-			animationStore.AddAnimation(ATTACK, attackAnimation)
+			animationStore.AddAnimation(ATTACK_RIGHT, attackRightAnimation)
 		}
-		spawnAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 2*32, 6, 10, false)
+		attackLeftAnimation, err := animation.NewAnimation(potatoSprite, 32, 32, 0, 0*32, 7, 7, false)
+		if err == nil {
+			animationStore.AddAnimation(ATTACK_LEFT, attackLeftAnimation)
+		}
+		spawnAnimation, err := animation.NewAnimation(potatoSprite, 32, 32, 0, 2*32, 8, 10, false)
 		if err == nil {
 			animationStore.AddAnimation(SPAWN, spawnAnimation)
 		}
-		deathAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 7*32, 6, 10, false)
+		deathAnimation, err := animation.NewAnimation(potatoSprite, 32, 32, 0, 5*32, 7, 10, false)
 		if err == nil {
 			animationStore.AddAnimation(DEATH, deathAnimation)
 		}
@@ -61,41 +55,54 @@ func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 		}
 	}
 	baseEntity := entity.NewEntity(pos.X, pos.Y)
-	return &CarrotEnemy{
+	return &PotatoEnemy{
 		Enemy: Enemy{
 			Entity:         *baseEntity,
-			Speed:          config.CARROT_SPEED,
-			Health:         component.NewHealth(config.CARROT_HEALTH),
-			Damage:         config.CARROT_DAMAGE,
-			AttackCooldown: config.CARROT_ATTACK_COOLDOWN,
-			attackTimer:    config.CARROT_ATTACK_START,
+			Speed:          config.POTATO_SPEED,
+			Health:         component.NewHealth(config.POTATO_HEALTH),
+			Damage:         config.POTATO_DAMAGE,
+			AttackCooldown: config.POTATO_ATTACK_COOLDOWN,
+			attackTimer:    config.POTATO_ATTACK_START,
 			animationStore: animationStore,
-			DropProb:       config.CARROT_DROP_PROB,   // 80% chance to drop an item
-			DropAmount:     config.CARROT_DROP_AMOUNT, // Drops 1 item
+			DropProb:       config.POTATO_DROP_PROB,   // 80% chance to drop an item
+			DropAmount:     config.POTATO_DROP_AMOUNT, // Drops 1 item
 		},
 		MeleeEnemyData: MeleeEnemyData{
-			AttackRange: config.CARROT_ATTACK_RANGE,
+			AttackRange: config.POTATO_ATTACK_RANGE,
 		},
 	}
 }
 
-func (e *CarrotEnemy) SetWalkingAnimation(player *player.Player) {
+func (e *PotatoEnemy) SetWalkingAnimation(player *player.Player) {
 	dir := player.Pos.Sub(e.Pos)
 	if dir.X > 0 {
 		if ok := e.animationStore.SetCurrentAnimation(WALK_RIGHT); !ok {
-			fmt.Println("Warning: Unable to start the carrot walkRight animation")
+			fmt.Println("Warning: Unable to start the potato walkRight animation")
 		}
 	} else {
 		if ok := e.animationStore.SetCurrentAnimation(WALK_LEFT); !ok {
-			fmt.Println("Warning: Unable to start the carrot walkLeft animation")
+			fmt.Println("Warning: Unable to start the potato walkLeft animation")
 		}
 	}
 }
 
-func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
+func (e *PotatoEnemy) SetAttackAnimation(player *player.Player) {
+	dir := player.Pos.Sub(e.Pos)
+	if dir.X > 0 {
+		if ok := e.animationStore.SetCurrentAnimation(ATTACK_RIGHT); !ok {
+			fmt.Println("Warning: Unable to start the potato attackRight animation")
+		}
+	} else {
+		if ok := e.animationStore.SetCurrentAnimation(ATTACK_LEFT); !ok {
+			fmt.Println("Warning: Unable to start the potato attackLeft animation")
+		}
+	}
+}
+
+func (e *PotatoEnemy) Update(player *player.Player, dt float64) {
 	e.animationStore.Update()
 
-	// Only update the carrot if it is alive
+	// Only update the potato if it is alive
 	if e.Health.HP > 0 {
 		// Set current animation to walking if no animation is currently running
 		// Or Update the type of running animation if currently the animation is running
@@ -115,60 +122,56 @@ func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
 				player.Health.Damage(e.Damage)
 				e.attackTimer = e.AttackCooldown
 				// Starting the attack animation
-				if ok := e.animationStore.SetCurrentAnimation(ATTACK); !ok {
-					fmt.Println("Warning: Unable to start the carrot attack animation")
-				}
+				e.SetAttackAnimation(player)
 			}
 		}
 	} else {
-		// The carrot is dead
+		// The potato is dead
 		// So we start the death animation
 		e.animationStore.SetCurrentAnimation(DEATH)
-		// We still want to see the knockback happening
-		// It just feels way better when playing :)
 		e.UpdateKnockback()
 	}
 }
 
-func (e *CarrotEnemy) Draw(screen *ebiten.Image, camX, camY float64) {
+func (e *PotatoEnemy) Draw(screen *ebiten.Image, camX, camY float64) {
 	frameImage := e.animationStore.GetImage()
 	if frameImage != nil {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(e.Pos.X-camX-16.0, e.Pos.Y-camY-16.0)
 		screen.DrawImage(frameImage, op)
 	} else {
-		e.DefaultDraw(screen, camX, camY, config.CARROT_WIDTH, config.CARROT_HEIGHT,
-			color.RGBA{R: config.CARROT_COLOR_R, G: config.CARROT_COLOR_G, B: config.CARROT_COLOR_B, A: 255})
+		e.DefaultDraw(screen, camX, camY, config.POTATO_WIDTH, config.POTATO_HEIGHT,
+			color.RGBA{R: config.POTATO_COLOR_R, G: config.POTATO_COLOR_G, B: config.POTATO_COLOR_B, A: 255})
 	}
 }
 
-func (e *CarrotEnemy) IsAlive() bool {
+func (e *PotatoEnemy) IsAlive() bool {
 	if e.Enemy.IsAlive() {
 		return true
 	} else {
-		// The carrot will be marked as dead after the death animation is finished
+		// The potato will be marked as dead after the death animation is finished
 		return !e.animationStore.GetCurrentAnimation().IsFinished()
 	}
 }
 
-func (e *CarrotEnemy) GetPosition() component.Vector2D {
+func (e *PotatoEnemy) GetPosition() component.Vector2D {
 	return e.Enemy.GetPosition()
 }
 
-func (e *CarrotEnemy) TryDrop(elapsedMinutes float32) []item.Item {
+func (e *PotatoEnemy) TryDrop(elapsedMinutes float32) []item.Item {
 	prob := e.DropProb + elapsedMinutes*0.001 // +0.1% per minute, // so +1% per 10 minutes
 	if prob > 1 {
 		prob = 1
 	}
 	// Basis + rate * time
-	amount := e.DropAmount + int(elapsedMinutes*config.CARROT_DROP_AMOUNT_PER_MINUTE)
+	amount := e.DropAmount + int(elapsedMinutes*config.POTATO_DROP_AMOUNT_PER_MINUTE)
 
-	fmt.Printf("Carrot Enemy TryDrop: prob=%.2f, amount=%d, %d min\n", prob, amount, int(elapsedMinutes))
+	fmt.Printf("Potato Enemy TryDrop: prob=%.2f, amount=%d, %d min\n", prob, amount, int(elapsedMinutes))
 
 	var drops []item.Item
 	if rand.Float32() < prob {
 		for i := 0; i < amount; i++ {
-			drops = append(drops, *item.NewCarrot(e.Pos.X, e.Pos.Y))
+			drops = append(drops, *item.NewPotato(e.Pos.X, e.Pos.Y))
 		}
 	}
 	return drops
