@@ -46,8 +46,8 @@ const (
 	POTATO_SPEED                  = 25.0
 	POTATO_HEALTH                 = 6
 	POTATO_DAMAGE                 = 10
-	POTATO_ATTACK_COOLDOWN        = 1.0
-	POTATO_ATTACK_RANGE           = 20.0
+	POTATO_ATTACK_COOLDOWN        = 3.0
+	POTATO_ATTACK_RANGE           = 40.0
 	POTATO_ATTACK_START           = 0.0
 	POTATO_DROP_PROB              = 0.8 // 80% chance to drop an item
 	POTATO_DROP_AMOUNT            = 1   // Drops 1 item

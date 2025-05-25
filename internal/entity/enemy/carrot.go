@@ -16,11 +16,13 @@ import (
 )
 
 const (
-	WALK_RIGHT string = "walkRight"
-	WALK_LEFT  string = "walkLeft"
-	ATTACK     string = "attack"
-	SPAWN      string = "spawn"
-	DEATH      string = "death"
+	WALK_RIGHT   string = "walkRight"
+	WALK_LEFT    string = "walkLeft"
+	ATTACK       string = "attack"
+	ATTACK_RIGHT string = "attack-right"
+	ATTACK_LEFT  string = "attack-left"
+	SPAWN        string = "spawn"
+	DEATH        string = "death"
 )
 
 type CarrotEnemy struct {
