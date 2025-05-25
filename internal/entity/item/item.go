@@ -51,20 +51,25 @@ func (i *Item) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float64
 	screen.DrawImage(i.Icon, op)
 }
 
-func newItemBase(posX float64, posY float64, icon *ebiten.Image) *Item {
-	if icon == nil {
+func newItemBase(posX float64, posY float64, itemType itemtype.ItemType) *Item {
+	baseClass := entity.NewEntity(posX, posY)
+	newItem := &Item{
+		Entity: *baseClass,
+		Type:   itemType,
+	}
+
+	itemInfo := newItem.RetrieveItemInfo()
+	if itemIcon, ok := assets.AssetStore.GetImage(itemInfo.IconName); ok {
+		newItem.Icon = itemIcon
+	} else {
 		if noIcon, ok := assets.AssetStore.GetImage("no_icon"); ok {
-			icon = noIcon
+			newItem.Icon = noIcon
 		} else {
 			fmt.Println("Error Could not load 'no_icon' in newItemBase")
 		}
 	}
-	baseClass := entity.NewEntity(posX, posY)
-	return &Item{
-		Entity: *baseClass,
-		Type:   itemtype.Undefined,
-		Icon:   icon,
-	}
+
+	return newItem
 }
 
 func (i *Item) RetrieveItemInfo() ItemInfo {
@@ -75,6 +80,7 @@ func (i *Item) RetrieveItemInfo() ItemInfo {
 		DisplayName: fmt.Sprintf("ItemType(%d)", i.Type),
 		Category:    itemtype.CategoryUndefined,
 		Soup:        nil,
+		IconName:    "",
 	}
 }
 
