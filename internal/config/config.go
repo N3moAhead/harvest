@@ -25,12 +25,16 @@ const (
 	MAX_WEAPONS = 5
 	/// --- Enemy Settings ---
 	// Enemy: Carrot
-	CARROT_SPEED           = 50.0
-	CARROT_HEALTH          = 3
-	CARROT_DAMAGE          = 5
-	CARROT_ATTACK_COOLDOWN = 1.0
-	CARROT_ATTACK_RANGE    = 20.0
-	CARROT_ATTACK_START    = 0.0
+	CARROT_SPEED                  = 50.0
+	CARROT_HEALTH                 = 3
+	CARROT_DAMAGE                 = 5
+	CARROT_ATTACK_COOLDOWN        = 1.0
+	CARROT_ATTACK_RANGE           = 20.0
+	CARROT_ATTACK_START           = 0.0
+	CARROT_DROP_PROB              = 0.8 // 80% chance to drop an item
+	CARROT_DROP_AMOUNT            = 1   // Drops 1 item
+	CARROT_DROP_AMOUNT_PER_MINUTE = 0.1 // Drops additional 0.1 items per minute
+	// CARROT_DROP_AMOUNT_PER_MINUTE = 0.4 // Drops additional 0.1 items per minute
 	// Carrot Style
 	CARROT_WIDTH   = 16
 	CARROT_HEIGHT  = 16
@@ -43,4 +47,21 @@ const (
 	BASE_SPAWN_INTERVAL_SEC = 2.0   // Base interval (seconds) for spawning enemies
 	BASE_COUNT_PER_BATCH    = 1     // Base count of enemies per batch
 	MIX_START_SEC           = 120.0 // Time when mixing starts
+	// Enemy: Potato
+	POTATO_SPEED                  = 25.0
+	POTATO_HEALTH                 = 6
+	POTATO_DAMAGE                 = 10
+	POTATO_ATTACK_COOLDOWN        = 3.0
+	POTATO_ATTACK_RANGE           = 40.0
+	POTATO_ATTACK_START           = 0.0
+	POTATO_DROP_PROB              = 0.8 // 80% chance to drop an item
+	POTATO_DROP_AMOUNT            = 1   // Drops 1 item
+	POTATO_DROP_AMOUNT_PER_MINUTE = 0.1 // Drops additional 0.1 items per minute
+	// Potato Style
+	POTATO_WIDTH   = 16
+	POTATO_HEIGHT  = 16
+	POTATO_COLOR_R = 183
+	POTATO_COLOR_G = 146
+	POTATO_COLOR_B = 104
+	POTATO_COLOR_A = 255
 )

@@ -46,6 +46,7 @@ func (g *GameScene) Update() error {
 	// --- Delta Time Update ---
 	dt := 1.0 / float64(ebiten.TPS())
 	dtDuration := time.Second / time.Duration(ebiten.TPS())
+	elapsed := float32(time.Since(g.startTime).Milliseconds())
 
 	/// --- Get User Input ---
 	inputState := input.GetInputState()
@@ -61,7 +62,8 @@ func (g *GameScene) Update() error {
 	spacePressed := ebiten.IsKeyPressed(ebiten.KeySpace)
 	if spacePressed && !g.previousSpacePressed {
 		// Circle Pattern
-		newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
+		// newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
+		newEnemies := g.Spawner.SpawnCircle("potato", g.Player, 150, 8)
 		fmt.Println("New Enemies Spawned:", newEnemies)
 
 		g.Enemies = append(g.Enemies, newEnemies...)
@@ -221,7 +223,17 @@ func (g *GameScene) Update() error {
 
 	// --- Enemies ---
 	for _, e := range g.Enemies {
+		// e.Update(g.Player, dt)
+		wasAlive := e.IsAlive()
 		e.Update(g.Player, dt)
+		if wasAlive && !e.IsAlive() {
+			// enemy just died: generate drops
+			elapsedMinutes := elapsed / 60000.0 // convert milliseconds to minutes
+			drops := e.TryDrop(elapsedMinutes)
+			for i := range drops {
+				g.items = append(g.items, &drops[i])
+			}
+		}
 	}
 
 	for _, cookStation := range g.cookStations {
@@ -351,6 +363,9 @@ func NewGameScene() *GameScene {
 	// register enemy factories
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewCarrotEnemy(pos)
+	})
+	s.RegisterFactory(enemy.TypePotato.String(), func(pos component.Vector2D) enemy.EnemyInterface {
+		return enemy.NewPotatoEnemy(pos)
 	})
 
 	newGameScene := &GameScene{

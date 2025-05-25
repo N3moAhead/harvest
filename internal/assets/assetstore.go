@@ -22,6 +22,7 @@ func LoadAllAssets() {
 		"player":       "assets/images/CookTestImage.png",
 		"spoon_slash":  "assets/images/weapons/spoon/spoon_slash3.png",
 		"carrot":       "assets/images/carrot.png",
+		"potato":       "assets/images/potato.png",
 		"cook_station": "assets/images/cookstation.png",
 		"menu-icon":    "assets/images/menu_icon.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
