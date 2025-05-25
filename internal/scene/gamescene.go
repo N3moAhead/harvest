@@ -385,7 +385,7 @@ func NewGameScene() *GameScene {
 
 	nextSceneButton := ui.NewButton(10, 10, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
 
-	vegtableInventoryDisplay := hud.NewVegtableInventoryDisplay(5, 5, i)
+	vegtableInventoryDisplay := hud.NewInventoryDisplay(5, 5, i)
 
 	container1 := ui.NewContainer(config.SCREEN_WIDTH-250, config.SCREEN_HEIGHT-50, &ui.ContainerOptions{
 		Direction: ui.Col,

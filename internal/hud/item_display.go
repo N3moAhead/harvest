@@ -13,15 +13,15 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-type VegtableDisplayInterface interface {
-	UpdateVegtableDisplay(itemType itemtype.ItemType)
+type ItemDisplayInterface interface {
+	UpdateItemDisplay(itemType itemtype.ItemType)
 }
 
-// The Vegtable Display is an ui element that can display the
+// The ItemDisplay is an ui element that can display the
 // amount of an item in the inventory.
 // WARNING: Has to be child of vegtable inventory! Otherwise make sure
 // to call the extra function UpdateValues correctly!
-type VegtableDisplay struct {
+type ItemDisplay struct {
 	ui.BaseElement
 	Inv          *inventory.Inventory
 	ItemFrameImg *ebiten.Image
@@ -29,35 +29,38 @@ type VegtableDisplay struct {
 	itemType     itemtype.ItemType
 }
 
-func NewVegtableDisplay(x, y float64, inv *inventory.Inventory) *VegtableDisplay {
-	itemFrameImg, ok := assets.AssetStore.GetImage("item_frame")
-	if !ok {
-		fmt.Println("Warning: Could not load image item_frame in NewVegtableDisplay")
-	}
-	return &VegtableDisplay{
+func NewItemDisplay(x, y float64, inv *inventory.Inventory, frameImage *ebiten.Image) *ItemDisplay {
+	return &ItemDisplay{
 		BaseElement:  *ui.NewBaseElement(x, y, config.ITEM_FRAME_SIZE, config.ITEM_FRAME_SIZE),
 		Inv:          inv,
-		ItemFrameImg: itemFrameImg,
+		ItemFrameImg: frameImage,
 		amount:       0,
 		itemType:     itemtype.Undefined,
 	}
 }
 
-func (v *VegtableDisplay) Update(input *ui.InputState) {
+func (v *ItemDisplay) Update(input *ui.InputState) {
 	v.BaseElement.Update(input)
 }
 
-func (v *VegtableDisplay) UpdateVegtableDisplay(itemType itemtype.ItemType) {
+func (v *ItemDisplay) UpdateItemDisplay(itemType itemtype.ItemType) {
 	if itemType != itemtype.Undefined {
 		v.itemType = itemType
-		v.amount = v.Inv.Vegetables[itemType]
+		switch itemType.Category() {
+		case itemtype.CategoryVegetable:
+			v.amount = v.Inv.Vegetables[itemType]
+		case itemtype.CategorySoup:
+			v.amount = v.Inv.Soups[itemType]
+		default:
+			fmt.Println("Warning: Unhandeld Category in function UpdateItemDisplay")
+		}
 	} else {
 		v.itemType = itemtype.Undefined
 		v.amount = 0
 	}
 }
 
-func (v *VegtableDisplay) Draw(screen *ebiten.Image) {
+func (v *ItemDisplay) Draw(screen *ebiten.Image) {
 	// Drawing the frame
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(v.X, v.Y)
@@ -89,7 +92,7 @@ func getItemIcon(itemInfo item.ItemInfo) *ebiten.Image {
 	return icon
 }
 
-func (v *VegtableDisplay) drawItemDisplay(screen *ebiten.Image) {
+func (v *ItemDisplay) drawItemDisplay(screen *ebiten.Image) {
 	itemInfo := getItemInfo(v.itemType)
 	itemIcon := getItemIcon(itemInfo)
 	bounds := itemIcon.Bounds()
@@ -105,5 +108,5 @@ func (v *VegtableDisplay) drawItemDisplay(screen *ebiten.Image) {
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("%d", v.amount), int(drawX+7), int(drawY+5))
 }
 
-var _ ui.UIElement = (*VegtableDisplay)(nil)
-var _ VegtableDisplayInterface = (*VegtableDisplay)(nil)
+var _ ui.UIElement = (*ItemDisplay)(nil)
+var _ ItemDisplayInterface = (*ItemDisplay)(nil)

@@ -33,8 +33,9 @@ func LoadAllAssets() {
 		"potato_icon": "assets/images/icons/potato_icon.png",
 		"no_icon":     "assets/images/icons/no_icon.png",
 		// Hud
-		"item_frame":  "assets/images/hud/hud_item_frame.png",
-		"item_frame2": "assets/images/hud/hud_item_frame2.png",
+		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
+		"soup_item_frame":     "assets/images/hud/hud_item_frame2.png",
+		"weapon_item_frame":   "assets/images/hud/hud_item_frame3.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":            "assets/audio/sfx/laserTest.wav",

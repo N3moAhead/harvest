@@ -25,6 +25,7 @@ const (
 	MAX_WEAPONS = 5
 	/// --- HUD Settings ---
 	VEGTABLE_TYPE_AMOUNT = 5  // The amount of diffrent vegtable types
+	SOUP_TYPE_AMOUNT     = 2  // The amount of diffrent soup types
 	ITEM_FRAME_SIZE      = 48 // The size in pixels of an item frame
 	/// --- Icon Settings ---
 	ICON_SIZE               = 16.0 // The size in pixels of icon assets

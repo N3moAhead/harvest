@@ -57,6 +57,19 @@ func (it ItemType) String() string {
 	}
 }
 
+func (it ItemType) Category() ItemCategory {
+	switch it {
+	case Potato, Carrot:
+		return CategoryVegetable
+	case Spoon:
+		return CategoryWeapon
+	case DamageSoup, MagnetRadiusSoup, SpeedSoup:
+		return CategorySoup
+	default:
+		return CategoryUndefined
+	}
+}
+
 // Implementing the sort interface for ItemType
 type ByItemType []ItemType
 
