@@ -26,7 +26,7 @@ const (
 	/// --- Enemy Settings ---
 	// Enemy: Carrot
 	CARROT_SPEED                  = 50.0
-	CARROT_HEALTH                 = 1
+	CARROT_HEALTH                 = 3
 	CARROT_DAMAGE                 = 5
 	CARROT_ATTACK_COOLDOWN        = 1.0
 	CARROT_ATTACK_RANGE           = 20.0
@@ -42,4 +42,21 @@ const (
 	CARROT_COLOR_G = 128
 	CARROT_COLOR_B = 0
 	CARROT_COLOR_A = 255
+	// Enemy: Potato
+	POTATO_SPEED                  = 25.0
+	POTATO_HEALTH                 = 6
+	POTATO_DAMAGE                 = 10
+	POTATO_ATTACK_COOLDOWN        = 1.0
+	POTATO_ATTACK_RANGE           = 20.0
+	POTATO_ATTACK_START           = 0.0
+	POTATO_DROP_PROB              = 0.8 // 80% chance to drop an item
+	POTATO_DROP_AMOUNT            = 1   // Drops 1 item
+	POTATO_DROP_AMOUNT_PER_MINUTE = 0.1 // Drops additional 0.1 items per minute
+	// Potato Style
+	POTATO_WIDTH   = 16
+	POTATO_HEIGHT  = 16
+	POTATO_COLOR_R = 183
+	POTATO_COLOR_G = 146
+	POTATO_COLOR_B = 104
+	POTATO_COLOR_A = 255
 )

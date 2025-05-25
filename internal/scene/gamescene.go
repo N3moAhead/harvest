@@ -59,7 +59,8 @@ func (g *GameScene) Update() error {
 	spacePressed := ebiten.IsKeyPressed(ebiten.KeySpace)
 	if spacePressed && !g.previousSpacePressed {
 		// Circle Pattern
-		newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
+		// newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
+		newEnemies := g.Spawner.SpawnCircle("potato", g.Player, 150, 8)
 		fmt.Println("New Enemies Spawned:", newEnemies)
 
 		g.Enemies = append(g.Enemies, newEnemies...)
@@ -306,6 +307,9 @@ func NewGameScene() *GameScene {
 	// register enemy factories
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewCarrotEnemy(pos)
+	})
+	s.RegisterFactory(enemy.TypePotato.String(), func(pos component.Vector2D) enemy.EnemyInterface {
+		return enemy.NewPotatoEnemy(pos)
 	})
 
 	newGameScene := &GameScene{

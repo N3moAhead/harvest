@@ -26,6 +26,7 @@ type EnemyType int
 
 const (
 	TypeCarrot EnemyType = iota
+	TypePotato
 	TypePeashooter
 )
 
@@ -33,6 +34,8 @@ func (t EnemyType) String() string {
 	switch t {
 	case TypeCarrot:
 		return "carrot"
+	case TypePotato:
+		return "potato"
 	case TypePeashooter:
 		return "peashooter"
 	default:
