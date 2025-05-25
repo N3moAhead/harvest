@@ -30,6 +30,7 @@ func LoadAllAssets() {
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
 		// Icons
 		"carrot_icon": "assets/images/icons/carrot_icon.png",
+		"potato_icon": "assets/images/icons/potato_icon.png",
 		"no_icon":     "assets/images/icons/no_icon.png",
 		// Hud
 		"item_frame":  "assets/images/hud/hud_item_frame.png",
