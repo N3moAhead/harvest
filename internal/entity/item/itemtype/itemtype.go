@@ -56,3 +56,10 @@ func (it ItemType) String() string {
 		return "Unknown"
 	}
 }
+
+// Implementing the sort interface for ItemType
+type ByItemType []ItemType
+
+func (a ByItemType) Len() int           { return len(a) }
+func (a ByItemType) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a ByItemType) Less(i, j int) bool { return a[i] < a[j] }

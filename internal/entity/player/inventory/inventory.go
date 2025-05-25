@@ -2,12 +2,12 @@ package inventory
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Inventory struct {
@@ -64,17 +64,26 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 }
 
 func (i *Inventory) Draw(screen *ebiten.Image) {
-	if amount, ok := i.Vegetables[itemtype.Potato]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Potato.String(), amount), 10, 20)
+	offset := 0.0
+	vegtableTypes := make([]itemtype.ItemType, 0)
+	for k, _ := range i.Vegetables {
+		vegtableTypes = append(vegtableTypes, k)
 	}
-	if amount, ok := i.Vegetables[itemtype.Carrot]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Item: %s, Amount: %d\n\n", itemtype.Carrot.String(), amount), 10, 35)
+	sort.Sort(itemtype.ByItemType(vegtableTypes))
+	for _, vegtableKey := range vegtableTypes {
+		amount := i.Vegetables[vegtableKey]
+		drawItemDisplay(screen, vegtableKey, amount, offset)
+		offset += 18
 	}
-	if amount, ok := i.Soups[itemtype.MagnetRadiusSoup]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", itemtype.MagnetRadiusSoup.String(), amount), 10, 50)
+	soupTypes := make([]itemtype.ItemType, 0)
+	for k, _ := range i.Soups {
+		soupTypes = append(soupTypes, k)
 	}
-	if amount, ok := i.Soups[itemtype.SpeedSoup]; ok {
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Buff: %s, Amount: %d\n\n", itemtype.SpeedSoup.String(), amount), 10, 65)
+	sort.Sort(itemtype.ByItemType(soupTypes))
+	for _, soupKey := range soupTypes {
+		amount := i.Soups[soupKey]
+		drawItemDisplay(screen, soupKey, amount, offset)
+		offset += 18
 	}
 }
 
