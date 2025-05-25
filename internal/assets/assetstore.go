@@ -16,12 +16,7 @@ var (
 	MusicPlayer  *audio.Player
 )
 
-func init() {
-	// A new Audio Context
-	AudioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
-	// Initing the asset store
-	AssetStore = NewStore()
-
+func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
 		"player":      "assets/images/CookTestImage.png",
@@ -50,6 +45,26 @@ func init() {
 	}
 
 	addDecorsFromSpritesheet()
+}
+
+func init() {
+	// A new Audio Context
+	AudioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
+	// Initing the asset store
+	AssetStore = NewStore()
+
+	// On init just load the needed stuff for the loading screen afterwards
+	// Everything else can be loaded
+	initImagesToLoad := map[string]string{}
+	initSFXToLoad := map[string]string{}
+	initMusicToLoad := map[string]string{}
+	initFontsToLoad := map[string]string{
+		"2p": "assets/fonts/PressStart2P-Regular.ttf",
+	}
+	err := AssetStore.Load(initImagesToLoad, initSFXToLoad, initFontsToLoad, initMusicToLoad, config.AUDIO_SAMPLE_RATE)
+	if err != nil {
+		panic(err)
+	}
 
 	// TODO Renable music
 	// TODO REMOVE or change this section

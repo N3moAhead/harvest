@@ -29,9 +29,6 @@ func NewSceneManager() *SceneManager {
 	return &SceneManager{
 		currentScene: LOADING_SCENE,
 		loadingScene: NewLoadingScene(),
-		menuScene:    NewMenuScene(),
-		gameScene:    NewGameScene(),
-		scoreScene:   NewScoreScene(),
 	}
 }
 
@@ -53,22 +50,24 @@ func (s *SceneManager) getCurrentScene() Scene {
 
 func (s *SceneManager) setNextScene() {
 	// Loading -> Menu -> Game -> Score -> Menu
+	// Every time we switch screens we have to
+	// create a new instance of the scene to get a new cleared one
 	switch s.currentScene {
 	case LOADING_SCENE:
 		fmt.Println("Switched Scene to Menu")
-		s.loadingScene.SetIsRunning(true)
+		s.menuScene = NewMenuScene()
 		s.currentScene = MENU_SCENE
 	case MENU_SCENE:
 		fmt.Println("Switched Scene to Game")
-		s.gameScene.SetIsRunning(true)
+		s.gameScene = NewGameScene()
 		s.currentScene = GAME_SCENE
 	case GAME_SCENE:
 		fmt.Println("Switched Scene to Score")
-		s.gameScene.SetIsRunning(true)
+		s.scoreScene = NewScoreScene()
 		s.currentScene = SCORE_SCENE
 	case SCORE_SCENE:
 		fmt.Println("Switched Scene to Menu")
-		s.menuScene.SetIsRunning(true)
+		s.menuScene = NewMenuScene()
 		s.currentScene = MENU_SCENE
 	}
 }
