@@ -210,7 +210,7 @@ func (g *GameScene) Update() error {
 		elapsedSec, mixProgress, intervalSec, count, g.lastSpawnTime.Format(time.RFC3339))
 	if time.Since(g.lastSpawnTime).Seconds() >= intervalSec {
 		g.lastSpawnTime = time.Now()
-		g.spawnBatch(count, mixProgress, elapsedSec)
+		g.spawnBatch(count, mixProgress)
 	}
 
 	// --- Update World ---
@@ -287,15 +287,7 @@ func (g *GameScene) SetIsRunning(running bool) {
 	g.isRunning = running
 }
 
-func (g *GameScene) spawnBatch(count int, mixProgress, elapsedSec float64) {
-	// types := []string{enemy.TypeCarrot.String()}
-	// if elapsedSec > 30 {
-	// 	types = append(types, enemy.TypePotato.String())
-	// }
-	// if elapsedSec > 90 {
-	// 	types = append(types, enemy.TypeCarrot.String())
-	// }
-
+func (g *GameScene) spawnBatch(count int, mixProgress float64) {
 	pool := make([]string, count)
 	for i := range pool {
 		pool[i] = enemy.RandomEnemyType().String()
@@ -313,11 +305,12 @@ func (g *GameScene) spawnBatch(count int, mixProgress, elapsedSec float64) {
 	for _, t := range pool {
 		fmt.Printf("Spawning %s enemy\n", t)
 		if mixProgress < 0.3 {
-			g.Enemies = append(g.Enemies, g.Spawner.SpawnRandom(t))
+			mapOffsetX, mapOffsetY := g.World.GetCameraPosition()
+			g.Enemies = append(g.Enemies, g.Spawner.SpawnRandomInView(t, mapOffsetX, mapOffsetY))
 		} else {
 			switch rand.Intn(3) {
 			case 0:
-				g.Enemies = append(g.Enemies, g.Spawner.SpawnCircle(t, g.Player, 100, 6)...)
+				g.Enemies = append(g.Enemies, g.Spawner.SpawnCircle(t, g.Player, 150, 6)...)
 			case 1:
 				g.Enemies = append(g.Enemies, g.Spawner.SpawnZigZag(t, g.Player.Pos, 5, 50, 20)...)
 			default:
