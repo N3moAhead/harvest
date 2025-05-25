@@ -21,10 +21,13 @@ func NewInventoryDisplay(x, y float64, invRef *inventory.Inventory) *InventoryDi
 		Direction: ui.Col,
 		Gap:       0,
 	}
-	vegtableDisplay := &InventoryDisplay{
+	inventoryDisplay := &InventoryDisplay{
 		Container: *ui.NewContainer(x, y, containerOptions),
 		inv:       invRef,
 	}
+
+	inventoryDisplay.Width = config.ITEM_FRAME_SIZE
+	inventoryDisplay.Height = config.ITEM_FRAME_SIZE * config.VEGTABLE_TYPE_AMOUNT * config.SOUP_TYPE_AMOUNT
 
 	for range config.VEGTABLE_TYPE_AMOUNT {
 		// The position does not matter because the container will set it for us
@@ -34,7 +37,7 @@ func NewInventoryDisplay(x, y float64, invRef *inventory.Inventory) *InventoryDi
 			fmt.Println("Warning: Could not load vegtable_item_frame in NewInventoryDisplay")
 		}
 		newVegtableDisplay := NewItemDisplay(10, 10, invRef, vegtableFrame)
-		vegtableDisplay.AddChild(newVegtableDisplay)
+		inventoryDisplay.AddChild(newVegtableDisplay)
 	}
 
 	for range config.SOUP_TYPE_AMOUNT {
@@ -43,10 +46,10 @@ func NewInventoryDisplay(x, y float64, invRef *inventory.Inventory) *InventoryDi
 			fmt.Println("Warning: Could not laod soup_item_frame in NewInventoryDisplay")
 		}
 		newSoupDisplay := NewItemDisplay(10, 10, invRef, soupFrame)
-		vegtableDisplay.AddChild(newSoupDisplay)
+		inventoryDisplay.AddChild(newSoupDisplay)
 	}
 
-	return vegtableDisplay
+	return inventoryDisplay
 }
 
 func (v *InventoryDisplay) Update(input *ui.InputState) {
