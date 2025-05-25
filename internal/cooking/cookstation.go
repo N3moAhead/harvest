@@ -6,12 +6,12 @@ import (
 
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/assets"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
 	"github.com/N3moAhead/harvest/internal/soups"
-	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/hajimehoshi/ebiten/v2/vector"
