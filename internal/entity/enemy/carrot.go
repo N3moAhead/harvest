@@ -3,12 +3,14 @@ package enemy
 import (
 	"fmt"
 	"image/color"
+	"math/rand/v2"
 
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity"
+	"github.com/N3moAhead/harvest/internal/entity/item"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -66,6 +68,8 @@ func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 			AttackCooldown: config.CARROT_ATTACK_COOLDOWN,
 			attackTimer:    config.CARROT_ATTACK_START,
 			animationStore: animationStore,
+			DropProb:       config.CARROT_DROP_PROB,   // 80% chance to drop an item
+			DropAmount:     config.CARROT_DROP_AMOUNT, // Drops 1 item
 		},
 		MeleeEnemyData: MeleeEnemyData{
 			AttackRange: config.CARROT_ATTACK_RANGE,
@@ -147,4 +151,23 @@ func (e *CarrotEnemy) IsAlive() bool {
 
 func (e *CarrotEnemy) GetPosition() component.Vector2D {
 	return e.Enemy.GetPosition()
+}
+
+func (e *CarrotEnemy) TryDrop(elapsedMinutes float32) []item.Item {
+	prob := e.DropProb + elapsedMinutes*0.001 // +0.1% per minute, // so +1% per 10 minutes
+	if prob > 1 {
+		prob = 1
+	}
+	// Basis + rate * time
+	amount := e.DropAmount + int(elapsedMinutes*config.CARROT_DROP_AMOUNT_PER_MINUTE)
+
+	fmt.Printf("Carrot Enemy TryDrop: prob=%.2f, amount=%d, %d min\n", prob, amount, int(elapsedMinutes))
+
+	var drops []item.Item
+	if rand.Float32() < prob {
+		for i := 0; i < amount; i++ {
+			drops = append(drops, *item.NewCarrot(e.Pos.X, e.Pos.Y)) // default drop is a carrot
+		}
+	}
+	return drops
 }

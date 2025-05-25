@@ -25,12 +25,16 @@ const (
 	MAX_WEAPONS = 5
 	/// --- Enemy Settings ---
 	// Enemy: Carrot
-	CARROT_SPEED           = 50.0
-	CARROT_HEALTH          = 3
-	CARROT_DAMAGE          = 5
-	CARROT_ATTACK_COOLDOWN = 1.0
-	CARROT_ATTACK_RANGE    = 20.0
-	CARROT_ATTACK_START    = 0.0
+	CARROT_SPEED                  = 50.0
+	CARROT_HEALTH                 = 1
+	CARROT_DAMAGE                 = 5
+	CARROT_ATTACK_COOLDOWN        = 1.0
+	CARROT_ATTACK_RANGE           = 20.0
+	CARROT_ATTACK_START           = 0.0
+	CARROT_DROP_PROB              = 0.8 // 80% chance to drop an item
+	CARROT_DROP_AMOUNT            = 1   // Drops 1 item
+	CARROT_DROP_AMOUNT_PER_MINUTE = 0.1 // Drops additional 0.1 items per minute
+	// CARROT_DROP_AMOUNT_PER_MINUTE = 0.4 // Drops additional 0.1 items per minute
 	// Carrot Style
 	CARROT_WIDTH   = 16
 	CARROT_HEIGHT  = 16
