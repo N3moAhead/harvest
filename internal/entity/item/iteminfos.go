@@ -30,7 +30,7 @@ var ItemInfos = map[itemtype.ItemType]ItemInfo{
 		DisplayName: "Spoon",
 		Category:    itemtype.CategoryWeapon,
 		Soup:        nil,
-		IconName:    "",
+		IconName:    "spoon_icon",
 	},
 	itemtype.DamageSoup: {
 		DisplayName: "Damage Soup",

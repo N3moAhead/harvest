@@ -337,7 +337,10 @@ func NewGameScene() *GameScene {
 	s := world.NewEnemySpawner()
 	i := inventory.NewInventory()
 	items := []*item.Item{
-		item.NewSpoon(50, 50),
+		item.NewSpoon(
+			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
+			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-50,
+		),
 	}
 	uiManager := ui.NewUIManager()
 	fontFace, ok := assets.AssetStore.GetFont("2p")

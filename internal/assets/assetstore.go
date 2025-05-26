@@ -31,6 +31,7 @@ func LoadAllAssets() {
 		// Icons
 		"carrot_icon": "assets/images/icons/carrot_icon.png",
 		"potato_icon": "assets/images/icons/potato_icon.png",
+		"spoon_icon":  "assets/images/icons/spoon_icon.png",
 		"no_icon":     "assets/images/icons/no_icon.png",
 		// Hud
 		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
