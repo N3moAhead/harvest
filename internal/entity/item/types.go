@@ -23,6 +23,11 @@ func NewSpoon(posX float64, posY float64) *Item {
 	return newItem
 }
 
+func NewRollingPin(posX float64, posY float64) *Item {
+	newItem := newItemBase(posX, posY, itemtype.RollingPin)
+	return newItem
+}
+
 /// --- Soups ---
 
 func NewSoup(x, y float64, typeBuff itemtype.ItemType) *Item {

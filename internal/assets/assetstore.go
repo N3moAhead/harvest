@@ -19,12 +19,13 @@ var (
 func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
-		"player":       "assets/images/CookTestImage.png",
-		"spoon_slash":  "assets/images/weapons/spoon/spoon_slash3.png",
-		"carrot":       "assets/images/carrot.png",
-		"potato":       "assets/images/potato.png",
-		"cook_station": "assets/images/cookstation.png",
-		"menu-icon":    "assets/images/menu_icon.png",
+		"player":           "assets/images/CookTestImage.png",
+		"spoon_slash":      "assets/images/weapons/spoon/spoon_slash3.png",
+		"rolling_pin_roll": "assets/images/weapons/rolling_pin/rolling_pin_roll.png",
+		"carrot":           "assets/images/carrot.png",
+		"cook_station":     "assets/images/cookstation.png",
+		"potato":           "assets/images/potato.png",
+		"menu-icon":        "assets/images/menu_icon.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/Grass_Middle.png",
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
@@ -41,6 +42,7 @@ func LoadAllAssets() {
 	sfxToLoad := map[string]string{
 		"laser":            "assets/audio/sfx/laserTest.wav",
 		"spoon_slash":      "assets/audio/sfx/spoon_slash.mp3",
+		"rolling_pin_roll": "assets/audio/sfx/rolling_pin_roll.mp3",
 		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
 	}
 	musicToLoad := map[string]string{
