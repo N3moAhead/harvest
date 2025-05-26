@@ -108,6 +108,14 @@ func (g *GameScene) Update() error {
 					} else {
 						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
 					}
+				case itemtype.RollingPin:
+					newWeapon := weapon.NewRollingPin()
+					added := g.inventory.AddWeapon(newWeapon)
+					if !added {
+						fmt.Printf("Inventory is full or weapon '%s' already exists\n", newWeapon.Name())
+					} else {
+						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
+					}
 				default:
 					fmt.Printf("Warning: Unknown weapon type: %s", gItem.DisplayName())
 				}
@@ -268,6 +276,7 @@ func NewGameScene() *GameScene {
 	i := inventory.NewInventory()
 	items := []*item.Item{
 		item.NewSpoon(50, 50),
+		item.NewRollingPin(80, 80),
 	}
 	uiManager := ui.NewUIManager()
 	fontFace, ok := assets.AssetStore.GetFont("2p")

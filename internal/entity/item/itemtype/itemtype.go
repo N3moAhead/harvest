@@ -31,6 +31,7 @@ const (
 	Potato
 	Carrot
 	Spoon
+	RollingPin
 	DamageSoup
 	MagnetRadiusSoup
 	SpeedSoup
@@ -46,6 +47,8 @@ func (it ItemType) String() string {
 		return "Carrot"
 	case Spoon:
 		return "Spoon"
+	case RollingPin:
+		return "Rolling Pin"
 	case DamageSoup:
 		return "Damage Soup"
 	case MagnetRadiusSoup:
