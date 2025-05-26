@@ -20,6 +20,7 @@ type Weapon interface {
 	) // Draws the weopon around the player if needed
 	// Functions used for the ui hud
 	GetType() itemtype.ItemType
+	Description() string
 	Name() string
 	Level() int
 	MaxLevel() int

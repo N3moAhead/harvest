@@ -9,10 +9,11 @@ import (
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type WeaponFrameInterface interface {
-	UpdateWeaponFrameValues(itemType itemtype.ItemType)
+	UpdateWeaponFrameValues(itemType itemtype.ItemType, description string)
 }
 
 type WeaponFrame struct {
@@ -20,6 +21,8 @@ type WeaponFrame struct {
 	Inv          *inventory.Inventory
 	ItemFrameImg *ebiten.Image
 	itemType     itemtype.ItemType
+	isHovered    bool
+	description  string
 }
 
 func NewWeaponFrame(x, y float64, inv *inventory.Inventory) *WeaponFrame {
@@ -32,18 +35,22 @@ func NewWeaponFrame(x, y float64, inv *inventory.Inventory) *WeaponFrame {
 		Inv:          inv,
 		ItemFrameImg: weaponFrame,
 		itemType:     itemtype.Undefined,
+		description:  "",
 	}
 }
 
 func (v *WeaponFrame) Update(input *ui.InputState) {
+	v.isHovered = v.IsMouseOver(input.MouseX, input.MouseY)
 	v.BaseElement.Update(input)
 }
 
-func (v *WeaponFrame) UpdateWeaponFrameValues(itemType itemtype.ItemType) {
+func (v *WeaponFrame) UpdateWeaponFrameValues(itemType itemtype.ItemType, description string) {
 	if itemType != itemtype.Undefined {
 		v.itemType = itemType
+		v.description = description
 	} else {
 		v.itemType = itemtype.Undefined
+		v.description = ""
 	}
 }
 
@@ -54,6 +61,9 @@ func (v *WeaponFrame) Draw(screen *ebiten.Image) {
 	screen.DrawImage(v.ItemFrameImg, op)
 	if v.itemType != itemtype.Undefined {
 		v.drawItemDisplay(screen)
+		if v.isHovered {
+			ebitenutil.DebugPrintAt(screen, v.description, int(v.X), int(v.Y+v.Height))
+		}
 	}
 }
 
