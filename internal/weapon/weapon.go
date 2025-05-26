@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -18,7 +19,8 @@ type Weapon interface {
 		mapOffsetY float64,
 	) // Draws the weopon around the player if needed
 	// Functions used for the ui hud
-	Icon() *ebiten.Image // Returns the icon of the weapon
+	GetType() itemtype.ItemType
+	Description() string
 	Name() string
 	Level() int
 	MaxLevel() int
@@ -48,7 +50,7 @@ type BaseWeapon struct {
 	maxLevel      int
 	statsPerLevel []WeaponStats // level - 1  => Current Weapon Stats
 	cooldownTimer time.Duration
-	icon          *ebiten.Image
+	itemType      itemtype.ItemType
 }
 
 func (b *BaseWeapon) Name() string {
@@ -65,10 +67,6 @@ func (b *BaseWeapon) MaxLevel() int {
 
 func (b *BaseWeapon) Description() string {
 	return b.description
-}
-
-func (b *BaseWeapon) Icon() *ebiten.Image {
-	return b.icon
 }
 
 func (b *BaseWeapon) BaseStats() WeaponStats {
@@ -97,6 +95,10 @@ func (b *BaseWeapon) UpdateCooldown(dt time.Duration) bool {
 		b.cooldownTimer -= dt
 	}
 	return b.cooldownTimer <= 0
+}
+
+func (b *BaseWeapon) GetType() itemtype.ItemType {
+	return b.itemType
 }
 
 // Sets the timer based on the current stats.

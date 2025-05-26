@@ -1,26 +1,25 @@
 package item
 
-import "github.com/N3moAhead/harvest/internal/entity/item/itemtype"
+import (
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
+)
 
 /// --- Vegtables ---
 
 func NewCarrot(posX float64, posY float64) *Item {
-	newItem := newItemBase(posX, posY)
-	newItem.Type = itemtype.Carrot
+	newItem := newItemBase(posX, posY, itemtype.Carrot)
 	return newItem
 }
 
 func NewPotato(posX float64, posY float64) *Item {
-	newItem := newItemBase(posX, posY)
-	newItem.Type = itemtype.Potato
+	newItem := newItemBase(posX, posY, itemtype.Potato)
 	return newItem
 }
 
 /// --- Weapons ---
 
 func NewSpoon(posX float64, posY float64) *Item {
-	newItem := newItemBase(posX, posY)
-	newItem.Type = itemtype.Spoon
+	newItem := newItemBase(posX, posY, itemtype.Spoon)
 	return newItem
 }
 
@@ -33,7 +32,6 @@ func NewRollingPin(posX float64, posY float64) *Item {
 /// --- Soups ---
 
 func NewSoup(x, y float64, typeBuff itemtype.ItemType) *Item {
-	newItem := newItemBase(x, y)
-	newItem.Type = typeBuff
+	newItem := newItemBase(x, y, typeBuff)
 	return newItem
 }

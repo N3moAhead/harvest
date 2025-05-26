@@ -2,10 +2,12 @@ package enemy
 
 import (
 	"image/color"
+	"math/rand"
 
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity"
+	"github.com/N3moAhead/harvest/internal/entity/item"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -18,12 +20,15 @@ type EnemyInterface interface {
 	IsAlive() bool
 	TakeDamage(damage float64)
 	AddKnockback(from *component.Vector2D, distance float64)
+	TryDrop(elapsedMinutes float32) []item.Item
 }
 
 type EnemyType int
 
 const (
 	TypeCarrot EnemyType = iota
+	TypePotato
+	maxEnemyType // Move this type to also allow the spawning of TypePeashooter
 	TypePeashooter
 )
 
@@ -31,11 +36,17 @@ func (t EnemyType) String() string {
 	switch t {
 	case TypeCarrot:
 		return "carrot"
+	case TypePotato:
+		return "potato"
 	case TypePeashooter:
 		return "peashooter"
 	default:
 		return "unknown"
 	}
+}
+
+func RandomEnemyType() EnemyType {
+	return EnemyType(rand.Intn(int(maxEnemyType)))
 }
 
 type Enemy struct {
@@ -47,6 +58,9 @@ type Enemy struct {
 	AttackCooldown float64
 	attackTimer    float64
 	animationStore *animation.AnimationStore
+	DropProb       float32
+	DropAmount     int
+	TryDrop        func(elapsedMins float32) []item.Item
 }
 
 func (e *Enemy) MoveTowards(target component.Vector2D, dt float64) {
@@ -94,6 +108,10 @@ func (e *Enemy) TakeDamage(damage float64) {
 
 func (e *Enemy) GetPosition() component.Vector2D {
 	return e.Pos
+}
+
+func DefaultDrop(elapsedMinutes float32, x, y float64) []item.Item {
+	return []item.Item{*item.NewPotato(x, y)} // default drop is a potato
 }
 
 type MeleeEnemyData struct {

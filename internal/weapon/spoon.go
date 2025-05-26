@@ -10,6 +10,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/collision"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -61,10 +62,6 @@ func NewSpoon() *Spoon {
 		},
 	}
 
-	spoonIcon, ok := assets.AssetStore.GetImage("spoon_icon")
-	if !ok {
-		fmt.Println("Warning: Spoon icon not found")
-	}
 	slashImage, ok := assets.AssetStore.GetImage("spoon_slash")
 	if !ok {
 		fmt.Println("Warning: Spoon slash image not found")
@@ -81,7 +78,7 @@ func NewSpoon() *Spoon {
 			level:         1,
 			maxLevel:      len(stats),
 			statsPerLevel: stats,
-			icon:          spoonIcon,
+			itemType:      itemtype.Spoon,
 		},
 		slashImage: slashImage,
 		slashSound: slashSound,

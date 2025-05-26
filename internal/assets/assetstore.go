@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"image"
 
-	"github.com/N3moAhead/harvest/pkg/config"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/pkg/util"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
@@ -16,12 +16,7 @@ var (
 	MusicPlayer  *audio.Player
 )
 
-func init() {
-	// A new Audio Context
-	AudioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
-	// Initing the asset store
-	AssetStore = NewStore()
-
+func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
 		"player":           "assets/images/CookTestImage.png",
@@ -29,16 +24,27 @@ func init() {
 		"rolling_pin_roll": "assets/images/weapons/rolling_pin/rolling_pin_roll.png",
 		"carrot":           "assets/images/carrot.png",
 		"cook_station":     "assets/images/cookstation.png",
+		"potato":           "assets/images/potato.png",
+		"menu-icon":        "assets/images/menu_icon.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/Grass_Middle.png",
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
+		// Icons
+		"carrot_icon": "assets/images/icons/carrot_icon.png",
+		"potato_icon": "assets/images/icons/potato_icon.png",
+		"spoon_icon":  "assets/images/icons/spoon_icon.png",
+		"no_icon":     "assets/images/icons/no_icon.png",
+		// Hud
+		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
+		"soup_item_frame":     "assets/images/hud/hud_item_frame2.png",
+		"weapon_item_frame":   "assets/images/hud/hud_item_frame3.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":            "assets/audio/sfx/laserTest.wav",
 		"spoon_slash":      "assets/audio/sfx/spoon_slash.mp3",
 		"rolling_pin_roll": "assets/audio/sfx/rolling_pin_roll.mp3",
+		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
 	}
-	// TODO Renable music
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
 	}
@@ -53,23 +59,29 @@ func init() {
 	}
 
 	addDecorsFromSpritesheet()
+}
 
-	// TODO Renable music
-	// TODO REMOVE or change this section
-	// This here should just be a test to test running music :)
-	// music, ok := AssetStore.GetMusicData("menu")
-	// if ok {
-	// 	musicBytesReader := bytes.NewReader(music)
-	// 	loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
+func init() {
+	// A new Audio Context
+	AudioContext = audio.NewContext(config.AUDIO_SAMPLE_RATE)
+	// Initing the asset store
+	AssetStore = NewStore()
 
-	// 	MusicPlayer, err = AudioContext.NewPlayer(loop)
-	// 	if err == nil {
-	// 		MusicPlayer.Play()
-	// 	} else {
-	// 		err = fmt.Errorf("Musikplayer konnte nicht erstellt werden: %v\n", err)
-	// 		panic(err)
-	// 	}
-	// }
+	// On init just load the needed stuff for the loading screen afterwards
+	// Everything else can be loaded
+	initImagesToLoad := map[string]string{}
+	initSFXToLoad := map[string]string{
+		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
+	}
+	initMusicToLoad := map[string]string{}
+	initFontsToLoad := map[string]string{
+		"2p": "assets/fonts/PressStart2P-Regular.ttf",
+	}
+	err := AssetStore.Load(initImagesToLoad, initSFXToLoad, initFontsToLoad, initMusicToLoad, config.AUDIO_SAMPLE_RATE)
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func addDecorsFromSpritesheet() {

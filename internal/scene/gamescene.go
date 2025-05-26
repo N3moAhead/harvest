@@ -3,22 +3,25 @@ package scene
 import (
 	"fmt"
 	"image/color"
-	"math/rand/v2"
+	"math"
+	"math/rand"
 	"time"
 
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/cooking"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
 	"github.com/N3moAhead/harvest/internal/entity/item"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
+	"github.com/N3moAhead/harvest/internal/hud"
 	"github.com/N3moAhead/harvest/internal/input"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/internal/world"
-	"github.com/N3moAhead/harvest/pkg/config"
 	"github.com/N3moAhead/harvest/pkg/ui"
+	"github.com/N3moAhead/harvest/pkg/util"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
@@ -36,12 +39,15 @@ type GameScene struct {
 	ui                   *ui.UIManager
 	isRunning            bool
 	cookStations         []*cooking.CookStation
+	startTime            time.Time // game start
+	lastSpawnTime        time.Time // last spawn batches
 }
 
 func (g *GameScene) Update() error {
 	// --- Delta Time Update ---
 	dt := 1.0 / float64(ebiten.TPS())
 	dtDuration := time.Second / time.Duration(ebiten.TPS())
+	elapsed := float32(time.Since(g.startTime).Milliseconds())
 
 	/// --- Get User Input ---
 	inputState := input.GetInputState()
@@ -57,7 +63,8 @@ func (g *GameScene) Update() error {
 	spacePressed := ebiten.IsKeyPressed(ebiten.KeySpace)
 	if spacePressed && !g.previousSpacePressed {
 		// Circle Pattern
-		newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
+		// newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
+		newEnemies := g.Spawner.SpawnCircle("potato", g.Player, 150, 8)
 		fmt.Println("New Enemies Spawned:", newEnemies)
 
 		g.Enemies = append(g.Enemies, newEnemies...)
@@ -132,7 +139,7 @@ func (g *GameScene) Update() error {
 	}
 	g.items = g.items[:n]
 
-	/// --- Update the Weopons ---
+	/// --- Update the Weapons ---
 	// TODO check for copy usage
 	for _, weapon := range g.inventory.Weapons {
 		if weapon != nil {
@@ -195,6 +202,26 @@ func (g *GameScene) Update() error {
 	}
 
 	// --- World ---
+
+	// SPAWN ENEMIES, based on elapsed time
+	elapsedMs := float64(time.Since(g.startTime).Milliseconds())
+	elapsedSec := elapsedMs / 1000.0
+	difficulty := 1.0 + math.Sqrt(elapsedSec)/10.0 // increase difficulty over time, use square root to make it slower at the beginning
+	// difficulty := 1.0 + elapsedSec/60.0 // 60.0 seconds is too short
+
+	// intervalSec := baseIntervalSec / difficulty                        // decrease spawning interval/duration based on difficulty/ time
+	intervalSec := config.BASE_SPAWN_INTERVAL_SEC / difficulty                  // decrease spawning interval/duration based on difficulty/ time
+	count := int(math.Ceil(float64(config.BASE_COUNT_PER_BATCH) * difficulty))  // increase count of batches based on difficulty (number of pools --> per pool multiple enemies)
+	mixProgress := util.Clamp((elapsedSec-config.MIX_START_SEC)/10.0, 0.0, 1.0) // mix progress from 0 to 1, after 120 seconds it will be 1.0
+
+	// fmt.Printf("Elapsed Time: %.2f seconds, Mix Progress: %.2f, Interval: %.2f seconds, Count: %d, Difficulty: %.2f \n", elapsedSec, mixProgress, intervalSec, count, difficulty)
+	if time.Since(g.lastSpawnTime).Seconds() >= intervalSec {
+		g.lastSpawnTime = time.Now()
+		g.spawnBatch(count, mixProgress)
+	}
+
+	// --- Update World ---
+
 	// TODO remove this code just for testing you can display fancy camera movement
 	// Pressing J will move the camera to the top left
 	if ebiten.IsKeyPressed(ebiten.KeyJ) {
@@ -205,7 +232,17 @@ func (g *GameScene) Update() error {
 
 	// --- Enemies ---
 	for _, e := range g.Enemies {
+		// e.Update(g.Player, dt)
+		wasAlive := e.IsAlive()
 		e.Update(g.Player, dt)
+		if wasAlive && !e.IsAlive() {
+			// enemy just died: generate drops
+			elapsedMinutes := elapsed / 60000.0 // convert milliseconds to minutes
+			drops := e.TryDrop(elapsedMinutes)
+			for i := range drops {
+				g.items = append(g.items, &drops[i])
+			}
+		}
 	}
 
 	for _, cookStation := range g.cookStations {
@@ -250,7 +287,7 @@ func (g *GameScene) Draw(screen *ebiten.Image) {
 
 	// --- Drawing the HUD ---
 	fpsText := fmt.Sprintf("FPS: %.1f ", ebiten.ActualFPS())
-	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, 5)
+	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, config.SCREEN_HEIGHT-20)
 	g.inventory.Draw(screen)
 	g.ui.Draw(screen)
 }
@@ -267,6 +304,39 @@ func (g *GameScene) SetIsRunning(running bool) {
 	g.isRunning = running
 }
 
+func (g *GameScene) spawnBatch(count int, mixProgress float64) {
+	pool := make([]string, count)
+	for i := range pool {
+		pool[i] = enemy.RandomEnemyType().String()
+		// maybe if only use `types`:
+		// pool[i] = types[rand.Intn(len(types))]
+	}
+
+	// completly mix pool if mixProgress is high enough
+	if mixProgress > 0.8 {
+		rand.Shuffle(len(pool), func(i, j int) {
+			pool[i], pool[j] = pool[j], pool[i]
+		})
+	}
+
+	for _, t := range pool {
+		// fmt.Printf("Spawning %s enemy\n", t)
+		if mixProgress < 0.3 {
+			mapOffsetX, mapOffsetY := g.World.GetCameraPosition()
+			g.Enemies = append(g.Enemies, g.Spawner.SpawnRandomInView(t, mapOffsetX, mapOffsetY))
+		} else {
+			switch rand.Intn(3) {
+			case 0:
+				g.Enemies = append(g.Enemies, g.Spawner.SpawnCircle(t, g.Player, 150, 6)...)
+			case 1:
+				g.Enemies = append(g.Enemies, g.Spawner.SpawnZigZag(t, g.Player.Pos, 5, 50, 20)...)
+			default:
+				g.Enemies = append(g.Enemies, g.Spawner.SpawnLine(t, g.Player.Pos, 5, 40, 10)...)
+			}
+		}
+	}
+}
+
 // --- Public ---
 
 func NewGameScene() *GameScene {
@@ -275,8 +345,14 @@ func NewGameScene() *GameScene {
 	s := world.NewEnemySpawner()
 	i := inventory.NewInventory()
 	items := []*item.Item{
-		item.NewSpoon(50, 50),
-		item.NewRollingPin(80, 80),
+		item.NewSpoon(
+			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
+			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-50,
+		),
+		item.NewRollingPin(
+			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
+			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-80,
+		),
 	}
 	uiManager := ui.NewUIManager()
 	fontFace, ok := assets.AssetStore.GetFont("2p")
@@ -304,27 +380,36 @@ func NewGameScene() *GameScene {
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewCarrotEnemy(pos)
 	})
+	s.RegisterFactory(enemy.TypePotato.String(), func(pos component.Vector2D) enemy.EnemyInterface {
+		return enemy.NewPotatoEnemy(pos)
+	})
 
 	newGameScene := &GameScene{
-		Player:       p,
-		World:        w,
-		Enemies:      []enemy.EnemyInterface{},
-		Spawner:      s,
-		inventory:    i,
-		items:        items,
-		ui:           uiManager,
-		isRunning:    true,
-		cookStations: []*cooking.CookStation{},
+		Player:        p,
+		World:         w,
+		Enemies:       []enemy.EnemyInterface{},
+		Spawner:       s,
+		inventory:     i,
+		items:         items,
+		ui:            uiManager,
+		isRunning:     true,
+		cookStations:  []*cooking.CookStation{},
+		startTime:     time.Now(),
+		lastSpawnTime: time.Now(),
 	}
 
-	nextSceneButton := ui.NewButton(300, 300, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+	nextSceneButton := ui.NewButton(config.SCREEN_WIDTH-250, config.SCREEN_HEIGHT-50, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+	uiManager.AddElement(nextSceneButton)
 
-	container1 := ui.NewContainer(5, 150, &ui.ContainerOptions{
-		Direction: ui.Col,
+	inventoryDisplay := hud.NewInventoryDisplay(10, 10, i)
+	weaponDisplay := hud.NewWeaponDisplay(40, 10, i)
+	frameContainer := ui.NewContainer(5, 5, &ui.ContainerOptions{
+		Direction: ui.Row,
 		Gap:       10,
 	})
-	container1.AddChild(nextSceneButton)
-	uiManager.AddElement(container1)
+	frameContainer.AddChild(inventoryDisplay)
+	frameContainer.AddChild(weaponDisplay)
+	uiManager.AddElement(frameContainer)
 
 	return newGameScene
 }

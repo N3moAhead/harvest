@@ -1,7 +1,7 @@
 package scene
 
 import (
-	"github.com/N3moAhead/harvest/pkg/config"
+	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
