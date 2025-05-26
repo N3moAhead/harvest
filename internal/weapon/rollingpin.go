@@ -10,6 +10,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/collision"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
+	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -60,10 +61,6 @@ func NewRollingPin() *RollingPin {
 		},
 	}
 
-	rollingPinIcon, ok := assets.AssetStore.GetImage("rolling_pin_icon")
-	if !ok {
-		fmt.Println("Warning: Rolling pin icon not found")
-	}
 	rollImage, ok := assets.AssetStore.GetImage("rolling_pin_roll")
 	if !ok {
 		fmt.Println("Warning: Rolling pin roll image not found")
@@ -80,7 +77,7 @@ func NewRollingPin() *RollingPin {
 			level:         1,
 			maxLevel:      len(stats),
 			statsPerLevel: stats,
-			icon:          rollingPinIcon,
+			itemType:      itemtype.RollingPin,
 		},
 		rollImage: rollImage,
 		rollSound: rollSound,

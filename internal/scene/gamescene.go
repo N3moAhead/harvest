@@ -65,7 +65,6 @@ func (g *GameScene) Update() error {
 		// Circle Pattern
 		// newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
 		newEnemies := g.Spawner.SpawnCircle("potato", g.Player, 150, 8)
-		fmt.Println("New Enemies Spawned:", newEnemies)
 
 		g.Enemies = append(g.Enemies, newEnemies...)
 

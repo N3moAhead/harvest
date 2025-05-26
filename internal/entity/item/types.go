@@ -24,8 +24,7 @@ func NewSpoon(posX float64, posY float64) *Item {
 }
 
 func NewRollingPin(posX float64, posY float64) *Item {
-	newItem := newItemBase(posX, posY)
-	newItem.Type = itemtype.RollingPin
+	newItem := newItemBase(posX, posY, itemtype.RollingPin)
 	return newItem
 }
 
