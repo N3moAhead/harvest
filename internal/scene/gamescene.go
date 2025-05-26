@@ -391,17 +391,12 @@ func NewGameScene() *GameScene {
 
 	inventoryDisplay := hud.NewInventoryDisplay(10, 10, i)
 	weaponDisplay := hud.NewWeaponDisplay(40, 10, i)
-	fmt.Println(inventoryDisplay.GetPosition())
-	fmt.Println(weaponDisplay.GetPosition())
 	frameContainer := ui.NewContainer(5, 5, &ui.ContainerOptions{
 		Direction: ui.Row,
 		Gap:       10,
 	})
-	fmt.Println("Adding Container")
 	frameContainer.AddChild(inventoryDisplay)
 	frameContainer.AddChild(weaponDisplay)
-	fmt.Println(inventoryDisplay.GetPosition())
-	fmt.Println(weaponDisplay.GetPosition())
 	uiManager.AddElement(frameContainer)
 
 	return newGameScene
