@@ -2,19 +2,19 @@ package item
 
 import (
 	"fmt"
-	"image/color"
 
+	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type Item struct {
 	entity.Entity
 	Type itemtype.ItemType
+	Icon *ebiten.Image
 }
 
 func (i *Item) Update(player *player.Player) (itemPickedUp bool) {
@@ -40,39 +40,36 @@ func (i *Item) Update(player *player.Player) (itemPickedUp bool) {
 }
 
 func (i *Item) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float64) {
-	var itemColor color.RGBA
-	switch {
-	case i.Type == itemtype.Carrot:
-		itemColor = color.RGBA{R: 230, G: 126, B: 34, A: 255}
-	case i.Type == itemtype.Potato:
-		itemColor = color.RGBA{R: 183, G: 146, B: 104, A: 255}
-	case i.Type == itemtype.Spoon:
-		itemColor = color.RGBA{R: 128, G: 128, B: 128, A: 255}
-	case i.Type == itemtype.DamageSoup:
-		itemColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
-	case i.Type == itemtype.MagnetRadiusSoup:
-		itemColor = color.RGBA{R: 0, G: 255, B: 0, A: 255}
-	case i.Type == itemtype.SpeedSoup:
-		itemColor = color.RGBA{R: 0, G: 0, B: 255, A: 255}
-	default:
-		itemColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
-	}
-	vector.DrawFilledRect(
-		screen,
-		float32(i.Pos.X)-float32(mapOffsetX)-4.0,
-		float32(i.Pos.Y)-float32(mapOffsetY)-4.0,
-		8.0,
-		8.0,
-		itemColor,
-		true,
-	)
+	scaleFactor := config.ICON_ON_MAP_RENDER_SIZE / config.ICON_SIZE
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Scale(scaleFactor, scaleFactor)
+	scaledIconHalfWidth := (config.ICON_SIZE * scaleFactor) / 2.0
+	scaledIconHalfHeight := (config.ICON_SIZE * scaleFactor) / 2.0
+	drawX := i.Pos.X - mapOffsetX - scaledIconHalfWidth
+	drawY := i.Pos.Y - mapOffsetY - scaledIconHalfHeight
+	op.GeoM.Translate(drawX, drawY)
+	screen.DrawImage(i.Icon, op)
 }
-func newItemBase(posX float64, posY float64) *Item {
+
+func newItemBase(posX float64, posY float64, itemType itemtype.ItemType) *Item {
 	baseClass := entity.NewEntity(posX, posY)
-	return &Item{
+	newItem := &Item{
 		Entity: *baseClass,
-		Type:   itemtype.Undefined,
+		Type:   itemType,
 	}
+
+	itemInfo := newItem.RetrieveItemInfo()
+	if itemIcon, ok := assets.AssetStore.GetImage(itemInfo.IconName); ok {
+		newItem.Icon = itemIcon
+	} else {
+		if noIcon, ok := assets.AssetStore.GetImage("no_icon"); ok {
+			newItem.Icon = noIcon
+		} else {
+			fmt.Println("Error Could not load 'no_icon' in newItemBase")
+		}
+	}
+
+	return newItem
 }
 
 func (i *Item) RetrieveItemInfo() ItemInfo {
@@ -83,6 +80,7 @@ func (i *Item) RetrieveItemInfo() ItemInfo {
 		DisplayName: fmt.Sprintf("ItemType(%d)", i.Type),
 		Category:    itemtype.CategoryUndefined,
 		Soup:        nil,
+		IconName:    "",
 	}
 }
 

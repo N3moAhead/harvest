@@ -16,6 +16,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
+	"github.com/N3moAhead/harvest/internal/hud"
 	"github.com/N3moAhead/harvest/internal/input"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/N3moAhead/harvest/internal/world"
@@ -278,7 +279,7 @@ func (g *GameScene) Draw(screen *ebiten.Image) {
 
 	// --- Drawing the HUD ---
 	fpsText := fmt.Sprintf("FPS: %.1f ", ebiten.ActualFPS())
-	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, 5)
+	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, config.SCREEN_HEIGHT-20)
 	g.inventory.Draw(screen)
 	g.ui.Draw(screen)
 }
@@ -336,7 +337,10 @@ func NewGameScene() *GameScene {
 	s := world.NewEnemySpawner()
 	i := inventory.NewInventory()
 	items := []*item.Item{
-		item.NewSpoon(50, 50),
+		item.NewSpoon(
+			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
+			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-50,
+		),
 	}
 	uiManager := ui.NewUIManager()
 	fontFace, ok := assets.AssetStore.GetFont("2p")
@@ -382,14 +386,18 @@ func NewGameScene() *GameScene {
 		lastSpawnTime: time.Now(),
 	}
 
-	nextSceneButton := ui.NewButton(300, 300, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+	nextSceneButton := ui.NewButton(config.SCREEN_WIDTH-250, config.SCREEN_HEIGHT-50, 250, 50, "Next", fontFace, func() { newGameScene.SetIsRunning(false) })
+	uiManager.AddElement(nextSceneButton)
 
-	container1 := ui.NewContainer(5, 150, &ui.ContainerOptions{
-		Direction: ui.Col,
+	inventoryDisplay := hud.NewInventoryDisplay(10, 10, i)
+	weaponDisplay := hud.NewWeaponDisplay(40, 10, i)
+	frameContainer := ui.NewContainer(5, 5, &ui.ContainerOptions{
+		Direction: ui.Row,
 		Gap:       10,
 	})
-	container1.AddChild(nextSceneButton)
-	uiManager.AddElement(container1)
+	frameContainer.AddChild(inventoryDisplay)
+	frameContainer.AddChild(weaponDisplay)
+	uiManager.AddElement(frameContainer)
 
 	return newGameScene
 }

@@ -28,13 +28,21 @@ func LoadAllAssets() {
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/Grass_Middle.png",
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
+		// Icons
+		"carrot_icon": "assets/images/icons/carrot_icon.png",
+		"potato_icon": "assets/images/icons/potato_icon.png",
+		"spoon_icon":  "assets/images/icons/spoon_icon.png",
+		"no_icon":     "assets/images/icons/no_icon.png",
+		// Hud
+		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
+		"soup_item_frame":     "assets/images/hud/hud_item_frame2.png",
+		"weapon_item_frame":   "assets/images/hud/hud_item_frame3.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":            "assets/audio/sfx/laserTest.wav",
 		"spoon_slash":      "assets/audio/sfx/spoon_slash.mp3",
 		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
 	}
-	// TODO Renable music
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
 	}
@@ -72,22 +80,6 @@ func init() {
 		panic(err)
 	}
 
-	// TODO Renable music
-	// TODO REMOVE or change this section
-	// This here should just be a test to test running music :)
-	// music, ok := AssetStore.GetMusicData("menu")
-	// if ok {
-	// 	musicBytesReader := bytes.NewReader(music)
-	// 	loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
-
-	// 	MusicPlayer, err = AudioContext.NewPlayer(loop)
-	// 	if err == nil {
-	// 		MusicPlayer.Play()
-	// 	} else {
-	// 		err = fmt.Errorf("Musikplayer konnte nicht erstellt werden: %v\n", err)
-	// 		panic(err)
-	// 	}
-	// }
 }
 
 func addDecorsFromSpritesheet() {
