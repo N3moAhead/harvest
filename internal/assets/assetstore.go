@@ -45,6 +45,7 @@ func LoadAllAssets() {
 		"spoon_slash":      "assets/audio/sfx/spoon_slash.mp3",
 		"rolling_pin_roll": "assets/audio/sfx/rolling_pin_roll.mp3",
 		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
+		"player_hit_sound": "assets/audio/sfx/player_hit_sound.wav",
 	}
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",

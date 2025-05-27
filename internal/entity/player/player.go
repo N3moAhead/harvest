@@ -148,6 +148,15 @@ func (p *Player) Update(inputState *input.InputState, dt float64, inventory Inve
 	}
 }
 
+func (p *Player) Damage(amount float64) {
+	hitSound, ok := assets.AssetStore.GetSFXData("player_hit_sound")
+	if ok {
+		sfxPlayer := assets.AudioContext.NewPlayerFromBytes(hitSound)
+		sfxPlayer.Play()
+	}
+	p.Health.Damage(amount)
+}
+
 // TODO: implement a LoadPlayer function to get the saved
 // game state from the past
 func NewPlayer() *Player {
