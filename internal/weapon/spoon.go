@@ -75,7 +75,7 @@ func NewSpoon() *Spoon {
 			name:          "Spoon",
 			description:   "A mighty spoon! there are sayings Gordan Ramsey touched it once...",
 			cooldownTimer: 0,
-			level:         3,
+			level:         1,
 			maxLevel:      len(stats),
 			statsPerLevel: stats,
 			itemType:      itemtype.Spoon,
