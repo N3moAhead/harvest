@@ -33,7 +33,7 @@ const (
 	/// --- Enemy Settings ---
 	// Enemy: Carrot
 	CARROT_SPEED                  = 50.0
-	CARROT_HEALTH                 = 3
+	CARROT_HEALTH                 = 2
 	CARROT_DAMAGE                 = 5
 	CARROT_ATTACK_COOLDOWN        = 1.0
 	CARROT_ATTACK_RANGE           = 20.0
