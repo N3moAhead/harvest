@@ -21,14 +21,15 @@ type BaseMeleeEnemy struct {
 }
 
 type BaseMeleeOptions struct {
-	Speed          float64
-	MaxHealth      float64
-	Damage         float64
-	AttackCooldown float64
-	DropProb       float32
-	DropAmount     int
-	AttackRange    float64
-	SpawnItem      func(x, y float64) *item.Item
+	Speed               float64
+	MaxHealth           float64
+	Damage              float64
+	AttackCooldown      float64
+	DropProb            float32
+	DropAmount          int
+	DropAmountPerMinute float32
+	AttackRange         float64
+	SpawnItem           func(x, y float64) *item.Item
 }
 
 func NewBaseMeleeEnemy(enemyType EnemyType, pos component.Vector2D, store *animation.AnimationStore, op *BaseMeleeOptions) *BaseMeleeEnemy {
@@ -41,16 +42,17 @@ func NewBaseMeleeEnemy(enemyType EnemyType, pos component.Vector2D, store *anima
 
 	return &BaseMeleeEnemy{
 		Enemy: Enemy{
-			Entity:         *entity.NewEntity(pos.X, pos.Y),
-			Speed:          op.Speed,
-			Health:         component.NewHealth(op.MaxHealth),
-			Damage:         op.Damage,
-			AttackCooldown: op.AttackCooldown,
-			DropProb:       op.DropProb,
-			DropAmount:     op.DropAmount,
-			attackTimer:    0.0, // TODO look into for what its needed
-			animationStore: store,
-			enemyType:      enemyType,
+			Entity:              *entity.NewEntity(pos.X, pos.Y),
+			Speed:               op.Speed,
+			Health:              component.NewHealth(op.MaxHealth),
+			Damage:              op.Damage,
+			AttackCooldown:      op.AttackCooldown,
+			DropProb:            op.DropProb,
+			DropAmount:          op.DropAmount,
+			DropAmountPerMinute: op.DropAmountPerMinute,
+			attackTimer:         0.0,
+			animationStore:      store,
+			enemyType:           enemyType,
 		},
 		AttackRange: op.AttackRange,
 		spawnItem:   op.SpawnItem,
@@ -60,7 +62,7 @@ func NewBaseMeleeEnemy(enemyType EnemyType, pos component.Vector2D, store *anima
 func (e *BaseMeleeEnemy) Update(player *player.Player, dt float64) {
 	e.animationStore.Update()
 
-	if e.IsAlive() {
+	if e.Health.HP > 0 {
 		// Set current animation to walking if no animation is currently running
 		// Or Update the type of running animation if currently the animation is running
 		animationName := e.animationStore.GetCurrentAnimationName()
@@ -118,7 +120,7 @@ func (e *BaseMeleeEnemy) TryDrop(elapsedMinutes float32) []item.Item {
 		prob = 1
 	}
 	// Basis + rate * time
-	amount := e.DropAmount + int(elapsedMinutes*config.CARROT_DROP_AMOUNT_PER_MINUTE)
+	amount := e.DropAmount + int(elapsedMinutes*e.DropAmountPerMinute)
 
 	var drops []item.Item
 	if rand.Float32() < prob {
@@ -152,6 +154,15 @@ func (e *BaseMeleeEnemy) SetAttackAnimation(player *player.Player) {
 		if ok := e.animationStore.SetCurrentAnimation(ATTACK_LEFT); !ok {
 			fmt.Println("Warning: Unable to start the attackLeft animation")
 		}
+	}
+}
+
+// Mark enemies as dead after the death animation is finished
+func (e *BaseMeleeEnemy) IsAlive() bool {
+	if e.Enemy.IsAlive() {
+		return true
+	} else {
+		return !e.animationStore.GetCurrentAnimation().IsFinished()
 	}
 }
 

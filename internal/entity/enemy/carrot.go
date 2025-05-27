@@ -40,14 +40,15 @@ func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 	}
 	return &CarrotEnemy{
 		BaseMeleeEnemy: *NewBaseMeleeEnemy(TypeCarrot, pos, animationStore, &BaseMeleeOptions{
-			Speed:          config.CARROT_SPEED,
-			MaxHealth:      config.CARROT_HEALTH,
-			Damage:         config.CARROT_DAMAGE,
-			AttackCooldown: config.CARROT_ATTACK_COOLDOWN,
-			DropProb:       config.CARROT_DROP_PROB,
-			DropAmount:     config.CARROT_DROP_AMOUNT,
-			AttackRange:    config.CARROT_ATTACK_RANGE,
-			SpawnItem:      item.NewCarrot,
+			Speed:               config.CARROT_SPEED,
+			MaxHealth:           config.CARROT_HEALTH,
+			Damage:              config.CARROT_DAMAGE,
+			AttackCooldown:      config.CARROT_ATTACK_COOLDOWN,
+			DropProb:            config.CARROT_DROP_PROB,
+			DropAmount:          config.CARROT_DROP_AMOUNT,
+			DropAmountPerMinute: config.CARROT_DROP_AMOUNT_PER_MINUTE,
+			AttackRange:         config.CARROT_ATTACK_RANGE,
+			SpawnItem:           item.NewCarrot,
 		}),
 	}
 }

@@ -48,6 +48,15 @@ const (
 	CARROT_COLOR_G = 128
 	CARROT_COLOR_B = 0
 	CARROT_COLOR_A = 255
+	// Enemy: Onion
+	ONION_SPEED                  = 40
+	ONION_HEALTH                 = 1
+	ONION_DAMAGE                 = 3
+	ONION_ATTACK_COOLDOWN        = 1.0
+	ONION_ATTACK_RANGE           = 15.0
+	ONION_DROP_PROB              = 0.8
+	ONION_DROP_AMOUNT            = 1
+	ONION_DROP_AMOUNT_PER_MINUTE = 0.1
 
 	/// --- Enemy Spawning Settings ---
 	BASE_SPAWN_INTERVAL_SEC = 2.0   // Base interval (seconds) for spawning enemies

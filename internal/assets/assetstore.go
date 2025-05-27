@@ -25,6 +25,8 @@ func LoadAllAssets() {
 		"carrot":           "assets/images/carrot.png",
 		"cook_station":     "assets/images/cookstation.png",
 		"potato":           "assets/images/potato.png",
+		"onion":            "assets/images/onion.png",
+		"onion_icon":       "assets/images/icons/onion_icon.png",
 		"menu-icon":        "assets/images/menu_icon.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/Grass_Middle.png",

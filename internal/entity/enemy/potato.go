@@ -42,13 +42,14 @@ func NewPotatoEnemy(pos component.Vector2D) *PotatoEnemy {
 	}
 	return &PotatoEnemy{
 		BaseMeleeEnemy: *NewBaseMeleeEnemy(TypePotato, pos, animationStore, &BaseMeleeOptions{
-			Speed:          config.POTATO_SPEED,
-			MaxHealth:      config.POTATO_HEALTH,
-			Damage:         config.POTATO_DAMAGE,
-			AttackRange:    config.POTATO_ATTACK_RANGE,
-			AttackCooldown: config.POTATO_ATTACK_COOLDOWN,
-			DropProb:       config.POTATO_DROP_PROB,
-			DropAmount:     config.POTATO_DROP_AMOUNT,
+			Speed:               config.POTATO_SPEED,
+			MaxHealth:           config.POTATO_HEALTH,
+			Damage:              config.POTATO_DAMAGE,
+			AttackRange:         config.POTATO_ATTACK_RANGE,
+			AttackCooldown:      config.POTATO_ATTACK_COOLDOWN,
+			DropProb:            config.POTATO_DROP_PROB,
+			DropAmount:          config.POTATO_DROP_AMOUNT,
+			DropAmountPerMinute: config.POTATO_DROP_AMOUNT_PER_MINUTE,
 		}),
 	}
 }

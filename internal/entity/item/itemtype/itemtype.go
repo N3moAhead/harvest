@@ -30,6 +30,7 @@ const (
 	Undefined ItemType = iota
 	Potato
 	Carrot
+	Onion
 	Spoon
 	RollingPin
 	DamageSoup
@@ -45,6 +46,8 @@ func (it ItemType) String() string {
 		return "Potato"
 	case Carrot:
 		return "Carrot"
+	case Onion:
+		return "Onion"
 	case Spoon:
 		return "Spoon"
 	case RollingPin:
@@ -62,7 +65,7 @@ func (it ItemType) String() string {
 
 func (it ItemType) Category() ItemCategory {
 	switch it {
-	case Potato, Carrot:
+	case Potato, Carrot, Onion:
 		return CategoryVegetable
 	case Spoon:
 		return CategoryWeapon
