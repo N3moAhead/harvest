@@ -21,6 +21,7 @@ type EnemyInterface interface {
 	TakeDamage(damage float64)
 	AddKnockback(from *component.Vector2D, distance float64)
 	TryDrop(elapsedMinutes float32) []item.Item
+	GetType() EnemyType
 }
 
 type EnemyType int
@@ -51,6 +52,7 @@ func RandomEnemyType() EnemyType {
 
 type Enemy struct {
 	entity.Entity
+	enemyType      EnemyType
 	Health         component.Health
 	Knockback      component.Knockback
 	Speed          float64
@@ -60,7 +62,6 @@ type Enemy struct {
 	animationStore *animation.AnimationStore
 	DropProb       float32
 	DropAmount     int
-	TryDrop        func(elapsedMins float32) []item.Item
 }
 
 func (e *Enemy) MoveTowards(target component.Vector2D, dt float64) {
@@ -108,6 +109,10 @@ func (e *Enemy) TakeDamage(damage float64) {
 
 func (e *Enemy) GetPosition() component.Vector2D {
 	return e.Pos
+}
+
+func (e *Enemy) GetType() EnemyType {
+	return e.enemyType
 }
 
 func DefaultDrop(elapsedMinutes float32, x, y float64) []item.Item {
