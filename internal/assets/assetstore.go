@@ -29,7 +29,7 @@ func LoadAllAssets() {
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/grass.png",
 		"tf_grass_middle2":     "assets/images/world/grass2.png",
-		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
+		"outdoor_decor_sprite": "assets/images/world/decorations.png",
 		// Icons
 		"carrot_icon": "assets/images/icons/carrot_icon.png",
 		"potato_icon": "assets/images/icons/potato_icon.png",
@@ -59,7 +59,7 @@ func LoadAllAssets() {
 		panic(err)
 	}
 
-	addDecorsFromSpritesheet()
+	addDecorsFromSpriteSheet()
 }
 
 func init() {
@@ -85,25 +85,17 @@ func init() {
 
 }
 
-func addDecorsFromSpritesheet() {
+func addDecorsFromSpriteSheet() {
 	decorSprite, ok := AssetStore.GetImage("outdoor_decor_sprite")
+	cols, rows := 7, 4
+	ts := config.TILE_SIZE
 	if ok {
-		ts := config.TILE_SIZE
-		addTileFromSprite("td_grass1", decorSprite, 0, 0)
-		addTileFromSprite("td_grass2", decorSprite, 1*ts, 0)
-		addTileFromSprite("td_grass3", decorSprite, 2*ts, 0)
-		addTileFromSprite("td_flowerGrass1", decorSprite, 0, 1*ts)
-		addTileFromSprite("td_flowerGrass2", decorSprite, 1*ts, 1*ts)
-		addTileFromSprite("td_flowerGrass3", decorSprite, 2*ts, 1*ts)
-		addTileFromSprite("td_mushroom", decorSprite, 2*ts, 7*ts)
-		addTileFromSprite("td_red_flower1", decorSprite, 0, 8*ts)
-		addTileFromSprite("td_red_flower2", decorSprite, 0, 9*ts)
-		addTileFromSprite("td_red_flower3", decorSprite, 0, 10*ts)
-		addTileFromSprite("td_red_flower4", decorSprite, 0, 11*ts)
-		addTileFromSprite("td_yellow_flower1", decorSprite, 1*ts, 8*ts)
-		addTileFromSprite("td_yellow_flower2", decorSprite, 1*ts, 9*ts)
-		addTileFromSprite("td_yellow_flower3", decorSprite, 1*ts, 10*ts)
-		addTileFromSprite("td_yellow_flower4", decorSprite, 1*ts, 11*ts)
+		for row := range rows {
+			for col := range cols {
+				name := "td_decor_" + fmt.Sprint(row) + "_" + fmt.Sprint(col)
+				addTileFromSprite(name, decorSprite, col*ts, row*ts)
+			}
+		}
 	}
 }
 

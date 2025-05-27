@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	flowerAmount = int((config.HEIGHT_IN_TILES * config.WIDTH_IN_TILES) * 0.2)
+	flowerAmount = int((config.HEIGHT_IN_TILES * config.WIDTH_IN_TILES) * 0.08)
 )
 
 func NewMap() [][]Tile {
@@ -18,39 +18,20 @@ func NewMap() [][]Tile {
 
 	grassMiddle1 := loadTileImage("tf_grass_middle")
 	grassMiddle2 := loadTileImage("tf_grass_middle2")
-	grass1 := loadTileImage("td_grass1")
-	grass2 := loadTileImage("td_grass2")
-	grass3 := loadTileImage("td_grass3")
-	flowerGrass1 := loadTileImage("td_flowerGrass1")
-	flowerGrass2 := loadTileImage("td_flowerGrass2")
-	flowerGrass3 := loadTileImage("td_flowerGrass3")
-	mushroom := loadTileImage("td_mushroom")
-	redFlower1 := loadTileImage("td_red_flower1")
-	redFlower2 := loadTileImage("td_red_flower2")
-	redFlower3 := loadTileImage("td_red_flower3")
-	redFlower4 := loadTileImage("td_red_flower4")
-	yellowFlower1 := loadTileImage("td_yellow_flower1")
-	yellowFlower2 := loadTileImage("td_yellow_flower2")
-	yellowFlower3 := loadTileImage("td_yellow_flower3")
-	yellowFlower4 := loadTileImage("td_yellow_flower4")
 
 	// Create a splice of all grass images
-	plants := []*ebiten.Image{
-		grass1,
-		grass2,
-		grass3,
-		flowerGrass1,
-		flowerGrass2,
-		flowerGrass3,
-		mushroom,
-		redFlower1,
-		redFlower2,
-		redFlower3,
-		redFlower4,
-		yellowFlower1,
-		yellowFlower2,
-		yellowFlower3,
-		yellowFlower4,
+	plants := []*ebiten.Image{}
+
+	cols, rows := 7, 4
+	for row := range rows {
+		for col := range cols {
+			if row == 3 && col >= 4 {
+				continue
+			}
+			name := "td_decor_" + fmt.Sprint(row) + "_" + fmt.Sprint(col)
+			plantImage := loadTileImage(name)
+			plants = append(plants, plantImage)
+		}
 	}
 
 	for y := range tiles {
