@@ -20,7 +20,7 @@ func NewScoreScene() *ScoreScene {
 	if !ok {
 		panic("Unable to load font in new base scene")
 	}
-	text := ui.NewLabel(50, 50, "Score", fontFace, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	text := ui.NewLabel(50, 50, "You Died!", fontFace, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 	// Center the text
 	textWidth, textHeight := text.GetSize()
 	offsetX := (config.SCREEN_WIDTH - textWidth) / 2

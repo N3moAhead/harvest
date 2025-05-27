@@ -41,11 +41,12 @@ func LoadAllAssets() {
 		"weapon_item_frame":   "assets/images/hud/hud_item_frame3.png",
 	}
 	sfxToLoad := map[string]string{
-		"laser":            "assets/audio/sfx/laserTest.wav",
-		"spoon_slash":      "assets/audio/sfx/spoon_slash.mp3",
-		"rolling_pin_roll": "assets/audio/sfx/rolling_pin_roll.mp3",
-		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
-		"player_hit_sound": "assets/audio/sfx/player_hit_sound.wav",
+		"laser":              "assets/audio/sfx/laserTest.wav",
+		"spoon_slash":        "assets/audio/sfx/spoon_slash.mp3",
+		"rolling_pin_roll":   "assets/audio/sfx/rolling_pin_roll.mp3",
+		"game_loads_sound":   "assets/audio/sfx/game_loads_sound.wav",
+		"player_hit_sound":   "assets/audio/sfx/player_hit_sound.wav",
+		"player_death_sound": "assets/audio/sfx/player_death_sound.mp3",
 	}
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",

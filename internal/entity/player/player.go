@@ -157,6 +157,10 @@ func (p *Player) Damage(amount float64) {
 	p.Health.Damage(amount)
 }
 
+func (p *Player) Alive() bool {
+	return p.Health.HP > 0
+}
+
 // TODO: implement a LoadPlayer function to get the saved
 // game state from the past
 func NewPlayer() *Player {
