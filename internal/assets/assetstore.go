@@ -27,7 +27,8 @@ func LoadAllAssets() {
 		"potato":           "assets/images/potato.png",
 		"menu-icon":        "assets/images/menu_icon.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
-		"tf_grass_middle":      "assets/images/world/Grass_Middle.png",
+		"tf_grass_middle":      "assets/images/world/grass.png",
+		"tf_grass_middle2":     "assets/images/world/grass2.png",
 		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
 		// Icons
 		"carrot_icon": "assets/images/icons/carrot_icon.png",

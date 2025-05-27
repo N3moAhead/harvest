@@ -16,7 +16,8 @@ const (
 func NewMap() [][]Tile {
 	tiles := make([][]Tile, config.HEIGHT_IN_TILES)
 
-	grassMiddle := loadTileImage("tf_grass_middle")
+	grassMiddle1 := loadTileImage("tf_grass_middle")
+	grassMiddle2 := loadTileImage("tf_grass_middle2")
 	grass1 := loadTileImage("td_grass1")
 	grass2 := loadTileImage("td_grass2")
 	grass3 := loadTileImage("td_grass3")
@@ -55,9 +56,13 @@ func NewMap() [][]Tile {
 	for y := range tiles {
 		tiles[y] = make([]Tile, config.WIDTH_IN_TILES)
 		for x := range tiles[y] {
+			var floorImage *ebiten.Image = grassMiddle1
+			if (y+x)%2 == 0 {
+				floorImage = grassMiddle2
+			}
 			tiles[y][x] = Tile{
 				Type:       GrassMiddle,
-				FloorImage: grassMiddle,
+				FloorImage: floorImage,
 				IsWalkable: true,
 			}
 		}
