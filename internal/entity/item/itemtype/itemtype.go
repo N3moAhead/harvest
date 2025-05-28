@@ -31,6 +31,7 @@ const (
 	Potato
 	Carrot
 	Onion
+	Leek
 	Spoon
 	RollingPin
 	DamageSoup
@@ -48,6 +49,8 @@ func (it ItemType) String() string {
 		return "Carrot"
 	case Onion:
 		return "Onion"
+	case Leek:
+		return "Leek"
 	case Spoon:
 		return "Spoon"
 	case RollingPin:

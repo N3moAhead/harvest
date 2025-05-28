@@ -20,6 +20,10 @@ func NewOnion(posX, posY float64) *Item {
 	return newItemBase(posX, posY, itemtype.Onion)
 }
 
+func NewLeek(posX, posY float64) *Item {
+	return newItemBase(posX, posY, itemtype.Leek)
+}
+
 /// --- Weapons ---
 
 func NewSpoon(posX float64, posY float64) *Item {
