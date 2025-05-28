@@ -5,6 +5,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/config"
+	"github.com/N3moAhead/harvest/internal/entity/item"
 )
 
 type PotatoEnemy struct {
@@ -50,6 +51,7 @@ func NewPotatoEnemy(pos component.Vector2D) *PotatoEnemy {
 			DropProb:            config.POTATO_DROP_PROB,
 			DropAmount:          config.POTATO_DROP_AMOUNT,
 			DropAmountPerMinute: config.POTATO_DROP_AMOUNT_PER_MINUTE,
+			SpawnItem:           item.NewPotato,
 		}),
 	}
 }
