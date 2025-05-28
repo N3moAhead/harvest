@@ -11,6 +11,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/input"
 	"github.com/N3moAhead/harvest/internal/soups"
+	"github.com/N3moAhead/harvest/pkg/util"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
@@ -118,6 +119,8 @@ func (p *Player) Update(inputState *input.InputState, dt float64, inventory Inve
 	// If the player moved update the facingDirection and the player position
 	if moved {
 		p.Pos = p.Pos.Add(moveDir.Mul(p.Speed))
+		p.Pos.X = util.Clamp(p.Pos.X, 16, config.WIDTH_IN_TILES*config.TILE_SIZE-16)
+		p.Pos.Y = util.Clamp(p.Pos.Y, 16, config.HEIGHT_IN_TILES*config.TILE_SIZE-16)
 		p.FacingDirection = moveDir
 	}
 
@@ -146,6 +149,19 @@ func (p *Player) Update(inputState *input.InputState, dt float64, inventory Inve
 			p.Speed += buffVal
 		}
 	}
+}
+
+func (p *Player) Damage(amount float64) {
+	hitSound, ok := assets.AssetStore.GetSFXData("player_hit_sound")
+	if ok {
+		sfxPlayer := assets.AudioContext.NewPlayerFromBytes(hitSound)
+		sfxPlayer.Play()
+	}
+	p.Health.Damage(amount)
+}
+
+func (p *Player) Alive() bool {
+	return p.Health.HP > 0
 }
 
 // TODO: implement a LoadPlayer function to get the saved

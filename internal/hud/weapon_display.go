@@ -1,8 +1,6 @@
 package hud
 
 import (
-	"fmt"
-
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
@@ -43,7 +41,6 @@ func (w *WeaponDisplay) Update(input *ui.InputState) {
 		if weaponFrame, ok := child.(WeaponFrameInterface); ok {
 			weapon := w.inv.Weapons[currentWeapon]
 			if weapon != nil {
-				fmt.Println(weapon.GetType())
 				weaponFrame.UpdateWeaponFrameValues(weapon.GetType(), weapon.Description())
 			} else {
 				weaponFrame.UpdateWeaponFrameValues(itemtype.Undefined, "")

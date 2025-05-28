@@ -42,14 +42,14 @@ func NewSpoon() *Spoon {
 			Cooldown:  2 * time.Second,
 			AreaSize:  1.0,
 			Pierce:    1000,
-			Knockback: 300.0,
+			Knockback: 20.0,
 		},
 		// Level 2
 		{
 			Damage:    2,
 			Cooldown:  1500 * time.Millisecond,
 			AreaSize:  1.1,
-			Pierce:    12,
+			Pierce:    1000,
 			Knockback: 25.0,
 		},
 		// Level 3
@@ -57,7 +57,7 @@ func NewSpoon() *Spoon {
 			Damage:    5,
 			Cooldown:  650 * time.Millisecond,
 			AreaSize:  1.2,
-			Pierce:    15,
+			Pierce:    1000,
 			Knockback: 30.0,
 		},
 	}
