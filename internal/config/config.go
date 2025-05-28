@@ -48,6 +48,15 @@ const (
 	CARROT_COLOR_G = 128
 	CARROT_COLOR_B = 0
 	CARROT_COLOR_A = 255
+	// Enemy: Cabbage
+	CABBAGE_SPEED                  = 30
+	CABBAGE_HEALTH                 = 4
+	CABBAGE_DAMAGE                 = 1
+	CABBAGE_ATTACK_COOLDOWN        = 1.5
+	CABBAGE_ATTACK_RANGE           = 40.0
+	CABBAGE_DROP_PROB              = 0.8
+	CABBAGE_DROP_AMOUNT            = 1
+	CABBAGE_DROP_AMOUNT_PER_MINUTE = 0.1
 	// Enemy: Onion
 	ONION_SPEED                  = 40
 	ONION_HEALTH                 = 1

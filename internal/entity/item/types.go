@@ -11,6 +11,10 @@ func NewCarrot(posX float64, posY float64) *Item {
 	return newItem
 }
 
+func NewCabbage(posX, posY float64) *Item {
+	return newItemBase(posX, posY, itemtype.Cabbage)
+}
+
 func NewPotato(posX float64, posY float64) *Item {
 	newItem := newItemBase(posX, posY, itemtype.Potato)
 	return newItem

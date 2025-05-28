@@ -398,6 +398,9 @@ func NewGameScene() *GameScene {
 	s.RegisterFactory(enemy.TypeOnion.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewOnionEnemy(pos)
 	})
+	s.RegisterFactory(enemy.TypeCabbage.String(), func(pos component.Vector2D) enemy.EnemyInterface {
+		return enemy.NewCabbageEnemy(pos)
+	})
 
 	newGameScene := &GameScene{
 		Player:        p,

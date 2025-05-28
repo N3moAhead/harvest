@@ -25,6 +25,8 @@ func LoadAllAssets() {
 		"carrot":           "assets/images/carrot.png",
 		"cook_station":     "assets/images/cookstation.png",
 		"potato":           "assets/images/potato.png",
+		"cabbage":          "assets/images/cabbage.png",
+		"cabbage_icon":     "assets/images/icons/cabbage_icon.png",
 		"onion":            "assets/images/onion.png",
 		"onion_icon":       "assets/images/icons/onion_icon.png",
 		"menu-icon":        "assets/images/menu_icon.png",
