@@ -29,8 +29,9 @@ func LoadAllAssets() {
 		"onion_icon":       "assets/images/icons/onion_icon.png",
 		"menu-icon":        "assets/images/menu_icon.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
-		"tf_grass_middle":      "assets/images/world/Grass_Middle.png",
-		"outdoor_decor_sprite": "assets/images/world/outdoor_decor.png",
+		"tf_grass_middle":      "assets/images/world/grass.png",
+		"tf_grass_middle2":     "assets/images/world/grass2.png",
+		"outdoor_decor_sprite": "assets/images/world/decorations.png",
 		// Icons
 		"carrot_icon": "assets/images/icons/carrot_icon.png",
 		"potato_icon": "assets/images/icons/potato_icon.png",
@@ -42,10 +43,12 @@ func LoadAllAssets() {
 		"weapon_item_frame":   "assets/images/hud/hud_item_frame3.png",
 	}
 	sfxToLoad := map[string]string{
-		"laser":            "assets/audio/sfx/laserTest.wav",
-		"spoon_slash":      "assets/audio/sfx/spoon_slash.mp3",
-		"rolling_pin_roll": "assets/audio/sfx/rolling_pin_roll.mp3",
-		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
+		"laser":              "assets/audio/sfx/laserTest.wav",
+		"spoon_slash":        "assets/audio/sfx/spoon_slash.mp3",
+		"rolling_pin_roll":   "assets/audio/sfx/rolling_pin_roll.mp3",
+		"game_loads_sound":   "assets/audio/sfx/game_loads_sound.wav",
+		"player_hit_sound":   "assets/audio/sfx/player_hit_sound.wav",
+		"player_death_sound": "assets/audio/sfx/player_death_sound.mp3",
 	}
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
@@ -60,7 +63,7 @@ func LoadAllAssets() {
 		panic(err)
 	}
 
-	addDecorsFromSpritesheet()
+	addDecorsFromSpriteSheet()
 }
 
 func init() {
@@ -86,25 +89,17 @@ func init() {
 
 }
 
-func addDecorsFromSpritesheet() {
+func addDecorsFromSpriteSheet() {
 	decorSprite, ok := AssetStore.GetImage("outdoor_decor_sprite")
+	cols, rows := 7, 4
+	ts := config.TILE_SIZE
 	if ok {
-		ts := config.TILE_SIZE
-		addTileFromSprite("td_grass1", decorSprite, 0, 0)
-		addTileFromSprite("td_grass2", decorSprite, 1*ts, 0)
-		addTileFromSprite("td_grass3", decorSprite, 2*ts, 0)
-		addTileFromSprite("td_flowerGrass1", decorSprite, 0, 1*ts)
-		addTileFromSprite("td_flowerGrass2", decorSprite, 1*ts, 1*ts)
-		addTileFromSprite("td_flowerGrass3", decorSprite, 2*ts, 1*ts)
-		addTileFromSprite("td_mushroom", decorSprite, 2*ts, 7*ts)
-		addTileFromSprite("td_red_flower1", decorSprite, 0, 8*ts)
-		addTileFromSprite("td_red_flower2", decorSprite, 0, 9*ts)
-		addTileFromSprite("td_red_flower3", decorSprite, 0, 10*ts)
-		addTileFromSprite("td_red_flower4", decorSprite, 0, 11*ts)
-		addTileFromSprite("td_yellow_flower1", decorSprite, 1*ts, 8*ts)
-		addTileFromSprite("td_yellow_flower2", decorSprite, 1*ts, 9*ts)
-		addTileFromSprite("td_yellow_flower3", decorSprite, 1*ts, 10*ts)
-		addTileFromSprite("td_yellow_flower4", decorSprite, 1*ts, 11*ts)
+		for row := range rows {
+			for col := range cols {
+				name := "td_decor_" + fmt.Sprint(row) + "_" + fmt.Sprint(col)
+				addTileFromSprite(name, decorSprite, col*ts, row*ts)
+			}
+		}
 	}
 }
 

@@ -248,6 +248,19 @@ func (g *GameScene) Update() error {
 		cookStation.Update(g.Player, g.inventory)
 	}
 
+	/// --- Check if player died ---
+	if !g.Player.Alive() {
+		deathSound, ok := assets.AssetStore.GetSFXData("player_death_sound")
+		if ok {
+			sfxPlayer := assets.AudioContext.NewPlayerFromBytes(deathSound)
+			sfxPlayer.Play()
+		}
+		if assets.MusicPlayer.IsPlaying() {
+			assets.MusicPlayer.Pause()
+		}
+		g.SetIsRunning(false)
+	}
+
 	return nil
 }
 
