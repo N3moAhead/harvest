@@ -28,6 +28,7 @@ func LoadAllAssets() {
 		"onion":            "assets/images/onion.png",
 		"onion_icon":       "assets/images/icons/onion_icon.png",
 		"leek":             "assets/images/leek.png",
+		"leek_icon":        "assets/images/icons/leek_icon.png",
 		"menu-icon":        "assets/images/menu_icon.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/grass.png",

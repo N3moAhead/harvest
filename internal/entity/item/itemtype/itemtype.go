@@ -68,7 +68,7 @@ func (it ItemType) String() string {
 
 func (it ItemType) Category() ItemCategory {
 	switch it {
-	case Potato, Carrot, Onion:
+	case Potato, Carrot, Onion, Leek:
 		return CategoryVegetable
 	case Spoon:
 		return CategoryWeapon
