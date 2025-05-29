@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	baseThermalmixerRadius  = 100.0   // Basic range of the hit in pixels
+	baseThermalmixerRadius  = 150.0   // Basic range of the hit in pixels
 	thermalmixerAttackAngle = 2*math.Pi // 360 degrees
 	thermalmixerFrameWidth              = 64      // The height of each slash animation frame
 	thermalmixerFrameHeight             = 64      // The width of each slash animation frame
