@@ -20,7 +20,7 @@ const (
 	thermalmixerAttackAngle = 2*math.Pi // 360 degrees
 	thermalmixerFrameWidth              = 64      // The height of each slash animation frame
 	thermalmixerFrameHeight             = 64      // The width of each slash animation frame
-	thermalmixerFrameCount              = 4       // The amount of existing frames
+	thermalmixerFrameCount              = 8       // The amount of existing frames
 	thermalmixerAnimationSpeed          = 6       // Ticks for each frame
 )
 

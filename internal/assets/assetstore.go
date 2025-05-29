@@ -46,8 +46,8 @@ func LoadAllAssets() {
 		"laser":              "assets/audio/sfx/laserTest.wav",
 		"spoon_slash":        "assets/audio/sfx/spoon_slash.mp3",
 		"rolling_pin_roll":   "assets/audio/sfx/rolling_pin_roll.mp3",
-		"thermalmixer_slash":   "assets/audio/sfx/rolling_pin_roll.mp3",
-			// TODO: Add correct thermalmixer sound
+		"thermalmixer_slash":   "assets/audio/sfx/thermalmixer_slash.mp3",
+			// TODO Add correct thermalmixer sound
 		"game_loads_sound":   "assets/audio/sfx/game_loads_sound.wav",
 		"player_hit_sound":   "assets/audio/sfx/player_hit_sound.wav",
 		"player_death_sound": "assets/audio/sfx/player_death_sound.mp3",
