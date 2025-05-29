@@ -36,7 +36,7 @@ var ItemInfos = map[itemtype.ItemType]ItemInfo{
 		DisplayName: "Rolling Pin",
 		Category:    itemtype.CategoryWeapon,
 		Soup:        nil,
-		IconName:    "",
+		IconName:    "rolling_pin_icon",
 	},
 	itemtype.DamageSoup: {
 		DisplayName: "Damage Soup",
