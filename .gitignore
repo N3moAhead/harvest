@@ -2,3 +2,4 @@ harvest-game
 .vscode
 TODO.md
 *.exe
+*.ps1

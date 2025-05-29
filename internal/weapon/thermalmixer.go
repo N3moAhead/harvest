@@ -18,10 +18,10 @@ import (
 const (
 	baseThermalmixerRadius  = 100.0   // Basic range of the hit in pixels
 	thermalmixerAttackAngle = 2*math.Pi // 360 degrees
-	/* frameWidth              = 32      // The height of each slash animation frame
-	frameHeight             = 64      // The width of each slash animation frame
-	frameCount              = 4       // The amount of existing frames
-	animationSpeed          = 6       // Ticks for each frame */
+	thermalmixerFrameWidth              = 64      // The height of each slash animation frame
+	thermalmixerFrameHeight             = 64      // The width of each slash animation frame
+	thermalmixerFrameCount              = 4       // The amount of existing frames
+	thermalmixerAnimationSpeed          = 6       // Ticks for each frame
 )
 
 type Thermalmixer struct {
@@ -144,44 +144,43 @@ func (t *Thermalmixer) Update(player *player.Player, enemies []enemy.EnemyInterf
 }
 
 func (t *Thermalmixer) Draw(screen *ebiten.Image, player *player.Player, mapOffsetX float64, mapOffsetY float64) {
-	if t.slashImage == nil {
-		return
-	}
+    if t.slashImage == nil {
+        return
+    }
 
-	if t.displaySlash {
-		sx := t.currentFrame * frameWidth
-		sy := 0
-				frameRect := image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)
+    if t.displaySlash {
+        sx := t.currentFrame * thermalmixerFrameWidth
+        sy := 0
+        frameRect := image.Rect(sx, sy, sx+thermalmixerFrameWidth, sy+thermalmixerFrameHeight)
 
-		bounds := t.slashImage.Bounds()
-		if !frameRect.In(bounds) {
-			fmt.Printf("Error: Frame rect %v out of bounds %v\n", frameRect, bounds)
-			return
-		}
-		frameImage := t.slashImage.SubImage(frameRect).(*ebiten.Image)
+        bounds := t.slashImage.Bounds()
+        if !frameRect.In(bounds) {
+            fmt.Printf("Error: Frame rect %v out of bounds %v\n", frameRect, bounds)
+            return
+        }
+        frameImage := t.slashImage.SubImage(frameRect).(*ebiten.Image)
 
-		pivotX := float64(frameWidth) / 2.0
-		pivotY := float64(frameHeight) / 2.0
-		angle := math.Atan2(t.hitDirection.Y, t.hitDirection.X)
+        pivotX := float64(thermalmixerFrameWidth) / 2.0
+        pivotY := float64(thermalmixerFrameHeight) / 2.0
+        angle := math.Atan2(t.hitDirection.Y, t.hitDirection.X)
 
-		stats := t.CurrentStats(player)
-		currentRadius := baseThermalmixerRadius * stats.AreaSize
-		calculatedScale := currentRadius / float64(frameWidth)
+        stats := t.CurrentStats(player)
+        currentRadius := baseThermalmixerRadius * stats.AreaSize
+        calculatedScale := currentRadius / float64(thermalmixerFrameWidth)
 
-		finalScreen := component.NewVector2D(player.Pos.X-mapOffsetX, player.Pos.Y-mapOffsetY)
-		// Moving the animation to the outside of the player
-		finalScreen = finalScreen.Add(t.hitDirection.Mul(frameWidth / 2)) // TODO i dont know if frameWidth / 2 is the correct value
+        // Calculate sprite position on the screen
+        finalScreen := component.NewVector2D(player.Pos.X-mapOffsetX, player.Pos.Y-mapOffsetY)
 
-		op := &ebiten.DrawImageOptions{}
+        op := &ebiten.DrawImageOptions{}
 
-		op.GeoM.Translate(-pivotX, -pivotY)
-		if calculatedScale != 1.0 {
-			op.GeoM.Scale(calculatedScale, calculatedScale)
-		}
-		op.GeoM.Rotate(angle)
-		// TODO: hier kann asset zentriert ü+ber spieler angezeigt werden, zentrieren
-		op.GeoM.Translate(finalScreen.X, finalScreen.Y)
+        // Centralize the sprite
+        op.GeoM.Translate(-pivotX, -pivotY)
+        if calculatedScale != 1.0 {
+            op.GeoM.Scale(calculatedScale, calculatedScale)
+        }
+        op.GeoM.Rotate(angle)
+        op.GeoM.Translate(finalScreen.X, finalScreen.Y)
 
-		screen.DrawImage(frameImage, op)
-	}
+        screen.DrawImage(frameImage, op)
+    }
 }
