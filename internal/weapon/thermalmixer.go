@@ -73,7 +73,7 @@ func NewThermalmixer() *Thermalmixer {
 	return &Thermalmixer{
 		BaseWeapon: BaseWeapon{
 			name:          "Thermalmixer",
-			description:   "One push, one blend — goodbye my veggie friend!",
+			description:   "One push, one blend ... goodbye my veggie friend!",
 			cooldownTimer: 0,
 			level:         1,
 			maxLevel:      len(stats),
