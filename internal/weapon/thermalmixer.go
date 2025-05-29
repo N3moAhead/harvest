@@ -21,7 +21,7 @@ const (
 	thermalmixerFrameWidth              = 64      // The height of each slash animation frame
 	thermalmixerFrameHeight             = 64      // The width of each slash animation frame
 	thermalmixerFrameCount              = 8       // The amount of existing frames
-	thermalmixerAnimationSpeed          = 6       // Ticks for each frame
+	thermalmixerAnimationSpeed          = 8       // Ticks for each frame
 )
 
 type Thermalmixer struct {
