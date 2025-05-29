@@ -28,6 +28,11 @@ func NewRollingPin(posX float64, posY float64) *Item {
 	return newItem
 }
 
+func NewThermalmixer(posX float64, posY float64) *Item {
+	newItem := newItemBase(posX, posY, itemtype.Thermalmixer)
+	return newItem
+}
+
 /// --- Soups ---
 
 func NewSoup(x, y float64, typeBuff itemtype.ItemType) *Item {

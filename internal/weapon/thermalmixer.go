@@ -18,10 +18,10 @@ import (
 const (
 	baseThermalmixerRadius  = 100.0   // Basic range of the hit in pixels
 	thermalmixerAttackAngle = 2*math.Pi // 360 degrees
-	frameWidth              = 32      // The height of each slash animation frame
+	/* frameWidth              = 32      // The height of each slash animation frame
 	frameHeight             = 64      // The width of each slash animation frame
 	frameCount              = 4       // The amount of existing frames
-	animationSpeed          = 6       // Ticks for each frame
+	animationSpeed          = 6       // Ticks for each frame */
 )
 
 type Thermalmixer struct {
@@ -42,7 +42,7 @@ func NewThermalmixer() *Thermalmixer {
 			Cooldown:  2 * time.Second,
 			AreaSize:  1.0,
 			Pierce:    1000,
-			Knockback: 20.0,
+			Knockback: 350.0,
 		},
 		// Level 2
 		{
@@ -50,7 +50,7 @@ func NewThermalmixer() *Thermalmixer {
 			Cooldown:  1500 * time.Millisecond,
 			AreaSize:  1.1,
 			Pierce:    1000,
-			Knockback: 25.0,
+			Knockback: 420.0,
 		},
 		// Level 3
 		{
@@ -58,7 +58,7 @@ func NewThermalmixer() *Thermalmixer {
 			Cooldown:  650 * time.Millisecond,
 			AreaSize:  1.2,
 			Pierce:    1000,
-			Knockback: 30.0,
+			Knockback: 490.0,
 		},
 	}
 
@@ -151,7 +151,7 @@ func (t *Thermalmixer) Draw(screen *ebiten.Image, player *player.Player, mapOffs
 	if t.displaySlash {
 		sx := t.currentFrame * frameWidth
 		sy := 0
-		frameRect := image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)
+				frameRect := image.Rect(sx, sy, sx+frameWidth, sy+frameHeight)
 
 		bounds := t.slashImage.Bounds()
 		if !frameRect.In(bounds) {
@@ -179,6 +179,7 @@ func (t *Thermalmixer) Draw(screen *ebiten.Image, player *player.Player, mapOffs
 			op.GeoM.Scale(calculatedScale, calculatedScale)
 		}
 		op.GeoM.Rotate(angle)
+		// TODO: hier kann asset zentriert ü+ber spieler angezeigt werden, zentrieren
 		op.GeoM.Translate(finalScreen.X, finalScreen.Y)
 
 		screen.DrawImage(frameImage, op)

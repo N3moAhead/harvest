@@ -22,6 +22,7 @@ func LoadAllAssets() {
 		"player":           "assets/images/CookTestImage.png",
 		"spoon_slash":      "assets/images/weapons/spoon/spoon_slash3.png",
 		"rolling_pin_roll": "assets/images/weapons/rolling_pin/rolling_pin_roll.png",
+		"thermalmixer_slash": "assets/images/weapons/thermalmixer/thermalmixer_slash.png",
 		"carrot":           "assets/images/carrot.png",
 		"cook_station":     "assets/images/cookstation.png",
 		"potato":           "assets/images/potato.png",
@@ -34,6 +35,7 @@ func LoadAllAssets() {
 		"carrot_icon": "assets/images/icons/carrot_icon.png",
 		"potato_icon": "assets/images/icons/potato_icon.png",
 		"spoon_icon":  "assets/images/icons/spoon_icon.png",
+		"thermalmixer_icon": "assets/images/icons/thermalmixer_icon.png",
 		"no_icon":     "assets/images/icons/no_icon.png",
 		// Hud
 		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
@@ -44,6 +46,8 @@ func LoadAllAssets() {
 		"laser":              "assets/audio/sfx/laserTest.wav",
 		"spoon_slash":        "assets/audio/sfx/spoon_slash.mp3",
 		"rolling_pin_roll":   "assets/audio/sfx/rolling_pin_roll.mp3",
+		"thermalmixer_slash":   "assets/audio/sfx/rolling_pin_roll.mp3",
+			// TODO: Add correct thermalmixer sound
 		"game_loads_sound":   "assets/audio/sfx/game_loads_sound.wav",
 		"player_hit_sound":   "assets/audio/sfx/player_hit_sound.wav",
 		"player_death_sound": "assets/audio/sfx/player_death_sound.mp3",

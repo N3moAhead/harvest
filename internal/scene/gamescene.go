@@ -122,6 +122,14 @@ func (g *GameScene) Update() error {
 					} else {
 						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
 					}
+				case itemtype.Thermalmixer:
+					newWeapon := weapon.NewThermalmixer()
+					added := g.inventory.AddWeapon(newWeapon)
+					if !added {
+						fmt.Printf("Inventory is full or weapon '%s' already exists\n", newWeapon.Name())
+					} else {
+						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
+					}
 				default:
 					fmt.Printf("Warning: Unknown weapon type: %s", gItem.DisplayName())
 				}
@@ -364,6 +372,10 @@ func NewGameScene() *GameScene {
 		item.NewRollingPin(
 			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
 			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-80,
+		),
+		item.NewThermalmixer(
+			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
+			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-150,
 		),
 	}
 	uiManager := ui.NewUIManager()
