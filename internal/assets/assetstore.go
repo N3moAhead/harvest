@@ -31,10 +31,11 @@ func LoadAllAssets() {
 		"tf_grass_middle2":     "assets/images/world/grass2.png",
 		"outdoor_decor_sprite": "assets/images/world/decorations.png",
 		// Icons
-		"carrot_icon": "assets/images/icons/carrot_icon.png",
-		"potato_icon": "assets/images/icons/potato_icon.png",
-		"spoon_icon":  "assets/images/icons/spoon_icon.png",
-		"no_icon":     "assets/images/icons/no_icon.png",
+		"carrot_icon":      "assets/images/icons/carrot_icon.png",
+		"potato_icon":      "assets/images/icons/potato_icon.png",
+		"spoon_icon":       "assets/images/icons/spoon_icon.png",
+		"rolling_pin_icon": "assets/images/icons/rolling_pin_icon.png",
+		"no_icon":          "assets/images/icons/no_icon.png",
 		// Hud
 		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
 		"soup_item_frame":     "assets/images/hud/hud_item_frame2.png",
