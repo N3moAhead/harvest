@@ -39,6 +39,9 @@ func LoadAllAssets() {
 		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
 		"soup_item_frame":     "assets/images/hud/hud_item_frame2.png",
 		"weapon_item_frame":   "assets/images/hud/hud_item_frame3.png",
+		// Weapons
+		"throwing_knifes_icon": "assets/images/icons/throwing_knifes_icon.png",
+		"knife_projectile":     "assets/images/weapons/throwing_knifes/knife_projectile.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":              "assets/audio/sfx/laserTest.wav",
@@ -47,6 +50,8 @@ func LoadAllAssets() {
 		"game_loads_sound":   "assets/audio/sfx/game_loads_sound.wav",
 		"player_hit_sound":   "assets/audio/sfx/player_hit_sound.wav",
 		"player_death_sound": "assets/audio/sfx/player_death_sound.mp3",
+		"knife_throw":        "assets/audio/sfx/knife_throw.wav",
+		"knife_throw_impact": "assets/audio/sfx/knife_throw_impact.wav",
 	}
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
