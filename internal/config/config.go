@@ -31,6 +31,7 @@ const (
 	ICON_SIZE               = 16.0 // The size in pixels of icon assets
 	ICON_ON_MAP_RENDER_SIZE = 16.0 // The size in pixels on how large an item icon should be rendered
 	/// --- Enemy Settings ---
+	DEFAULT_ENEMY_ASSET_SIZE = 32.0 // THe size in pixels of default enemies
 	// Enemy: Carrot
 	CARROT_SPEED                  = 50.0
 	CARROT_HEALTH                 = 2
@@ -43,12 +44,19 @@ const (
 	CARROT_DROP_AMOUNT_PER_MINUTE = 0.1 // Drops additional 0.1 items per minute
 	// CARROT_DROP_AMOUNT_PER_MINUTE = 0.4 // Drops additional 0.1 items per minute
 	// Carrot Style
-	CARROT_WIDTH   = 16
-	CARROT_HEIGHT  = 16
 	CARROT_COLOR_R = 255
 	CARROT_COLOR_G = 128
 	CARROT_COLOR_B = 0
 	CARROT_COLOR_A = 255
+	// Enemy: Onion
+	ONION_SPEED                  = 40
+	ONION_HEALTH                 = 1
+	ONION_DAMAGE                 = 3
+	ONION_ATTACK_COOLDOWN        = 1.0
+	ONION_ATTACK_RANGE           = 15.0
+	ONION_DROP_PROB              = 0.8
+	ONION_DROP_AMOUNT            = 1
+	ONION_DROP_AMOUNT_PER_MINUTE = 0.1
 
 	/// --- Enemy Spawning Settings ---
 	BASE_SPAWN_INTERVAL_SEC = 2.0   // Base interval (seconds) for spawning enemies

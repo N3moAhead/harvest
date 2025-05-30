@@ -30,7 +30,9 @@ const (
 	Undefined ItemType = iota
 	Potato
 	Carrot
+	Onion
 	Spoon
+	ThrowingKnifes
 	RollingPin
 	Thermalmixer
 	DamageSoup
@@ -46,6 +48,8 @@ func (it ItemType) String() string {
 		return "Potato"
 	case Carrot:
 		return "Carrot"
+	case Onion:
+		return "Onion"
 	case Spoon:
 		return "Spoon"
 	case RollingPin:
@@ -56,6 +60,8 @@ func (it ItemType) String() string {
 		return "Damage Soup"
 	case MagnetRadiusSoup:
 		return "Magnet Radius Soup"
+	case ThrowingKnifes:
+		return "Throwing Knifes"
 	case SpeedSoup:
 		return "Speed Soup"
 	default:
@@ -65,9 +71,9 @@ func (it ItemType) String() string {
 
 func (it ItemType) Category() ItemCategory {
 	switch it {
-	case Potato, Carrot:
+	case Potato, Carrot, Onion:
 		return CategoryVegetable
-	case Spoon, Thermalmixer:
+	case RollingPin, ThrowingKnifes, Spoon, Thermalmixer:
 		return CategoryWeapon
 	case DamageSoup, MagnetRadiusSoup, SpeedSoup:
 		return CategorySoup
