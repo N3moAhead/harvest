@@ -18,8 +18,8 @@ import (
 const (
 	baseThermalmixerRadius  = 150.0   // Basic range of the hit in pixels
 	thermalmixerAttackAngle = 2*math.Pi // 360 degrees
-	thermalmixerFrameWidth              = 64      // The height of each slash animation frame
-	thermalmixerFrameHeight             = 64      // The width of each slash animation frame
+	thermalmixerFrameWidth              = 64      // The width of each slash animation frame
+	thermalmixerFrameHeight             = 64      // The height of each slash animation frame
 	thermalmixerFrameCount              = 8       // The amount of existing frames
 	thermalmixerAnimationSpeed          = 8       // Ticks for each frame
 )
