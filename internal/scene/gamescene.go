@@ -114,6 +114,14 @@ func (g *GameScene) Update() error {
 					} else {
 						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
 					}
+				case itemtype.ThrowingKnifes:
+					newWeapon := weapon.NewThrowingKnife()
+					added := g.inventory.AddWeapon(newWeapon)
+					if !added {
+						fmt.Printf("Inventory is full or weapon '%s' already exists\n", newWeapon.Name())
+					} else {
+						fmt.Printf("Weapon '%s' added to Inventory\n", newWeapon.Name())
+					}
 				case itemtype.RollingPin:
 					newWeapon := weapon.NewRollingPin()
 					added := g.inventory.AddWeapon(newWeapon)
@@ -360,6 +368,10 @@ func NewGameScene() *GameScene {
 		item.NewSpoon(
 			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
 			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-50,
+		),
+		item.NewThrowingKnifes(
+			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
+			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2+80,
 		),
 		item.NewRollingPin(
 			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,

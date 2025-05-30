@@ -27,6 +27,10 @@ func NewSpoon(posX float64, posY float64) *Item {
 	return newItem
 }
 
+func NewThrowingKnifes(posX, posY float64) *Item {
+	return newItemBase(posX, posY, itemtype.ThrowingKnifes)
+}
+
 func NewRollingPin(posX float64, posY float64) *Item {
 	newItem := newItemBase(posX, posY, itemtype.RollingPin)
 	return newItem

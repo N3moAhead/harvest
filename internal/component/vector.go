@@ -58,6 +58,14 @@ func (v Vector2D) Dot(other Vector2D) float64 {
 	return v.X*other.X + v.Y*other.Y
 }
 
+func (v Vector2D) Rotate(angleRad float64) Vector2D {
+	cosA := math.Cos(angleRad)
+	sinA := math.Sin(angleRad)
+	newX := v.X*cosA - v.Y*sinA
+	newY := v.X*sinA + v.Y*cosA
+	return Vector2D{X: newX, Y: newY}
+}
+
 // Normalize returns a unit vector (a vector with length 1) pointing in the same direction as v.
 // If the original vector v has a length of 0, it returns a zero vector {0, 0}.
 // It does not modify the original vector v.
