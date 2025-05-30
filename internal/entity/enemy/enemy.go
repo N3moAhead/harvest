@@ -31,6 +31,7 @@ const (
 	TypePotato
 	TypeCabbage
 	TypeOnion
+	TypeLeek
 	maxEnemyType // Move this type to also allow the spawning of TypePeashooter
 	TypePeashooter
 )
@@ -45,6 +46,8 @@ func (t EnemyType) String() string {
 		return "cabbage"
 	case TypeOnion:
 		return "onion"
+	case TypeLeek:
+		return "leek"
 	case TypePeashooter:
 		return "peashooter"
 	default:

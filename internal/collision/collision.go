@@ -70,3 +70,17 @@ func FindEnemiesInArc(
 	}
 	return foundEnemies
 }
+
+func FindEnemiesInCircle(center component.Vector2D, radius float64, enemies []enemy.EnemyInterface) []enemy.EnemyInterface {
+	var foundEnemies []enemy.EnemyInterface
+	radiusSq := radius * radius
+
+	for _, enemy := range enemies {
+		distSq := center.Sub(enemy.GetPosition()).LengthSq()
+		if distSq < radiusSq {
+			foundEnemies = append(foundEnemies, enemy)
+		}
+	}
+
+	return foundEnemies
+}

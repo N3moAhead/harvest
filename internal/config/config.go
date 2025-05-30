@@ -66,6 +66,15 @@ const (
 	ONION_DROP_PROB              = 0.8
 	ONION_DROP_AMOUNT            = 1
 	ONION_DROP_AMOUNT_PER_MINUTE = 0.1
+	// Enemy: Leek
+	LEEK_SPEED                  = 45
+	LEEK_HEALTH                 = 3
+	LEEK_DAMAGE                 = 7
+	LEEK_ATTACK_COOLDOWN        = 2.0
+	LEEK_ATTACK_RANGE           = 25.0
+	LEEK_DROP_PROB              = 0.6
+	LEEK_DROP_AMOUNT            = 1
+	LEEK_DROP_AMOUNT_PER_MINUTE = 0.1
 
 	/// --- Enemy Spawning Settings ---
 	BASE_SPAWN_INTERVAL_SEC = 2.0   // Base interval (seconds) for spawning enemies

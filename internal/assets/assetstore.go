@@ -19,38 +19,50 @@ var (
 func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
-		"player":           "assets/images/CookTestImage.png",
-		"spoon_slash":      "assets/images/weapons/spoon/spoon_slash3.png",
-		"rolling_pin_roll": "assets/images/weapons/rolling_pin/rolling_pin_roll.png",
-		"carrot":           "assets/images/carrot.png",
-		"cook_station":     "assets/images/cookstation.png",
-		"potato":           "assets/images/potato.png",
-		"cabbage":          "assets/images/cabbage.png",
-		"cabbage_icon":     "assets/images/icons/cabbage_icon.png",
-		"onion":            "assets/images/onion.png",
-		"onion_icon":       "assets/images/icons/onion_icon.png",
-		"menu-icon":        "assets/images/menu_icon.png",
+		"player":             "assets/images/CookTestImage.png",
+		"spoon_slash":        "assets/images/weapons/spoon/spoon_slash3.png",
+		"rolling_pin_roll":   "assets/images/weapons/rolling_pin/rolling_pin_roll.png",
+		"carrot":             "assets/images/carrot.png",
+		"cook_station":       "assets/images/cookstation.png",
+		"potato":             "assets/images/potato.png",
+		"cabbage":            "assets/images/cabbage.png",
+		"cabbage_icon":       "assets/images/icons/cabbage_icon.png",
+		"onion":              "assets/images/onion.png",
+		"onion_icon":         "assets/images/icons/onion_icon.png",
+		"menu-icon":          "assets/images/menu_icon.png",
+		"leek":               "assets/images/leek.png",
+		"leek_icon":          "assets/images/icons/leek_icon.png",
+		"thermalmixer_slash": "assets/images/weapons/thermalmixer/thermalmixer_slash.png",
 		// Map Tiles: (t stands for tile; f stands for floor; d stands for decor)
 		"tf_grass_middle":      "assets/images/world/grass.png",
 		"tf_grass_middle2":     "assets/images/world/grass2.png",
 		"outdoor_decor_sprite": "assets/images/world/decorations.png",
 		// Icons
-		"carrot_icon": "assets/images/icons/carrot_icon.png",
-		"potato_icon": "assets/images/icons/potato_icon.png",
-		"spoon_icon":  "assets/images/icons/spoon_icon.png",
-		"no_icon":     "assets/images/icons/no_icon.png",
+		"carrot_icon":       "assets/images/icons/carrot_icon.png",
+		"potato_icon":       "assets/images/icons/potato_icon.png",
+		"spoon_icon":        "assets/images/icons/spoon_icon.png",
+		"thermalmixer_icon": "assets/images/icons/thermalmixer_icon.png",
+		"no_icon":           "assets/images/icons/no_icon.png",
+		"rolling_pin_icon":  "assets/images/icons/rolling_pin_icon.png",
 		// Hud
 		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
 		"soup_item_frame":     "assets/images/hud/hud_item_frame2.png",
 		"weapon_item_frame":   "assets/images/hud/hud_item_frame3.png",
+		// Weapons
+		"throwing_knifes_icon": "assets/images/icons/throwing_knifes_icon.png",
+		"knife_projectile":     "assets/images/weapons/throwing_knifes/knife_projectile.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":              "assets/audio/sfx/laserTest.wav",
 		"spoon_slash":        "assets/audio/sfx/spoon_slash.mp3",
 		"rolling_pin_roll":   "assets/audio/sfx/rolling_pin_roll.mp3",
+		"thermalmixer_slash": "assets/audio/sfx/thermalmixer_slash.mp3",
+		// TODO Add correct thermalmixer sound
 		"game_loads_sound":   "assets/audio/sfx/game_loads_sound.wav",
 		"player_hit_sound":   "assets/audio/sfx/player_hit_sound.wav",
 		"player_death_sound": "assets/audio/sfx/player_death_sound.mp3",
+		"knife_throw":        "assets/audio/sfx/knife_throw.wav",
+		"knife_throw_impact": "assets/audio/sfx/knife_throw_impact.wav",
 	}
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",

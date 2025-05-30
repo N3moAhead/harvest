@@ -42,7 +42,7 @@ func NewOnionEnemy(pos component.Vector2D) *OnionEnemy {
 		BaseMeleeEnemy: *NewBaseMeleeEnemy(TypeOnion, pos, store, &BaseMeleeOptions{
 			Speed:               config.ONION_SPEED,
 			MaxHealth:           config.ONION_HEALTH,
-			Damage:              config.CARROT_DAMAGE,
+			Damage:              config.ONION_DAMAGE,
 			AttackCooldown:      config.ONION_ATTACK_COOLDOWN,
 			DropProb:            config.ONION_DROP_PROB,
 			DropAmount:          config.ONION_DROP_AMOUNT,
