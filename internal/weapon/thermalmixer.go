@@ -91,12 +91,12 @@ func (t *Thermalmixer) Update(player *player.Player, enemies []enemy.EnemyInterf
 
 	// Update the animation frames
 	t.frameTimer++
-	if t.frameTimer >= animationSpeed {
+	if t.frameTimer >= thermalmixerAnimationSpeed {
 		t.frameTimer = 0 // Reset the frame timer
 		if t.currentFrame == frameCount-1 {
 			t.displaySlash = false
 		} else {
-			t.currentFrame = (t.currentFrame + 1) % frameCount
+			t.currentFrame = (t.currentFrame + 1) % thermalmixerFrameCount
 		}
 	}
 
