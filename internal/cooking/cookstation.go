@@ -123,7 +123,7 @@ func (cs *CookStation) Draw(screen *ebiten.Image, camX, camY float64) {
 		screen.DrawImage(frameImage, op)
 
 	} else {
-		cs.DefaultDraw(screen, camX, camY, config.CARROT_WIDTH, config.CARROT_HEIGHT,
+		cs.DefaultDraw(screen, camX, camY, config.DEFAULT_ENEMY_ASSET_SIZE, config.DEFAULT_ENEMY_ASSET_SIZE,
 			color.RGBA{R: 180, G: 13, B: 27, A: 255})
 	}
 

@@ -1,33 +1,15 @@
 package enemy
 
 import (
-	"fmt"
-	"image/color"
-	"math/rand/v2"
-
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/config"
-	"github.com/N3moAhead/harvest/internal/entity"
 	"github.com/N3moAhead/harvest/internal/entity/item"
-	"github.com/N3moAhead/harvest/internal/entity/player"
-	"github.com/hajimehoshi/ebiten/v2"
-)
-
-const (
-	WALK_RIGHT   string = "walkRight"
-	WALK_LEFT    string = "walkLeft"
-	ATTACK       string = "attack"
-	ATTACK_RIGHT string = "attack-right"
-	ATTACK_LEFT  string = "attack-left"
-	SPAWN        string = "spawn"
-	DEATH        string = "death"
 )
 
 type CarrotEnemy struct {
-	Enemy
-	MeleeEnemyData
+	BaseMeleeEnemy
 }
 
 func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
@@ -44,7 +26,8 @@ func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 		}
 		attackAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 4*32, 2, 6, false)
 		if err == nil {
-			animationStore.AddAnimation(ATTACK, attackAnimation)
+			animationStore.AddAnimation(ATTACK_LEFT, attackAnimation)
+			animationStore.AddAnimation(ATTACK_RIGHT, attackAnimation)
 		}
 		spawnAnimation, err := animation.NewAnimation(carrotSprite, 32, 32, 0, 2*32, 6, 10, false)
 		if err == nil {
@@ -54,122 +37,18 @@ func NewCarrotEnemy(pos component.Vector2D) *CarrotEnemy {
 		if err == nil {
 			animationStore.AddAnimation(DEATH, deathAnimation)
 		}
-
-		ok := animationStore.SetCurrentAnimation(SPAWN)
-		if !ok {
-			fmt.Println("Warning: Unable to start the spawning animation")
-		}
 	}
-	baseEntity := entity.NewEntity(pos.X, pos.Y)
 	return &CarrotEnemy{
-		Enemy: Enemy{
-			Entity:         *baseEntity,
-			Speed:          config.CARROT_SPEED,
-			Health:         component.NewHealth(config.CARROT_HEALTH),
-			Damage:         config.CARROT_DAMAGE,
-			AttackCooldown: config.CARROT_ATTACK_COOLDOWN,
-			attackTimer:    config.CARROT_ATTACK_START,
-			animationStore: animationStore,
-			DropProb:       config.CARROT_DROP_PROB,   // 80% chance to drop an item
-			DropAmount:     config.CARROT_DROP_AMOUNT, // Drops 1 item
-		},
-		MeleeEnemyData: MeleeEnemyData{
-			AttackRange: config.CARROT_ATTACK_RANGE,
-		},
+		BaseMeleeEnemy: *NewBaseMeleeEnemy(TypeCarrot, pos, animationStore, &BaseMeleeOptions{
+			Speed:               config.CARROT_SPEED,
+			MaxHealth:           config.CARROT_HEALTH,
+			Damage:              config.CARROT_DAMAGE,
+			AttackCooldown:      config.CARROT_ATTACK_COOLDOWN,
+			DropProb:            config.CARROT_DROP_PROB,
+			DropAmount:          config.CARROT_DROP_AMOUNT,
+			DropAmountPerMinute: config.CARROT_DROP_AMOUNT_PER_MINUTE,
+			AttackRange:         config.CARROT_ATTACK_RANGE,
+			SpawnItem:           item.NewCarrot,
+		}),
 	}
-}
-
-func (e *CarrotEnemy) SetWalkingAnimation(player *player.Player) {
-	dir := player.Pos.Sub(e.Pos)
-	if dir.X > 0 {
-		if ok := e.animationStore.SetCurrentAnimation(WALK_RIGHT); !ok {
-			fmt.Println("Warning: Unable to start the carrot walkRight animation")
-		}
-	} else {
-		if ok := e.animationStore.SetCurrentAnimation(WALK_LEFT); !ok {
-			fmt.Println("Warning: Unable to start the carrot walkLeft animation")
-		}
-	}
-}
-
-func (e *CarrotEnemy) Update(player *player.Player, dt float64) {
-	e.animationStore.Update()
-
-	// Only update the carrot if it is alive
-	if e.Health.HP > 0 {
-		// Set current animation to walking if no animation is currently running
-		// Or Update the type of running animation if currently the animation is running
-		animationName := e.animationStore.GetCurrentAnimationName()
-		updateRunningType := animationName == WALK_LEFT || animationName == WALK_RIGHT
-		if e.animationStore.GetCurrentAnimation().IsFinished() || updateRunningType {
-			e.SetWalkingAnimation(player)
-		}
-
-		// The enemy does not move during the spawn animation
-		if e.animationStore.GetCurrentAnimationName() != "spawn" {
-			e.UpdateKnockback()
-			e.MoveTowards(player.Pos, dt)
-
-			e.attackTimer -= dt
-			if e.Pos.Sub(player.Pos).Len() < e.AttackRange && e.attackTimer <= 0 {
-				player.Damage(e.Damage)
-				e.attackTimer = e.AttackCooldown
-				// Starting the attack animation
-				if ok := e.animationStore.SetCurrentAnimation(ATTACK); !ok {
-					fmt.Println("Warning: Unable to start the carrot attack animation")
-				}
-			}
-		}
-	} else {
-		// The carrot is dead
-		// So we start the death animation
-		e.animationStore.SetCurrentAnimation(DEATH)
-		// We still want to see the knockback happening
-		// It just feels way better when playing :)
-		e.UpdateKnockback()
-	}
-}
-
-func (e *CarrotEnemy) Draw(screen *ebiten.Image, camX, camY float64) {
-	frameImage := e.animationStore.GetImage()
-	if frameImage != nil {
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Translate(e.Pos.X-camX-16.0, e.Pos.Y-camY-16.0)
-		screen.DrawImage(frameImage, op)
-	} else {
-		e.DefaultDraw(screen, camX, camY, config.CARROT_WIDTH, config.CARROT_HEIGHT,
-			color.RGBA{R: config.CARROT_COLOR_R, G: config.CARROT_COLOR_G, B: config.CARROT_COLOR_B, A: 255})
-	}
-}
-
-func (e *CarrotEnemy) IsAlive() bool {
-	if e.Enemy.IsAlive() {
-		return true
-	} else {
-		// The carrot will be marked as dead after the death animation is finished
-		return !e.animationStore.GetCurrentAnimation().IsFinished()
-	}
-}
-
-func (e *CarrotEnemy) GetPosition() component.Vector2D {
-	return e.Enemy.GetPosition()
-}
-
-func (e *CarrotEnemy) TryDrop(elapsedMinutes float32) []item.Item {
-	prob := e.DropProb + elapsedMinutes*0.001 // +0.1% per minute, // so +1% per 10 minutes
-	if prob > 1 {
-		prob = 1
-	}
-	// Basis + rate * time
-	amount := e.DropAmount + int(elapsedMinutes*config.CARROT_DROP_AMOUNT_PER_MINUTE)
-
-	fmt.Printf("Carrot Enemy TryDrop: prob=%.2f, amount=%d, %d min\n", prob, amount, int(elapsedMinutes))
-
-	var drops []item.Item
-	if rand.Float32() < prob {
-		for i := 0; i < amount; i++ {
-			drops = append(drops, *item.NewCarrot(e.Pos.X, e.Pos.Y))
-		}
-	}
-	return drops
 }

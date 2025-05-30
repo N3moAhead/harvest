@@ -21,6 +21,7 @@ type EnemyInterface interface {
 	TakeDamage(damage float64)
 	AddKnockback(from *component.Vector2D, distance float64)
 	TryDrop(elapsedMinutes float32) []item.Item
+	GetType() EnemyType
 }
 
 type EnemyType int
@@ -28,6 +29,7 @@ type EnemyType int
 const (
 	TypeCarrot EnemyType = iota
 	TypePotato
+	TypeOnion
 	maxEnemyType // Move this type to also allow the spawning of TypePeashooter
 	TypePeashooter
 )
@@ -38,6 +40,8 @@ func (t EnemyType) String() string {
 		return "carrot"
 	case TypePotato:
 		return "potato"
+	case TypeOnion:
+		return "onion"
 	case TypePeashooter:
 		return "peashooter"
 	default:
@@ -51,16 +55,17 @@ func RandomEnemyType() EnemyType {
 
 type Enemy struct {
 	entity.Entity
-	Health         component.Health
-	Knockback      component.Knockback
-	Speed          float64
-	Damage         float64
-	AttackCooldown float64
-	attackTimer    float64
-	animationStore *animation.AnimationStore
-	DropProb       float32
-	DropAmount     int
-	TryDrop        func(elapsedMins float32) []item.Item
+	enemyType           EnemyType
+	Health              component.Health
+	Knockback           component.Knockback
+	Speed               float64
+	Damage              float64
+	AttackCooldown      float64
+	attackTimer         float64
+	animationStore      *animation.AnimationStore
+	DropProb            float32
+	DropAmount          int
+	DropAmountPerMinute float32
 }
 
 func (e *Enemy) MoveTowards(target component.Vector2D, dt float64) {
@@ -108,6 +113,10 @@ func (e *Enemy) TakeDamage(damage float64) {
 
 func (e *Enemy) GetPosition() component.Vector2D {
 	return e.Pos
+}
+
+func (e *Enemy) GetType() EnemyType {
+	return e.enemyType
 }
 
 func DefaultDrop(elapsedMinutes float32, x, y float64) []item.Item {
