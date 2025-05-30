@@ -26,6 +26,12 @@ var ItemInfos = map[itemtype.ItemType]ItemInfo{
 		Soup:        nil,
 		IconName:    "carrot_icon",
 	},
+	itemtype.Cabbage: {
+		DisplayName: "Cabbage",
+		Category:    itemtype.CategoryVegetable,
+		Soup:        nil,
+		IconName:    "cabbage_icon",
+	},
 	itemtype.Onion: {
 		DisplayName: "Onion",
 		Category:    itemtype.CategoryVegetable,
