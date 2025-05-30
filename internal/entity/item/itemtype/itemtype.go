@@ -67,8 +67,7 @@ func (it ItemType) Category() ItemCategory {
 	switch it {
 	case Potato, Carrot:
 		return CategoryVegetable
-	// TODO: RollingPin, Thermalmixer?
-	case Spoon:
+	case Spoon, Thermalmixer:
 		return CategoryWeapon
 	case DamageSoup, MagnetRadiusSoup, SpeedSoup:
 		return CategorySoup
