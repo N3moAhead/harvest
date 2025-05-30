@@ -34,6 +34,7 @@ const (
 	Spoon
 	ThrowingKnifes
 	RollingPin
+	Thermalmixer
 	DamageSoup
 	MagnetRadiusSoup
 	SpeedSoup
@@ -53,6 +54,8 @@ func (it ItemType) String() string {
 		return "Spoon"
 	case RollingPin:
 		return "Rolling Pin"
+	case Thermalmixer:
+		return "Thermalmixer"
 	case DamageSoup:
 		return "Damage Soup"
 	case MagnetRadiusSoup:
@@ -70,7 +73,7 @@ func (it ItemType) Category() ItemCategory {
 	switch it {
 	case Potato, Carrot, Onion:
 		return CategoryVegetable
-	case RollingPin, ThrowingKnifes, Spoon:
+	case RollingPin, ThrowingKnifes, Spoon, Thermalmixer:
 		return CategoryWeapon
 	case DamageSoup, MagnetRadiusSoup, SpeedSoup:
 		return CategorySoup

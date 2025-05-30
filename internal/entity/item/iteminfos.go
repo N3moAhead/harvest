@@ -50,6 +50,12 @@ var ItemInfos = map[itemtype.ItemType]ItemInfo{
 		Soup:        nil,
 		IconName:    "rolling_pin_icon",
 	},
+	itemtype.Thermalmixer: {
+		DisplayName: "Thermalmixer",
+		Category:    itemtype.CategoryWeapon,
+		Soup:        nil,
+		IconName:    "thermalmixer_icon",
+	},
 	itemtype.DamageSoup: {
 		DisplayName: "Damage Soup",
 		Category:    itemtype.CategorySoup,
