@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/N3moAhead/harvest/internal/config"
+	"github.com/N3moAhead/harvest/internal/scene/gamescene"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -59,7 +60,7 @@ func (s *SceneManager) setNextScene() {
 		s.currentScene = MENU_SCENE
 	case MENU_SCENE:
 		fmt.Println("Switched Scene to Game")
-		s.gameScene = NewGameScene()
+		s.gameScene = gamescene.NewGameScene()
 		s.currentScene = GAME_SCENE
 	case GAME_SCENE:
 		fmt.Println("Switched Scene to Score")
