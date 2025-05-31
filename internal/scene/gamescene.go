@@ -38,12 +38,21 @@ type GameScene struct {
 	inventory            *inventory.Inventory
 	ui                   *ui.UIManager
 	isRunning            bool
+	isPaused             bool
 	cookStations         []*cooking.CookStation
 	startTime            time.Time // game start
 	lastSpawnTime        time.Time // last spawn batches
 }
 
 func (g *GameScene) Update() error {
+	/// --- UI Update ---
+	// The ui is alway s getting updated everything else can be paused.
+	g.ui.Update()
+
+	if g.isPaused {
+		return nil
+	}
+
 	// --- Delta Time Update ---
 	dt := 1.0 / float64(ebiten.TPS())
 	dtDuration := time.Second / time.Duration(ebiten.TPS())
@@ -54,39 +63,6 @@ func (g *GameScene) Update() error {
 
 	// --- Player Update ---
 	g.Player.Update(inputState, dt, g.inventory)
-
-	/// --- UI Update ---
-	g.ui.Update()
-
-	/// --- SFX TEST && ENEMY TEST PLS REMOVE LATER IN THE GAME ---
-	// For Testing pressing the space button will play a lazer sound
-	spacePressed := ebiten.IsKeyPressed(ebiten.KeySpace)
-	if spacePressed && !g.previousSpacePressed {
-		// Circle Pattern
-		// newEnemies := g.Spawner.SpawnCircle("carrot", g.Player, 150, 8)
-		newEnemies := g.Spawner.SpawnCircle("potato", g.Player, 150, 8)
-
-		g.Enemies = append(g.Enemies, newEnemies...)
-
-		// ZigZag Pattern
-		// padding := component.Vector2D{X: 50, Y: 0}
-		// newEnemies = g.Spawner.SpawnZigZag("carrot", g.Player.Pos.Add(padding), 6, 40, 30)
-		// g.Enemies = append(g.Enemies, newEnemies...)
-
-		// Line Pattern
-		// newEnemies = g.Spawner.SpawnLine("carrot", g.Player.Pos.Add(padding), 5, 30, 0)
-
-		// Random Pattern
-		// newEnemies = g.Spawner.SpawnMoreRandom(10, "carrot")
-
-		// Appends new enemies to the world
-		// g.Enemies = append(g.Enemies, newEnemies...)
-
-		// for _, enemy := range newEnemies {
-		// 	g.Enemies = append(g.Enemies, enemy)
-		// }
-	}
-	g.previousSpacePressed = spacePressed
 
 	/// --- Update Items on the Ground ---
 	// TODO maybe we should move this code out of the game.go file to keep it clean
@@ -155,43 +131,14 @@ func (g *GameScene) Update() error {
 	g.items = g.items[:n]
 
 	/// --- Update the Weapons ---
-	// TODO check for copy usage
 	for _, weapon := range g.inventory.Weapons {
 		if weapon != nil {
 			weapon.Update(g.Player, g.Enemies, dtDuration)
 		}
 	}
 
-	// TODO Testing spawning items pls remove for production!
-	// Pressing K will spawn items
-	if ebiten.IsKeyPressed(ebiten.KeyK) {
-		for range 50 {
-			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
-			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
-			g.items = append(g.items, item.NewCarrot(posX, posY))
-		}
-		for range 50 {
-			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
-			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
-			g.items = append(g.items, item.NewPotato(posX, posY))
-		}
-	}
-
-	if ebiten.IsKeyPressed(ebiten.KeyB) {
-		// to test speed
-		for range 3 {
-			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
-			posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
-			g.items = append(g.items, item.NewSoup(posX, posY, itemtype.SpeedSoup))
-		}
-		// to test magnet
-		// for range 3 {
-		// 	posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
-		// 	posY := rand.Float64() * config.HEIGHT_IN_TILES * config.TILE_SIZE
-		// 	g.items = append(g.items, item.NewSoup(posX, posY, itemtype.MagnetRadiusSoup))
-		// }
-	}
-
+	// TODO remove this code for production!
+	// But keep it until cooking stations can spawn autonomisly
 	if ebiten.IsKeyPressed(ebiten.KeyC) {
 		for range 3 {
 			posX := rand.Float64() * config.WIDTH_IN_TILES * config.TILE_SIZE
@@ -206,16 +153,6 @@ func (g *GameScene) Update() error {
 		}
 	}
 
-	// Testing sfx Remove for production
-	// Pressing L will play a lazer sound
-	if ebiten.IsKeyPressed(ebiten.KeyL) {
-		laserSfx, ok := assets.AssetStore.GetSFXData("laser")
-		if ok {
-			sfxPlayer := assets.AudioContext.NewPlayerFromBytes(laserSfx)
-			sfxPlayer.Play()
-		}
-	}
-
 	// --- World ---
 
 	// SPAWN ENEMIES, based on elapsed time
@@ -224,7 +161,8 @@ func (g *GameScene) Update() error {
 	difficulty := 1.0 + math.Sqrt(elapsedSec)/10.0 // increase difficulty over time, use square root to make it slower at the beginning
 	// difficulty := 1.0 + elapsedSec/60.0 // 60.0 seconds is too short
 
-	// intervalSec := baseIntervalSec / difficulty                        // decrease spawning interval/duration based on difficulty/ time
+	// intervalSec := baseIntervalSec / difficulty
+	// decrease spawning interval/duration based on difficulty/ time
 	intervalSec := config.BASE_SPAWN_INTERVAL_SEC / difficulty                  // decrease spawning interval/duration based on difficulty/ time
 	count := int(math.Ceil(float64(config.BASE_COUNT_PER_BATCH) * difficulty))  // increase count of batches based on difficulty (number of pools --> per pool multiple enemies)
 	mixProgress := util.Clamp((elapsedSec-config.MIX_START_SEC)/10.0, 0.0, 1.0) // mix progress from 0 to 1, after 120 seconds it will be 1.0
@@ -455,6 +393,11 @@ func NewGameScene() *GameScene {
 	frameContainer.AddChild(inventoryDisplay)
 	frameContainer.AddChild(weaponDisplay)
 	uiManager.AddElement(frameContainer)
+
+	pauseButton := ui.NewButton(200, 200, 200, 50, "Toggle Pause", fontFace, func() {
+		newGameScene.isPaused = !newGameScene.isPaused
+	})
+	uiManager.AddElement(pauseButton)
 
 	return newGameScene
 }
