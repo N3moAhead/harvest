@@ -19,7 +19,8 @@ var (
 func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
-		"player":             "assets/images/CookTestImage.png",
+		"player":             "assets/images/player.png",
+		"player_idle":        "assets/images/player_idle.png",
 		"spoon_slash":        "assets/images/weapons/spoon/spoon_slash3.png",
 		"rolling_pin_roll":   "assets/images/weapons/rolling_pin/rolling_pin_roll.png",
 		"carrot":             "assets/images/carrot.png",
