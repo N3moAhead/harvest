@@ -46,7 +46,8 @@ func NewMenuScene(setExitGame func()) *MenuScene {
 	newUiManager.AddElement(container)
 
 	music, ok := assets.AssetStore.GetMusicData("menu")
-	if ok {
+	// Only start music initially
+	if ok && assets.MusicPlayer == nil || (assets.MusicPlayer != nil && !assets.MusicPlayer.IsPlaying()) {
 		musicBytesReader := bytes.NewReader(music)
 		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
 
