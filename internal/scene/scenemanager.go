@@ -24,6 +24,8 @@ type SceneManager struct {
 	menuScene    Scene
 	gameScene    Scene
 	scoreScene   Scene
+	// If set to true the game will end in the next update loop
+	exitGame bool
 }
 
 func NewSceneManager() *SceneManager {
@@ -56,7 +58,7 @@ func (s *SceneManager) setNextScene() {
 	switch s.currentScene {
 	case LOADING_SCENE:
 		fmt.Println("Switched Scene to Menu")
-		s.menuScene = NewMenuScene()
+		s.menuScene = NewMenuScene(s.setExitGame)
 		s.currentScene = MENU_SCENE
 	case MENU_SCENE:
 		fmt.Println("Switched Scene to Game")
@@ -68,16 +70,17 @@ func (s *SceneManager) setNextScene() {
 		s.currentScene = SCORE_SCENE
 	case SCORE_SCENE:
 		fmt.Println("Switched Scene to Menu")
-		s.menuScene = NewMenuScene()
+		s.menuScene = NewMenuScene(s.setExitGame)
 		s.currentScene = MENU_SCENE
 	}
 }
 
 func (s *SceneManager) Update() error {
 	// --- Check for Exit ---
-	if ebiten.IsKeyPressed(ebiten.KeyEscape) {
-		return errors.New("Game Quit!")
+	if s.exitGame {
+		return errors.New("Quitted Game")
 	}
+
 	scene := s.getCurrentScene()
 	if !scene.IsRunning() {
 		s.setNextScene()
@@ -93,6 +96,10 @@ func (s *SceneManager) Draw(screen *ebiten.Image) {
 
 func (s *SceneManager) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return config.SCREEN_WIDTH, config.SCREEN_HEIGHT
+}
+
+func (s *SceneManager) setExitGame() {
+	s.exitGame = true
 }
 
 var _ ebiten.Game = (*SceneManager)(nil)

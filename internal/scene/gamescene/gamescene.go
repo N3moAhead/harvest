@@ -1,7 +1,6 @@
 package gamescene
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
@@ -17,7 +16,6 @@ import (
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type GameScene struct {
@@ -28,7 +26,8 @@ type GameScene struct {
 	previousSpacePressed bool // TODO remove this later, just for testing
 	items                []*item.Item
 	inventory            *inventory.Inventory
-	ui                   *ui.UIManager
+	hud                  *ui.UIManager
+	gameOverlay          *ui.UIManager
 	isRunning            bool
 	isPaused             bool
 	cookStations         []*cooking.CookStation
@@ -44,13 +43,14 @@ func NewGameScene() *GameScene {
 		Spawner:       initEnemySpawner(),
 		inventory:     inventory.NewInventory(),
 		items:         initItems(),
-		ui:            nil,
+		hud:           nil,
 		isRunning:     true,
 		cookStations:  []*cooking.CookStation{},
 		startTime:     time.Now(),
 		lastSpawnTime: time.Now(),
 	}
-	newGameScene.ui = initHUD(newGameScene)
+	newGameScene.hud = initHUD(newGameScene)
+	newGameScene.gameOverlay = initGameOverlay(newGameScene)
 
 	return newGameScene
 }
@@ -68,9 +68,17 @@ func (g *GameScene) SetIsRunning(running bool) {
 }
 
 func (g *GameScene) Update() error {
+	/// --- Get User Input ---
+	inputState := input.GetInputState()
+
 	/// --- UI Update ---
 	// The ui is always getting updated everything else can be paused.
-	g.ui.Update()
+	updateUI(g)
+
+	// Pause on Escape
+	if inputState.Esc {
+		g.isPaused = true
+	}
 
 	// If the game is paused stop the update right here
 	if g.isPaused {
@@ -81,9 +89,6 @@ func (g *GameScene) Update() error {
 	dt := 1.0 / float64(ebiten.TPS())
 	dtDuration := time.Second / time.Duration(ebiten.TPS())
 	elapsed := float32(time.Since(g.startTime).Milliseconds())
-
-	/// --- Get User Input ---
-	inputState := input.GetInputState()
 
 	/// --- Update Player ---
 	g.Player.Update(inputState, dt, g.inventory)
@@ -173,9 +178,6 @@ func (g *GameScene) Draw(screen *ebiten.Image) {
 		cookStation.Draw(screen, mapOffsetX, mapOffsetY)
 	}
 
-	// --- Drawing the HUD ---
-	fpsText := fmt.Sprintf("FPS: %.1f ", ebiten.ActualFPS())
-	ebitenutil.DebugPrintAt(screen, fpsText+fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, config.SCREEN_HEIGHT-20)
-	g.inventory.Draw(screen)
-	g.ui.Draw(screen)
+	/// --- Drawing HUD ---
+	drawUI(g, screen)
 }
