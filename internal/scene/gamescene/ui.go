@@ -47,7 +47,7 @@ func initHUD(g *GameScene) *ui.UIManager {
 	return newHUD
 }
 
-func initGameOverlay(g *GameScene) *ui.UIManager {
+func initGameOverlay(g *GameScene, backToMenu func()) *ui.UIManager {
 	newGameOverlay := ui.NewUIManager()
 
 	fontFace, ok := assets.AssetStore.GetFont("2p")
@@ -64,7 +64,7 @@ func initGameOverlay(g *GameScene) *ui.UIManager {
 	})
 	// Buttons
 	resumeBtn := ui.NewButton(0, 0, elementWidth, 50, "Resume", fontFace, func() { g.isPaused = false })
-	exitBtn := ui.NewButton(0, 0, elementWidth, 50, "Exit Game", fontFace, func() { g.SetIsRunning(false) })
+	exitBtn := ui.NewButton(0, 0, elementWidth, 50, "Exit Game", fontFace, func() { backToMenu() })
 
 	container.AddChild(resumeBtn)
 	container.AddChild(exitBtn)

@@ -19,23 +19,22 @@ import (
 )
 
 type GameScene struct {
-	Player               *player.Player
-	World                *world.World
-	Enemies              []enemy.EnemyInterface
-	Spawner              *world.EnemySpawner
-	previousSpacePressed bool // TODO remove this later, just for testing
-	items                []*item.Item
-	inventory            *inventory.Inventory
-	hud                  *ui.UIManager
-	gameOverlay          *ui.UIManager
-	isRunning            bool
-	isPaused             bool
-	cookStations         []*cooking.CookStation
-	startTime            time.Time // game start
-	lastSpawnTime        time.Time // last spawn batches
+	Player        *player.Player
+	World         *world.World
+	Enemies       []enemy.EnemyInterface
+	Spawner       *world.EnemySpawner
+	items         []*item.Item
+	inventory     *inventory.Inventory
+	hud           *ui.UIManager
+	gameOverlay   *ui.UIManager
+	isRunning     bool
+	isPaused      bool
+	cookStations  []*cooking.CookStation
+	startTime     time.Time // game start
+	lastSpawnTime time.Time // last spawn batches
 }
 
-func NewGameScene() *GameScene {
+func NewGameScene(backToMenu func()) *GameScene {
 	newGameScene := &GameScene{
 		Player:        player.NewPlayer(),
 		World:         world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES),
@@ -50,7 +49,7 @@ func NewGameScene() *GameScene {
 		lastSpawnTime: time.Now(),
 	}
 	newGameScene.hud = initHUD(newGameScene)
-	newGameScene.gameOverlay = initGameOverlay(newGameScene)
+	newGameScene.gameOverlay = initGameOverlay(newGameScene, backToMenu)
 
 	return newGameScene
 }

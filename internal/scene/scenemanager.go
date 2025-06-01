@@ -46,32 +46,50 @@ func (s *SceneManager) getCurrentScene() Scene {
 	case SCORE_SCENE:
 		return s.scoreScene
 	default:
-		fmt.Println(s.currentScene)
-		panic("Could not load currentScene in scene manger.")
+		fmt.Println("Warning: Could not load currentScene in scene manager. Falling back to menu!")
+		s.setNextScene(MENU_SCENE)
+		return s.getCurrentScene()
 	}
 }
 
-func (s *SceneManager) setNextScene() {
-	// Loading -> Menu -> Game -> Score -> Menu
-	// Every time we switch screens we have to
-	// create a new instance of the scene to get a new cleared one
-	switch s.currentScene {
-	case LOADING_SCENE:
+func (s *SceneManager) setNextScene(scene SceneId) {
+	// Its not possible to set the loading scene because
+	// its only used at startup
+	switch scene {
+	case MENU_SCENE:
 		fmt.Println("Switched Scene to Menu")
 		s.menuScene = NewMenuScene(s.setExitGame)
 		s.currentScene = MENU_SCENE
-	case MENU_SCENE:
-		fmt.Println("Switched Scene to Game")
-		s.gameScene = gamescene.NewGameScene()
-		s.currentScene = GAME_SCENE
 	case GAME_SCENE:
+		fmt.Println("Switched Scene to Game Scene")
+		s.gameScene = gamescene.NewGameScene(func() { s.setNextScene(MENU_SCENE) })
+		s.currentScene = GAME_SCENE
+	case SCORE_SCENE:
 		fmt.Println("Switched Scene to Score")
 		s.scoreScene = NewScoreScene()
 		s.currentScene = SCORE_SCENE
+	default:
+		fmt.Println("Warning: Switched to menu, received undefined SceneId: ", scene)
+		s.setNextScene(MENU_SCENE)
+	}
+}
+
+// A scene ends and this functions returns a logical
+// follow up scene in the following direction
+// LoadingScene -> MenuScene -> GameScene -> ScoreScene -> MenuScene
+func (s *SceneManager) determineFollowUpScene() SceneId {
+	switch s.currentScene {
+	case LOADING_SCENE:
+		return MENU_SCENE
+	case MENU_SCENE:
+		return GAME_SCENE
+	case GAME_SCENE:
+		return SCORE_SCENE
 	case SCORE_SCENE:
-		fmt.Println("Switched Scene to Menu")
-		s.menuScene = NewMenuScene(s.setExitGame)
-		s.currentScene = MENU_SCENE
+		return MENU_SCENE
+	default:
+		fmt.Println("Warning: Follow up -> MenuScene Could not determine follow up scene the scene:", s.currentScene)
+		return MENU_SCENE
 	}
 }
 
@@ -83,7 +101,8 @@ func (s *SceneManager) Update() error {
 
 	scene := s.getCurrentScene()
 	if !scene.IsRunning() {
-		s.setNextScene()
+		followUpScene := s.determineFollowUpScene()
+		s.setNextScene(followUpScene)
 	}
 	err := scene.Update()
 	return err
