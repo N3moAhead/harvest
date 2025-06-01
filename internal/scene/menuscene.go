@@ -17,7 +17,7 @@ type MenuScene struct {
 	isRunning bool
 }
 
-func NewMenuScene() *MenuScene {
+func NewMenuScene(setExitGame func()) *MenuScene {
 	icon, ok := assets.AssetStore.GetImage("menu-icon")
 	if !ok {
 		panic("menu-icon nicht im AssetStore gefunden")
@@ -36,15 +36,18 @@ func NewMenuScene() *MenuScene {
 	}
 
 	startBtn := ui.NewButton(0, 0, 150, 40, "Start", fontFace, func() { newMenuScene.SetIsRunning(false) })
+	endGameBtn := ui.NewButton(0, 0, 150, 40, "Exit", fontFace, setExitGame)
 	container := ui.NewContainer((config.SCREEN_WIDTH-150)/2, 350, &ui.ContainerOptions{
 		Direction: ui.Col,
-		// Gap:       0,
+		Gap:       10,
 	})
 	container.AddChild(startBtn)
+	container.AddChild(endGameBtn)
 	newUiManager.AddElement(container)
 
 	music, ok := assets.AssetStore.GetMusicData("menu")
-	if ok {
+	// Only start music initially
+	if ok && assets.MusicPlayer == nil || (assets.MusicPlayer != nil && !assets.MusicPlayer.IsPlaying()) {
 		musicBytesReader := bytes.NewReader(music)
 		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
 
