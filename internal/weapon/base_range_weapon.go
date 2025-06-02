@@ -42,6 +42,14 @@ func (b *RangeBaseWeapon) Level() int {
 	return b.level
 }
 
+func (b *RangeBaseWeapon) LevelUp() bool {
+	if b.level < b.maxLevel {
+		b.level++
+		return true
+	}
+	return false
+}
+
 func (b *RangeBaseWeapon) MaxLevel() int {
 	return b.maxLevel
 }
