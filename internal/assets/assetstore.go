@@ -21,6 +21,8 @@ func LoadAllAssets() {
 	imagesToLoad := map[string]string{
 		"player":             "assets/images/player.png",
 		"player_idle":        "assets/images/player_idle.png",
+		"chef_walk":          "assets/images/chef_walk.png",
+		"chef_Idle":          "assets/images/chef_Idle.png",
 		"spoon_slash":        "assets/images/weapons/spoon/spoon_slash3.png",
 		"rolling_pin_roll":   "assets/images/weapons/rolling_pin/rolling_pin_roll.png",
 		"carrot":             "assets/images/carrot.png",

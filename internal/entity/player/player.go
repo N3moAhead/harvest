@@ -211,42 +211,78 @@ func NewPlayer() *Player {
 	)
 
 	store := animation.NewAnimationStore()
-	playerImg, ok := assets.AssetStore.GetImage("player")
-	playerIdleImg, ok := assets.AssetStore.GetImage("player_idle")
+	playerImg, ok := assets.AssetStore.GetImage("chef_walk")
+	playerIdleImg, ok := assets.AssetStore.GetImage("chef_Idle")
 	if ok {
-		up, err := animation.NewAnimation(playerImg, 32, 32, 0, 0, 4, 6, true)
+		up, err := animation.NewAnimation(playerImg, 32, 32, 0, 0, 6, 6, true)
 		if err == nil {
 			store.AddAnimation(UP, up)
 		}
-		upRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 1*32, 4, 6, true)
+		upRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 6, 6, true)
 		if err == nil {
 			store.AddAnimation(UP_RIGHT, upRight)
 		}
-		right, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 4, 6, true)
+		right, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 6, 6, true)
 		if err == nil {
 			store.AddAnimation(RIGHT, right)
 		}
-		downRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 4, 6, true)
+		downRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 6, 6, true)
 		if err == nil {
 			store.AddAnimation(DOWN_RIGHT, downRight)
 		}
-		down, err := animation.NewAnimation(playerImg, 32, 32, 0, 4*32, 4, 6, true)
+		down, err := animation.NewAnimation(playerImg, 32, 32, 0, 1*32, 6, 6, true)
 		if err == nil {
 			store.AddAnimation(DOWN, down)
 		}
-		downLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 5*32, 4, 6, true)
+		downLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 6, 6, true)
 		if err == nil {
 			store.AddAnimation(DOWN_LEFT, downLeft)
 		}
-		left, err := animation.NewAnimation(playerImg, 32, 32, 0, 6*32, 4, 6, true)
+		left, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 6, 6, true)
 		if err == nil {
 			store.AddAnimation(LEFT, left)
 		}
-		upLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 7*32, 4, 6, true)
+		upLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 6, 6, true)
 		if err == nil {
 			store.AddAnimation(UP_LEFT, upLeft)
 		}
 		idle, err := animation.NewAnimation(playerIdleImg, 32, 32, 0, 0, 1, 6, true)
+		// playerImg, ok := assets.AssetStore.GetImage("player")
+		// playerIdleImg, ok := assets.AssetStore.GetImage("player_idle")
+		// if ok {
+		// 	up, err := animation.NewAnimation(playerImg, 32, 32, 0, 0, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(UP, up)
+		// 	}
+		// 	upRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 1*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(UP_RIGHT, upRight)
+		// 	}
+		// 	right, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(RIGHT, right)
+		// 	}
+		// 	downRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(DOWN_RIGHT, downRight)
+		// 	}
+		// 	down, err := animation.NewAnimation(playerImg, 32, 32, 0, 4*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(DOWN, down)
+		// 	}
+		// 	downLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 5*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(DOWN_LEFT, downLeft)
+		// 	}
+		// 	left, err := animation.NewAnimation(playerImg, 32, 32, 0, 6*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(LEFT, left)
+		// 	}
+		// 	upLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 7*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(UP_LEFT, upLeft)
+		// 	}
+		// 	idle, err := animation.NewAnimation(playerIdleImg, 32, 32, 0, 0, 1, 6, true)
 		if err == nil {
 			store.AddAnimation(IDLE, idle)
 		}
