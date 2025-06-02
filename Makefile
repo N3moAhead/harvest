@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := dev
+.DEFAULT_GOAL := start
 
 .PHONY: fmt
 fmt:
@@ -8,6 +8,10 @@ fmt:
 vet: fmt
 	go vet ./...
 
+.PHONY: test
+test:
+	go test ./...
+
 .PHONY: build
 build: vet
 	go build -o harvest-game ./cmd/harvest/main.go
@@ -15,6 +19,10 @@ build: vet
 .PHONY: start
 start: build
 	./harvest-game
+
+commit: test
+	git commit
+
 
 .PHONY: dev
 dev:
