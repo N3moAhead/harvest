@@ -246,7 +246,7 @@ func NewPlayer() *Player {
 		if err == nil {
 			store.AddAnimation(UP_LEFT, upLeft)
 		}
-		idle, err := animation.NewAnimation(playerIdleImg, 32, 32, 0, 0, 1, 6, true)
+		idle, err := animation.NewAnimation(playerIdleImg, 32, 32, 0, 0, 2, 24, true)
 		// playerImg, ok := assets.AssetStore.GetImage("player")
 		// playerIdleImg, ok := assets.AssetStore.GetImage("player_idle")
 		// if ok {
