@@ -28,6 +28,10 @@ func NewLeek(posX, posY float64) *Item {
 	return newItemBase(posX, posY, itemtype.Leek)
 }
 
+func NewRadish(posX, posY float64) *Item {
+	return newItemBase(posX, posY, itemtype.Radish)
+}
+
 /// --- Weapons ---
 
 func NewSpoon(posX float64, posY float64) *Item {
