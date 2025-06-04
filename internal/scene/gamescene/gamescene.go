@@ -19,34 +19,35 @@ import (
 )
 
 type GameScene struct {
-	Player        *player.Player
-	World         *world.World
-	Enemies       []enemy.EnemyInterface
-	Spawner       *world.EnemySpawner
-	items         []*item.Item
-	inventory     *inventory.Inventory
-	hud           *ui.UIManager
-	gameOverlay   *ui.UIManager
-	isRunning     bool
-	isPaused      bool
-	cookStations  []*cooking.CookStation
-	startTime     time.Time // game start
-	lastSpawnTime time.Time // last spawn batches
+	Player                   *player.Player
+	World                    *world.World
+	Enemies                  []enemy.EnemyInterface
+	Spawner                  *world.EnemySpawner
+	items                    []*item.Item
+	inventory                *inventory.Inventory
+	hud                      *ui.UIManager
+	gameOverlay              *ui.UIManager
+	isRunning                bool
+	isPaused                 bool
+	cookStations             []*cooking.CookStation
+	startTime                time.Time // game start
+	lastEnemySpawnTime       time.Time // last spawn batches
+	lastCookStationSpawnTime time.Time
 }
 
 func NewGameScene(backToMenu func()) *GameScene {
 	newGameScene := &GameScene{
-		Player:        player.NewPlayer(),
-		World:         world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES),
-		Enemies:       []enemy.EnemyInterface{},
-		Spawner:       initEnemySpawner(),
-		inventory:     inventory.NewInventory(),
-		items:         initItems(),
-		hud:           nil,
-		isRunning:     true,
-		cookStations:  []*cooking.CookStation{},
-		startTime:     time.Now(),
-		lastSpawnTime: time.Now(),
+		Player:             player.NewPlayer(),
+		World:              world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES),
+		Enemies:            []enemy.EnemyInterface{},
+		Spawner:            initEnemySpawner(),
+		inventory:          inventory.NewInventory(),
+		items:              initItems(),
+		hud:                nil,
+		isRunning:          true,
+		cookStations:       []*cooking.CookStation{},
+		startTime:          time.Now(),
+		lastEnemySpawnTime: time.Now(),
 	}
 	newGameScene.hud = initHUD(newGameScene)
 	newGameScene.gameOverlay = initGameOverlay(newGameScene, backToMenu)
@@ -130,9 +131,7 @@ func (g *GameScene) Update() error {
 	updateEnemies(g, dt, elapsed)
 
 	/// --- Update Cooking Stations ---
-	for _, cookStation := range g.cookStations {
-		cookStation.Update(g.Player, g.inventory)
-	}
+	updateCookStations(g, dt, g.inventory, elapsed)
 
 	/// --- Check if player died ---
 	if !g.Player.Alive() {
