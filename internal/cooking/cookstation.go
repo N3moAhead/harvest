@@ -3,6 +3,7 @@ package cooking
 import (
 	"fmt"
 	"image/color"
+	"math/rand"
 
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/assets"
@@ -55,6 +56,12 @@ var RecipeDefinitions = map[itemtype.ItemType]Recipe{
 		},
 	},
 	// ...
+}
+
+// function to get a random recipe
+func GetRandomRecipe() Recipe {
+	soupTypes := itemtype.GetItemTypesByCategory(itemtype.CategorySoup)
+	return RecipeDefinitions[soupTypes[rand.Intn(len(soupTypes))]]
 }
 
 func NewCookStation(x, y float64, recipe Recipe, costFactor float64) *CookStation {

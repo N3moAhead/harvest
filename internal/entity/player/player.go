@@ -164,6 +164,15 @@ func (p *Player) Alive() bool {
 	return p.Health.HP > 0
 }
 
+func (p *Player) HasSoup(soupType itemtype.ItemType) bool {
+	for _, soup := range p.Soups {
+		if soup.Type == soupType {
+			return true
+		}
+	}
+	return false
+}
+
 // TODO: implement a LoadPlayer function to get the saved
 // game state from the past
 func NewPlayer() *Player {

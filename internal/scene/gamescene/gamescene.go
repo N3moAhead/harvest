@@ -13,44 +13,47 @@ import (
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
 	"github.com/N3moAhead/harvest/internal/input"
+	"github.com/N3moAhead/harvest/internal/toast"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type GameScene struct {
-	Player            *player.Player
-	World             *world.World
-	Enemies           []enemy.EnemyInterface
-	Spawner           *world.EnemySpawner
-	items             []*item.Item
-	inventory         *inventory.Inventory
-	hud               *ui.UIManager
-	gameOverlay       *ui.UIManager
-	isRunning         bool
-	isPaused          bool
-	cookStations      []*cooking.CookStation
-	startTime         time.Time // game start
-	lastSpawnTime     time.Time // last spawn batches
-	waveDefinitions   []WaveDefinition
-	currentWaveIndex  int
-	lastWaveStartTime time.Time
-	gameStartTime     time.Time
+	lastSpawnTime            time.Time // last spawn batches
+	waveDefinitions          []WaveDefinition
+	currentWaveIndex         int
+	lastWaveStartTime        time.Time
+	gameStartTime            time.Time
+	Player                   *player.Player
+	World                    *world.World
+	Enemies                  []enemy.EnemyInterface
+	Spawner                  *world.EnemySpawner
+	items                    []*item.Item
+	inventory                *inventory.Inventory
+	hud                      *ui.UIManager
+	gameOverlay              *ui.UIManager
+	isRunning                bool
+	isPaused                 bool
+	cookStations             []*cooking.CookStation
+	startTime                time.Time // game start
+	lastEnemySpawnTime       time.Time // last spawn batches
+	lastCookStationSpawnTime time.Time
 }
 
 func NewGameScene(backToMenu func()) *GameScene {
 	newGameScene := &GameScene{
-		Player:        player.NewPlayer(),
-		World:         world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES),
-		Enemies:       []enemy.EnemyInterface{},
-		Spawner:       initEnemySpawner(),
-		inventory:     inventory.NewInventory(),
-		items:         initItems(),
-		hud:           nil,
-		isRunning:     true,
-		cookStations:  []*cooking.CookStation{},
-		startTime:     time.Now(),
-		lastSpawnTime: time.Now(),
+		Player:             player.NewPlayer(),
+		World:              world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES),
+		Enemies:            []enemy.EnemyInterface{},
+		Spawner:            initEnemySpawner(),
+		inventory:          inventory.NewInventory(),
+		items:              initItems(),
+		hud:                nil,
+		isRunning:          true,
+		cookStations:       []*cooking.CookStation{},
+		startTime:          time.Now(),
+		lastEnemySpawnTime: time.Now(),
 	}
 	newGameScene.initializeWaves()
 	newGameScene.hud = initHUD(newGameScene)
@@ -131,13 +134,14 @@ func (g *GameScene) Update() error {
 		dt,
 	)
 
+	/// --- Toast ---
+	toast.UpdateToasts()
+
 	/// --- Update Enemies ---
 	updateEnemies(g, dt, elapsed)
 
 	/// --- Update Cooking Stations ---
-	for _, cookStation := range g.cookStations {
-		cookStation.Update(g.Player, g.inventory)
-	}
+	updateCookStations(g, dt, g.inventory, elapsed)
 
 	/// --- Check if player died ---
 	if !g.Player.Alive() {
@@ -181,6 +185,9 @@ func (g *GameScene) Draw(screen *ebiten.Image) {
 	for _, cookStation := range g.cookStations {
 		cookStation.Draw(screen, mapOffsetX, mapOffsetY)
 	}
+
+	/// --- Toasts ---
+	toast.DrawToasts(screen)
 
 	/// --- Drawing HUD ---
 	drawUI(g, screen)

@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 // Currently just fixed constant values. PLS do not overuse it.
 // TODO: Implement functions to read the config from a toml or json file
 const (
@@ -31,7 +33,9 @@ const (
 	ICON_SIZE               = 16.0 // The size in pixels of icon assets
 	ICON_ON_MAP_RENDER_SIZE = 16.0 // The size in pixels on how large an item icon should be rendered
 	/// --- Enemy Settings ---
-	DEFAULT_ENEMY_ASSET_SIZE = 32.0 // THe size in pixels of default enemies
+	DEFAULT_ENEMY_ASSET_SIZE  = 32.0 // THe size in pixels of default enemies
+	DAMAGE_INDICATOR_SPEED    = 0.5
+	DAMAGE_INDICATOR_DURATION = 500 * time.Millisecond
 	// Enemy: Carrot
 	CARROT_SPEED                  = 50.0
 	CARROT_HEALTH                 = 2
@@ -97,4 +101,7 @@ const (
 	POTATO_COLOR_G = 146
 	POTATO_COLOR_B = 104
 	POTATO_COLOR_A = 255
+	///--- TOASTS ---
+	DEFAULT_TOAST_DURATION = 2 * time.Second
+	TOAST_GAP              = 10
 )

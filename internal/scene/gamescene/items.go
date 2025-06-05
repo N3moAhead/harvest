@@ -92,6 +92,14 @@ func initItems() []*item.Item {
 			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
 			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2+80,
 		),
+		item.NewThrowingKnifes(
+			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
+			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2+160,
+		),
+		item.NewThrowingKnifes(
+			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
+			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2+240,
+		),
 		item.NewRollingPin(
 			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
 			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-80,
