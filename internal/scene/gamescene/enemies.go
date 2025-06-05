@@ -15,8 +15,7 @@ import (
 
 func updateEnemies(g *GameScene, dt float64, elapsed float32) {
 	// SPAWN ENEMIES, based on elapsed time
-	elapsedMs := float64(time.Since(g.startTime).Milliseconds())
-	elapsedSec := elapsedMs / 1000.0
+	elapsedSec := float64(time.Since(g.startTime).Seconds())
 	difficulty := 1.0 + math.Sqrt(elapsedSec)/10.0 // increase difficulty over time, use square root to make it slower at the beginning
 	// difficulty := 1.0 + elapsedSec/60.0 // 60.0 seconds is too short
 
@@ -27,9 +26,9 @@ func updateEnemies(g *GameScene, dt float64, elapsed float32) {
 	mixProgress := util.Clamp((elapsedSec-config.MIX_START_SEC)/10.0, 0.0, 1.0) // mix progress from 0 to 1, after 120 seconds it will be 1.0
 
 	// fmt.Printf("Elapsed Time: %.2f seconds, Mix Progress: %.2f, Interval: %.2f seconds, Count: %d, Difficulty: %.2f \n", elapsedSec, mixProgress, intervalSec, count, difficulty)
-	if time.Since(g.lastSpawnTime).Seconds() >= intervalSec {
-		g.lastSpawnTime = time.Now()
-		spawnBatch(g, count, mixProgress)
+	if time.Since(g.lastEnemySpawnTime).Seconds() >= intervalSec {
+		g.lastEnemySpawnTime = time.Now()
+		spawnEnemyBatch(g, count, mixProgress)
 	}
 
 	for _, e := range g.Enemies {
@@ -55,7 +54,7 @@ func drawEnemies(g *GameScene, screen *ebiten.Image, mapOffsetX, mapOffsetY floa
 	}
 }
 
-func spawnBatch(g *GameScene, count int, mixProgress float64) {
+func spawnEnemyBatch(g *GameScene, count int, mixProgress float64) {
 	pool := make([]string, count)
 	for i := range pool {
 		pool[i] = enemy.RandomEnemyType().String()
@@ -73,8 +72,8 @@ func spawnBatch(g *GameScene, count int, mixProgress float64) {
 	for _, t := range pool {
 		// fmt.Printf("Spawning %s enemy\n", t)
 		if mixProgress < 0.3 {
-			mapOffsetX, mapOffsetY := g.World.GetCameraPosition()
-			g.Enemies = append(g.Enemies, g.Spawner.SpawnRandomInView(t, mapOffsetX, mapOffsetY))
+			cameraX, cameraY := g.World.GetCameraPosition()
+			g.Enemies = append(g.Enemies, g.Spawner.SpawnRandomInView(t, cameraX, cameraY))
 		} else {
 			switch rand.Intn(3) {
 			case 0:

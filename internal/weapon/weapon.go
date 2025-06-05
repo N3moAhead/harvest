@@ -86,6 +86,11 @@ func (b *BaseWeapon) CurrentStats(player *player.Player) WeaponStats {
 	stats := b.BaseStats()
 	// Can be used for modifications by buffs in the player or something
 	// A dmg buff or an area attack buff
+	if player != nil {
+		if player.HasSoup(itemtype.DamageSoup) {
+			stats.Damage += 2.0 // TODO maybe add to config, or adjust logic
+		}
+	}
 	return stats
 }
 

@@ -40,6 +40,7 @@ const (
 	DamageSoup
 	MagnetRadiusSoup
 	SpeedSoup
+	MaxItemType // This should always be the last item type
 )
 
 func (it ItemType) String() string {
@@ -86,6 +87,17 @@ func (it ItemType) Category() ItemCategory {
 	default:
 		return CategoryUndefined
 	}
+}
+
+func GetItemTypesByCategory(category ItemCategory) []ItemType {
+	var items []ItemType
+	for i := Undefined + 1; i < MaxItemType; i++ {
+		item := ItemType(i)
+		if item.Category() == category {
+			items = append(items, item)
+		}
+	}
+	return items
 }
 
 // Implementing the sort interface for ItemType
