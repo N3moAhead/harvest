@@ -13,7 +13,7 @@ import (
 )
 
 type WeaponFrameInterface interface {
-	UpdateWeaponFrameValues(itemType itemtype.ItemType, description string)
+	UpdateWeaponFrameValues(itemType itemtype.ItemType, description string, level int)
 }
 
 type WeaponFrame struct {
@@ -23,6 +23,7 @@ type WeaponFrame struct {
 	itemType     itemtype.ItemType
 	isHovered    bool
 	description  string
+	level        int
 }
 
 func NewWeaponFrame(x, y float64, inv *inventory.Inventory) *WeaponFrame {
@@ -44,13 +45,15 @@ func (v *WeaponFrame) Update(input *ui.InputState) {
 	v.BaseElement.Update(input)
 }
 
-func (v *WeaponFrame) UpdateWeaponFrameValues(itemType itemtype.ItemType, description string) {
+func (v *WeaponFrame) UpdateWeaponFrameValues(itemType itemtype.ItemType, description string, level int) {
 	if itemType != itemtype.Undefined {
 		v.itemType = itemType
 		v.description = description
+		v.level = level
 	} else {
 		v.itemType = itemtype.Undefined
 		v.description = ""
+		v.level = 0
 	}
 }
 
@@ -78,6 +81,9 @@ func (v *WeaponFrame) drawItemDisplay(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(drawX, drawY)
 	screen.DrawImage(itemIcon, op)
+	// TODO replace the debug print with a real font!!
+	// Adding some padding here to move the the number close to the bottom right
+	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("lvl. %d", v.level), int(v.X+4), int(drawY+8))
 }
 
 var _ ui.UIElement = (*WeaponFrame)(nil)

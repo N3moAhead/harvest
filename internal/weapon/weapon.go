@@ -23,6 +23,7 @@ type Weapon interface {
 	Description() string
 	Name() string
 	Level() int
+	LevelUp() bool
 	MaxLevel() int
 }
 
@@ -59,6 +60,14 @@ func (b *BaseWeapon) Name() string {
 
 func (b *BaseWeapon) Level() int {
 	return b.level
+}
+
+func (b *BaseWeapon) LevelUp() bool {
+	if b.level < b.maxLevel {
+		b.level++
+		return true
+	}
+	return false
 }
 
 func (b *BaseWeapon) MaxLevel() int {
