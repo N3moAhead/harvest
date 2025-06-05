@@ -27,45 +27,45 @@ type WaveDefinition struct {
 func (g *GameScene) initializeWaves() {
 	g.waveDefinitions = []WaveDefinition{
 		// Wave 1 (index 0)
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion}, Count: 10},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion}, Count: 140},
 		// Wave 2
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek}, Count: 15},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek}, Count: 145},
 		// Wave 3
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot}, Count: 25},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot}, Count: 150},
 		// Wave 4
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage}, Count: 40},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage}, Count: 170},
 		// Wave 5
-		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato}, Count: 10},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato}, Count: 190},
 		// Wave 6 - Start mixing
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato}, Count: 50},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato}, Count: 120},
 		// Wave 7
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion}, Count: 60},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion}, Count: 1110},
 		// Wave 8
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek, enemy.TypeCarrot}, Count: 70},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek, enemy.TypeCarrot}, Count: 1150},
 		// Wave 9
-		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato, enemy.TypeCabbage}, Count: 90},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato, enemy.TypeCabbage}, Count: 1160},
 		// Wave 10
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot}, Count: 100},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot}, Count: 1200},
 		// Wave 11
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot}, Count: 110},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot}, Count: 1230},
 		// Wave 12
-		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato}, Count: 120},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato}, Count: 1250},
 		// Wave 13
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 140},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 1260},
 		// Wave 14
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage}, Count: 150},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage}, Count: 1280},
 		// Wave 15
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek}, Count: 160},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek}, Count: 1300},
 		// Wave 16
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion}, Count: 250},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion}, Count: 1320},
 		// Wave 17
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek, enemy.TypeCarrot, enemy.TypePotato}, Count: 300},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek, enemy.TypeCarrot, enemy.TypePotato}, Count: 1400},
 		// Wave 18
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 400},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 1500},
 		// Wave 19
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 550},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 1750},
 		// Wave 20
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 1000},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 11000},
 	}
 	g.currentWaveIndex = -1
 	// g.lastWaveStartTime will be set when the first wave starts
@@ -134,13 +134,12 @@ func spawnWaveEnemies(g *GameScene) {
 
 		if g.currentWaveIndex < 3 {
 			spawnPatternChoice = 0
-		} else if g.currentWaveIndex < 7 {
-			spawnPatternChoice = rand.Intn(2) + 1
 		}
+
 		switch spawnPatternChoice {
 		case 0: // Spawn Random Outside of View
 			for i := 0; i < countPerType; i++ {
-				spawnPos := getOffscreenSpawnPosition(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, 50.0)
+				spawnPos := getOffscreenSpawnPosition(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, 100.0)
 				newEnemy := g.Spawner.Spawn(enemyTypeStr, spawnPos)
 				if newEnemy != nil {
 					g.Enemies = append(g.Enemies, newEnemy)
@@ -172,15 +171,15 @@ func getOffscreenSpawnPosition(playerPos component.Vector2D, screenWidth, screen
 	switch side {
 	case 0: // Top
 		x = playerPos.X + rand.Float64()*screenWidth
-		y = playerPos.Y - (screenHeight / 2) - buffer
+		y = playerPos.Y - (screenHeight / 2) - buffer*rand.Float64()
 	case 1: // Bottom
 		x = playerPos.X + rand.Float64()*screenWidth
-		y = playerPos.Y + (screenHeight / 2) + buffer
+		y = playerPos.Y + (screenHeight / 2) + buffer*rand.Float64()
 	case 2: // Left
-		x = playerPos.X - (screenWidth / 2) - buffer
+		x = playerPos.X - (screenWidth / 2) - buffer*rand.Float64()
 		y = playerPos.Y + rand.Float64()*screenHeight
 	default: // Right
-		x = playerPos.X + (screenWidth / 2) + buffer
+		x = playerPos.X + (screenWidth / 2) + buffer*rand.Float64()
 		y = playerPos.Y + rand.Float64()*screenHeight
 	}
 	return component.NewVector2D(x, y)

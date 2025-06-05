@@ -15,7 +15,7 @@ const (
 	HEIGHT_IN_TILES = 200 // The number of tiles in the X direction.
 	WIDTH_IN_TILES  = 200 // The number of tiles in the Y direction.
 	/// --- Player Settings ---
-	INITIAL_PLAYER_SPEED           = 6.0 // Initial Player Speed
+	INITIAL_PLAYER_SPEED           = 3.0 // Initial Player Speed
 	INITIAL_PLAYER_MAGNET_RADIUS   = 50.0
 	PLAYER_PICKUP_RADIUS           = 5.0   // The radius in which items will be picked up into the players inventory
 	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0   // Determines how fast items move towards the player
