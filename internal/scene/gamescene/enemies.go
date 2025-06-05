@@ -1,12 +1,15 @@
 package gamescene
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
+	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
+	"github.com/N3moAhead/harvest/internal/toast"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -74,6 +77,10 @@ func updateEnemies(g *GameScene, dt float64, elapsed float32) {
 			g.currentWaveIndex++
 			g.lastWaveStartTime = time.Now()
 			spawnWaveEnemies(g)
+			font, ok := assets.AssetStore.GetFont("2p")
+			if ok {
+				toast.AddCustomToast(fmt.Sprintf("Wave %d!", g.currentWaveIndex+1), font, 3*time.Second)
+			}
 		}
 	} else {
 		// TODO: Implement an endless mode thats total brutal chaos
