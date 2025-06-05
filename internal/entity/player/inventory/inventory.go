@@ -6,6 +6,7 @@ import (
 
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
+	"github.com/N3moAhead/harvest/internal/toast"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -56,6 +57,7 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 			inv.Weapons[i] = newWeapon
 			// TODO remove debugging statement
 			fmt.Printf("Added weapon '%s' to slot %d \n", newWeapon.Name(), i+1)
+			toast.AddToast(fmt.Sprintf("%s collected!", newWeapon.Name()))
 			break
 		}
 	}

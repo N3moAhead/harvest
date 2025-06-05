@@ -108,13 +108,20 @@ func (s *Store) Load(
 		if _, exists := s.fonts[name]; exists {
 			continue
 		}
-		font, loadErr := loadFontFile(path, 24, 72, font.HintingFull)
+		font, loadErr := loadFontFile(path, 24, 72)
 		if loadErr != nil {
 			err = fmt.Errorf("Error while loading the font'%s' (%s): %w", name, path, loadErr)
 			fmt.Println(err)
 			continue
 		}
 		s.fonts[name] = font
+		fontSmall, loadErr := loadFontFile(path, 14, 72)
+		if loadErr != nil {
+			err = fmt.Errorf("Error while loading the font'%s' (%s): %w", name, path, loadErr)
+			fmt.Println(err)
+			continue
+		}
+		s.fonts[fmt.Sprintf("%s_small", name)] = fontSmall
 		fmt.Printf("Font '%s' loaded: %s\n", name, path)
 	}
 
@@ -188,7 +195,7 @@ func loadAudioFile(path string, sampleRate int) ([]byte, error) {
 	}
 }
 
-func loadFontFile(path string, size float64, dpi float64, hinting font.Hinting) (font.Face, error) {
+func loadFontFile(path string, size float64, dpi float64) (font.Face, error) {
 	fontBytes, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -202,7 +209,7 @@ func loadFontFile(path string, size float64, dpi float64, hinting font.Hinting) 
 	myFontFace, err := opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    size,
 		DPI:     dpi,
-		Hinting: hinting,
+		Hinting: font.HintingFull,
 	})
 	if err != nil {
 		return nil, err

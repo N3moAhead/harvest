@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 // Currently just fixed constant values. PLS do not overuse it.
 // TODO: Implement functions to read the config from a toml or json file
 const (
@@ -97,4 +99,7 @@ const (
 	POTATO_COLOR_G = 146
 	POTATO_COLOR_B = 104
 	POTATO_COLOR_A = 255
+	///--- TOASTS ---
+	DEFAULT_TOAST_DURATION = 2 * time.Second
+	TOAST_GAP              = 10
 )
