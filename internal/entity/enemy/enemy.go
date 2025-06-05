@@ -113,7 +113,6 @@ func (e *Enemy) IsAlive() bool {
 }
 
 func (e *Enemy) TakeDamage(damage float64) {
-	// TODO flash the dealt damage
 	e.Health.Damage(damage)
 }
 
