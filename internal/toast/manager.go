@@ -11,7 +11,7 @@ import (
 var toasts []*Toast = make([]*Toast, 0)
 
 func AddToast(txt string) {
-	fnt, ok := assets.AssetStore.GetFont("2p_small")
+	fnt, ok := assets.AssetStore.GetFont("micro")
 	if ok {
 		newToast := newToast(txt, fnt, config.DEFAULT_TOAST_DURATION)
 		toasts = append(toasts, newToast)

@@ -23,6 +23,7 @@ type Weapon interface {
 	Description() string
 	Name() string
 	Level() int
+	LevelUp() bool
 	MaxLevel() int
 }
 
@@ -61,6 +62,14 @@ func (b *BaseWeapon) Level() int {
 	return b.level
 }
 
+func (b *BaseWeapon) LevelUp() bool {
+	if b.level < b.maxLevel {
+		b.level++
+		return true
+	}
+	return false
+}
+
 func (b *BaseWeapon) MaxLevel() int {
 	return b.maxLevel
 }
@@ -86,6 +95,11 @@ func (b *BaseWeapon) CurrentStats(player *player.Player) WeaponStats {
 	stats := b.BaseStats()
 	// Can be used for modifications by buffs in the player or something
 	// A dmg buff or an area attack buff
+	if player != nil {
+		if player.HasSoup(itemtype.DamageSoup) {
+			stats.Damage += 2.0 // TODO maybe add to config, or adjust logic
+		}
+	}
 	return stats
 }
 

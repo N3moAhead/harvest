@@ -64,7 +64,7 @@ func (s *Store) GetFont(name string) (fontFace font.Face, fontFound bool) {
 func (s *Store) Load(
 	imageFiles map[string]string,
 	sfxFiles map[string]string,
-	fontFiles map[string]string,
+	fontFiles map[string]FontConfig,
 	musicFiles map[string]string,
 	audioSampleRate int,
 ) error {
@@ -104,25 +104,18 @@ func (s *Store) Load(
 	}
 
 	fmt.Println("Loading font files...")
-	for name, path := range fontFiles {
+	for name, fontConfig := range fontFiles {
 		if _, exists := s.fonts[name]; exists {
 			continue
 		}
-		font, loadErr := loadFontFile(path, 24, 72)
+		font, loadErr := loadFontFile(fontConfig.Path, float64(fontConfig.Size), 72)
 		if loadErr != nil {
-			err = fmt.Errorf("Error while loading the font'%s' (%s): %w", name, path, loadErr)
+			err = fmt.Errorf("Error while loading the font'%s' (%s): %w", name, fontConfig.Path, loadErr)
 			fmt.Println(err)
 			continue
 		}
 		s.fonts[name] = font
-		fontSmall, loadErr := loadFontFile(path, 14, 72)
-		if loadErr != nil {
-			err = fmt.Errorf("Error while loading the font'%s' (%s): %w", name, path, loadErr)
-			fmt.Println(err)
-			continue
-		}
-		s.fonts[fmt.Sprintf("%s_small", name)] = fontSmall
-		fmt.Printf("Font '%s' loaded: %s\n", name, path)
+		fmt.Printf("Font '%s' loaded: %s\n", name, fontConfig.Path)
 	}
 
 	// Loading music is very slow because currently its getting loaded
