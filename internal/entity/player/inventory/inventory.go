@@ -47,8 +47,8 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 	// If the weapon already exists we level up
 	for _, existingWeapon := range inv.Weapons {
 		if existingWeapon != nil && existingWeapon.Name() == newWeapon.Name() {
-
 			if ok := existingWeapon.LevelUp(); ok {
+				toast.AddToast(fmt.Sprintf("'%s' updated to level %d", existingWeapon.Name(), existingWeapon.Level()))
 				fmt.Printf("Weapon '%s' updated to level %d", existingWeapon.Name(), existingWeapon.Level())
 			} else {
 				fmt.Printf("Weapon '%s' is already at max level %d", existingWeapon.Name(), existingWeapon.MaxLevel())
