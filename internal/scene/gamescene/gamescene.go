@@ -19,19 +19,23 @@ import (
 )
 
 type GameScene struct {
-	Player        *player.Player
-	World         *world.World
-	Enemies       []enemy.EnemyInterface
-	Spawner       *world.EnemySpawner
-	items         []*item.Item
-	inventory     *inventory.Inventory
-	hud           *ui.UIManager
-	gameOverlay   *ui.UIManager
-	isRunning     bool
-	isPaused      bool
-	cookStations  []*cooking.CookStation
-	startTime     time.Time // game start
-	lastSpawnTime time.Time // last spawn batches
+	Player            *player.Player
+	World             *world.World
+	Enemies           []enemy.EnemyInterface
+	Spawner           *world.EnemySpawner
+	items             []*item.Item
+	inventory         *inventory.Inventory
+	hud               *ui.UIManager
+	gameOverlay       *ui.UIManager
+	isRunning         bool
+	isPaused          bool
+	cookStations      []*cooking.CookStation
+	startTime         time.Time // game start
+	lastSpawnTime     time.Time // last spawn batches
+	waveDefinitions   []WaveDefinition
+	currentWaveIndex  int
+	lastWaveStartTime time.Time
+	gameStartTime     time.Time
 }
 
 func NewGameScene(backToMenu func()) *GameScene {
@@ -48,6 +52,7 @@ func NewGameScene(backToMenu func()) *GameScene {
 		startTime:     time.Now(),
 		lastSpawnTime: time.Now(),
 	}
+	newGameScene.initializeWaves()
 	newGameScene.hud = initHUD(newGameScene)
 	newGameScene.gameOverlay = initGameOverlay(newGameScene, backToMenu)
 

@@ -1,7 +1,6 @@
 package gamescene
 
 import (
-	"math"
 	"math/rand"
 	"time"
 
@@ -9,42 +8,175 @@ import (
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
 	"github.com/N3moAhead/harvest/internal/world"
-	"github.com/N3moAhead/harvest/pkg/util"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+const (
+	waveIntervalSeconds = 20
+	totalWaves          = 20
+)
+
+type WaveDefinition struct {
+	EnemyTypes []enemy.EnemyType
+	Count      int
+}
+
+func (g *GameScene) initializeWaves() {
+	g.waveDefinitions = []WaveDefinition{
+		// Wave 1 (index 0)
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion}, Count: 10},
+		// Wave 2
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek}, Count: 15},
+		// Wave 3
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot}, Count: 25},
+		// Wave 4
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage}, Count: 40},
+		// Wave 5
+		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato}, Count: 10},
+		// Wave 6 - Start mixing
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato}, Count: 50},
+		// Wave 7
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion}, Count: 60},
+		// Wave 8
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek, enemy.TypeCarrot}, Count: 70},
+		// Wave 9
+		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato, enemy.TypeCabbage}, Count: 90},
+		// Wave 10
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot}, Count: 100},
+		// Wave 11
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot}, Count: 110},
+		// Wave 12
+		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato}, Count: 120},
+		// Wave 13
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 140},
+		// Wave 14
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage}, Count: 150},
+		// Wave 15
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek}, Count: 160},
+		// Wave 16
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion}, Count: 250},
+		// Wave 17
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek, enemy.TypeCarrot, enemy.TypePotato}, Count: 300},
+		// Wave 18
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 400},
+		// Wave 19
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 550},
+		// Wave 20
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 1000},
+	}
+	g.currentWaveIndex = -1
+	// g.lastWaveStartTime will be set when the first wave starts
+}
+
 func updateEnemies(g *GameScene, dt float64, elapsed float32) {
-	// SPAWN ENEMIES, based on elapsed time
-	elapsedMs := float64(time.Since(g.startTime).Milliseconds())
-	elapsedSec := elapsedMs / 1000.0
-	difficulty := 1.0 + math.Sqrt(elapsedSec)/10.0 // increase difficulty over time, use square root to make it slower at the beginning
-	// difficulty := 1.0 + elapsedSec/60.0 // 60.0 seconds is too short
-
-	// intervalSec := baseIntervalSec / difficulty
-	// decrease spawning interval/duration based on difficulty/ time
-	intervalSec := config.BASE_SPAWN_INTERVAL_SEC / difficulty                  // decrease spawning interval/duration based on difficulty/ time
-	count := int(math.Ceil(float64(config.BASE_COUNT_PER_BATCH) * difficulty))  // increase count of batches based on difficulty (number of pools --> per pool multiple enemies)
-	mixProgress := util.Clamp((elapsedSec-config.MIX_START_SEC)/10.0, 0.0, 1.0) // mix progress from 0 to 1, after 120 seconds it will be 1.0
-
-	// fmt.Printf("Elapsed Time: %.2f seconds, Mix Progress: %.2f, Interval: %.2f seconds, Count: %d, Difficulty: %.2f \n", elapsedSec, mixProgress, intervalSec, count, difficulty)
-	if time.Since(g.lastSpawnTime).Seconds() >= intervalSec {
-		g.lastSpawnTime = time.Now()
-		spawnBatch(g, count, mixProgress)
+	if g.currentWaveIndex < totalWaves-1 {
+		if g.currentWaveIndex == -1 || time.Since(g.lastWaveStartTime).Seconds() >= waveIntervalSeconds {
+			g.currentWaveIndex++
+			g.lastWaveStartTime = time.Now()
+			spawnWaveEnemies(g)
+		}
+	} else {
+		// TODO: Implement an endless mode thats total brutal chaos
 	}
 
-	for _, e := range g.Enemies {
-		// e.Update(g.Player, dt)
+	// Update existing enemies
+	for i := len(g.Enemies) - 1; i >= 0; i-- {
+		e := g.Enemies[i]
 		wasAlive := e.IsAlive()
 		e.Update(g.Player, dt)
+
 		if wasAlive && !e.IsAlive() {
-			// enemy just died: generate drops
-			elapsedMinutes := elapsed / 60000.0 // convert milliseconds to minutes
-			drops := e.TryDrop(elapsedMinutes)
-			for i := range drops {
-				g.items = append(g.items, &drops[i])
+			elapsedMinutes := float64(elapsed) / 60000.0
+			drops := e.TryDrop(float32(elapsedMinutes))
+			for j := range drops {
+				g.items = append(g.items, &drops[j])
+			}
+			// Remove dead enemy
+			g.Enemies = append(g.Enemies[:i], g.Enemies[i+1:]...)
+		}
+	}
+}
+
+func spawnWaveEnemies(g *GameScene) {
+	if g.currentWaveIndex < 0 || g.currentWaveIndex >= len(g.waveDefinitions) {
+		return
+	}
+
+	waveDef := g.waveDefinitions[g.currentWaveIndex]
+	numEnemyTypesInWave := len(waveDef.EnemyTypes)
+	if numEnemyTypesInWave == 0 {
+		return
+	}
+
+	countPerType := waveDef.Count / numEnemyTypesInWave
+	if countPerType == 0 && waveDef.Count > 0 {
+		countPerType = 1
+	}
+
+	for _, enemyTypeEnum := range waveDef.EnemyTypes {
+		enemyTypeStr := enemyTypeEnum.String()
+
+		if g.Player == nil || g.World == nil {
+			for i := 0; i < countPerType; i++ {
+				g.Enemies = append(g.Enemies, g.Spawner.SpawnRandom(enemyTypeStr))
+			}
+			continue
+		}
+
+		spawnPatternChoice := rand.Intn(4)
+
+		if g.currentWaveIndex < 3 {
+			spawnPatternChoice = 0
+		} else if g.currentWaveIndex < 7 {
+			spawnPatternChoice = rand.Intn(2) + 1
+		}
+		switch spawnPatternChoice {
+		case 0: // Spawn Random Outside of View
+			for i := 0; i < countPerType; i++ {
+				spawnPos := getOffscreenSpawnPosition(g.Player.Pos, config.SCREEN_WIDTH, config.SCREEN_HEIGHT, 50.0)
+				newEnemy := g.Spawner.Spawn(enemyTypeStr, spawnPos)
+				if newEnemy != nil {
+					g.Enemies = append(g.Enemies, newEnemy)
+				}
+			}
+		case 1: // Spawn Circle
+			if countPerType > 0 {
+				g.Enemies = append(g.Enemies, g.Spawner.SpawnCircle(enemyTypeStr, g.Player, 500+rand.Float64()*100, countPerType)...)
+			}
+		case 2: // Spawn ZigZag
+			if countPerType > 0 {
+				startPos := component.NewVector2D(g.Player.Pos.X+float64(rand.Intn(400)-200), g.Player.Pos.Y+float64(rand.Intn(400)-200))
+				g.Enemies = append(g.Enemies, g.Spawner.SpawnZigZag(enemyTypeStr, startPos, countPerType, 30+rand.Float64()*20, 15+rand.Float64()*10)...)
+			}
+		default: // Spawn Line
+			if countPerType > 0 {
+				startPos := component.NewVector2D(g.Player.Pos.X+float64(rand.Intn(400)-200), g.Player.Pos.Y+float64(rand.Intn(400)-200))
+				g.Enemies = append(g.Enemies, g.Spawner.SpawnLine(enemyTypeStr, startPos, countPerType, 25+rand.Float64()*15, 5+rand.Float64()*5)...)
 			}
 		}
 	}
+}
+
+// Helper function to get a spawn position just off-screen
+func getOffscreenSpawnPosition(playerPos component.Vector2D, screenWidth, screenHeight, buffer float64) component.Vector2D {
+	side := rand.Intn(4) // 0: top, 1: bottom, 2: left, 3: right
+	var x, y float64
+
+	switch side {
+	case 0: // Top
+		x = playerPos.X + rand.Float64()*screenWidth
+		y = playerPos.Y - (screenHeight / 2) - buffer
+	case 1: // Bottom
+		x = playerPos.X + rand.Float64()*screenWidth
+		y = playerPos.Y + (screenHeight / 2) + buffer
+	case 2: // Left
+		x = playerPos.X - (screenWidth / 2) - buffer
+		y = playerPos.Y + rand.Float64()*screenHeight
+	default: // Right
+		x = playerPos.X + (screenWidth / 2) + buffer
+		y = playerPos.Y + rand.Float64()*screenHeight
+	}
+	return component.NewVector2D(x, y)
 }
 
 func drawEnemies(g *GameScene, screen *ebiten.Image, mapOffsetX, mapOffsetY float64) {
@@ -55,43 +187,9 @@ func drawEnemies(g *GameScene, screen *ebiten.Image, mapOffsetX, mapOffsetY floa
 	}
 }
 
-func spawnBatch(g *GameScene, count int, mixProgress float64) {
-	pool := make([]string, count)
-	for i := range pool {
-		pool[i] = enemy.RandomEnemyType().String()
-		// maybe if only use `types`:
-		// pool[i] = types[rand.Intn(len(types))]
-	}
-
-	// completly mix pool if mixProgress is high enough
-	if mixProgress > 0.8 {
-		rand.Shuffle(len(pool), func(i, j int) {
-			pool[i], pool[j] = pool[j], pool[i]
-		})
-	}
-
-	for _, t := range pool {
-		// fmt.Printf("Spawning %s enemy\n", t)
-		if mixProgress < 0.3 {
-			mapOffsetX, mapOffsetY := g.World.GetCameraPosition()
-			g.Enemies = append(g.Enemies, g.Spawner.SpawnRandomInView(t, mapOffsetX, mapOffsetY))
-		} else {
-			switch rand.Intn(3) {
-			case 0:
-				g.Enemies = append(g.Enemies, g.Spawner.SpawnCircle(t, g.Player, 150, 6)...)
-			case 1:
-				g.Enemies = append(g.Enemies, g.Spawner.SpawnZigZag(t, g.Player.Pos, 5, 50, 20)...)
-			default:
-				g.Enemies = append(g.Enemies, g.Spawner.SpawnLine(t, g.Player.Pos, 5, 40, 10)...)
-			}
-		}
-	}
-}
-
 func initEnemySpawner() *world.EnemySpawner {
 	s := world.NewEnemySpawner()
 
-	// register enemy factories
 	s.RegisterFactory(enemy.TypeCarrot.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewCarrotEnemy(pos)
 	})
