@@ -16,6 +16,11 @@ var (
 	MusicPlayer  *audio.Player
 )
 
+type FontConfig struct {
+	Path string
+	Size int
+}
+
 func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
@@ -68,8 +73,9 @@ func LoadAllAssets() {
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
 	}
 
-	fontsToLoad := map[string]string{
-		"2p": "assets/fonts/PressStart2P-Regular.ttf",
+	fontsToLoad := map[string]FontConfig{
+		"2p":    FontConfig{Path: "assets/fonts/PressStart2P-Regular.ttf", Size: 24},
+		"micro": FontConfig{Path: "assets/fonts/micro.ttf", Size: 20},
 	}
 
 	err := AssetStore.Load(imagesToLoad, sfxToLoad, fontsToLoad, musicToLoad, config.AUDIO_SAMPLE_RATE)
@@ -93,8 +99,8 @@ func init() {
 		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
 	}
 	initMusicToLoad := map[string]string{}
-	initFontsToLoad := map[string]string{
-		"2p": "assets/fonts/PressStart2P-Regular.ttf",
+	initFontsToLoad := map[string]FontConfig{
+		"2p": FontConfig{Path: "assets/fonts/PressStart2P-Regular.ttf", Size: 24},
 	}
 	err := AssetStore.Load(initImagesToLoad, initSFXToLoad, initFontsToLoad, initMusicToLoad, config.AUDIO_SAMPLE_RATE)
 	if err != nil {
