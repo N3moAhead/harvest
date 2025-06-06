@@ -56,6 +56,9 @@ func LoadAllAssets() {
 		// Weapons
 		"throwing_knifes_icon": "assets/images/icons/throwing_knifes_icon.png",
 		"knife_projectile":     "assets/images/weapons/throwing_knifes/knife_projectile.png",
+		"soup_icon1":           "assets/images/icons/soup/wurzelwerk_onion_cabbage_soup.png",
+		"soup_icon2":           "assets/images/icons/soup/wurzewerk_carrot_soup.png",
+		"soup_icon3":           "assets/images/icons/soup/wurzewerk_leeke_soup.png",
 	}
 	sfxToLoad := map[string]string{
 		"laser":              "assets/audio/sfx/laserTest.wav",

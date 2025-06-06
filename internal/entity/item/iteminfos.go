@@ -72,18 +72,18 @@ var ItemInfos = map[itemtype.ItemType]ItemInfo{
 		DisplayName: "Damage Soup",
 		Category:    itemtype.CategorySoup,
 		Soup:        soups.Definitions[itemtype.DamageSoup],
-		IconName:    "",
+		IconName:    "soup_icon1",
 	},
 	itemtype.MagnetRadiusSoup: {
 		DisplayName: "Magnet Soup",
 		Category:    itemtype.CategorySoup,
 		Soup:        soups.Definitions[itemtype.MagnetRadiusSoup],
-		IconName:    "",
+		IconName:    "soup_icon2",
 	},
 	itemtype.SpeedSoup: {
 		DisplayName: "Speed Soup",
 		Category:    itemtype.CategorySoup,
 		Soup:        soups.Definitions[itemtype.SpeedSoup],
-		IconName:    "",
+		IconName:    "soup_icon3",
 	},
 }
