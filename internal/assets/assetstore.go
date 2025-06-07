@@ -16,6 +16,11 @@ var (
 	MusicPlayer  *audio.Player
 )
 
+type FontConfig struct {
+	Path string
+	Size int
+}
+
 func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
@@ -47,6 +52,9 @@ func LoadAllAssets() {
 		"thermalmixer_icon": "assets/images/icons/thermalmixer_icon.png",
 		"no_icon":           "assets/images/icons/no_icon.png",
 		"rolling_pin_icon":  "assets/images/icons/rolling_pin_icon.png",
+		"soup_icon1":        "assets/images/icons/soup/wurzelwerk_onion_cabbage_soup.png",
+		"soup_icon2":        "assets/images/icons/soup/wurzewerk_carrot_soup.png",
+		"soup_icon3":        "assets/images/icons/soup/wurzewerk_leeke_soup.png",
 		// Hud
 		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
 		"soup_item_frame":     "assets/images/hud/hud_item_frame2.png",
@@ -71,8 +79,9 @@ func LoadAllAssets() {
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
 	}
 
-	fontsToLoad := map[string]string{
-		"2p": "assets/fonts/PressStart2P-Regular.ttf",
+	fontsToLoad := map[string]FontConfig{
+		"2p":    FontConfig{Path: "assets/fonts/PressStart2P-Regular.ttf", Size: 24},
+		"micro": FontConfig{Path: "assets/fonts/micro.ttf", Size: 20},
 	}
 
 	err := AssetStore.Load(imagesToLoad, sfxToLoad, fontsToLoad, musicToLoad, config.AUDIO_SAMPLE_RATE)
@@ -96,8 +105,8 @@ func init() {
 		"game_loads_sound": "assets/audio/sfx/game_loads_sound.wav",
 	}
 	initMusicToLoad := map[string]string{}
-	initFontsToLoad := map[string]string{
-		"2p": "assets/fonts/PressStart2P-Regular.ttf",
+	initFontsToLoad := map[string]FontConfig{
+		"2p": FontConfig{Path: "assets/fonts/PressStart2P-Regular.ttf", Size: 24},
 	}
 	err := AssetStore.Load(initImagesToLoad, initSFXToLoad, initFontsToLoad, initMusicToLoad, config.AUDIO_SAMPLE_RATE)
 	if err != nil {

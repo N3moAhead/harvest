@@ -10,6 +10,7 @@ type InputState struct {
 	Right                  bool
 	Down                   bool
 	Left                   bool
+	Esc                    bool
 	MouseX, MouseY         int
 	MouseButtonLeftPressed bool
 }
@@ -21,6 +22,7 @@ func GetInputState() *InputState {
 		Right:                  ebiten.IsKeyPressed(ebiten.KeyD) || ebiten.IsKeyPressed(ebiten.KeyRight),
 		Down:                   ebiten.IsKeyPressed(ebiten.KeyS) || ebiten.IsKeyPressed(ebiten.KeyDown),
 		Left:                   ebiten.IsKeyPressed(ebiten.KeyA) || ebiten.IsKeyPressed(ebiten.KeyLeft),
+		Esc:                    ebiten.IsKeyPressed(ebiten.KeyEscape),
 		MouseX:                 mouseX,
 		MouseY:                 mouseY,
 		MouseButtonLeftPressed: inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft),

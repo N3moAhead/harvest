@@ -8,6 +8,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/enemy"
 	"github.com/N3moAhead/harvest/internal/entity/player"
+	"github.com/N3moAhead/harvest/pkg/util"
 )
 
 // Factory for different enemies
@@ -45,10 +46,8 @@ func (s *EnemySpawner) SpawnRandom(enemyType string) enemy.EnemyInterface {
 
 // Random Position within Camera View
 func (s *EnemySpawner) SpawnRandomInView(enemyType string, camX, camY float64) enemy.EnemyInterface {
-	spawnPos := component.NewVector2D(
-		camX+rand.Float64()*config.SCREEN_WIDTH,
-		camY+rand.Float64()*config.SCREEN_HEIGHT,
-	)
+	x, y := util.GetRandomPositionInView(camX, camY)
+	spawnPos := component.NewVector2D(x, y)
 	return s.Spawn(enemyType, spawnPos)
 }
 

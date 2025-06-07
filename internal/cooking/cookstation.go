@@ -3,6 +3,7 @@ package cooking
 import (
 	"fmt"
 	"image/color"
+	"math/rand"
 
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/assets"
@@ -57,11 +58,17 @@ var RecipeDefinitions = map[itemtype.ItemType]Recipe{
 	// ...
 }
 
+// function to get a random recipe
+func GetRandomRecipe() Recipe {
+	soupTypes := itemtype.GetItemTypesByCategory(itemtype.CategorySoup)
+	return RecipeDefinitions[soupTypes[rand.Intn(len(soupTypes))]]
+}
+
 func NewCookStation(x, y float64, recipe Recipe, costFactor float64) *CookStation {
 	animationStore := animation.NewAnimationStore()
 	cookStation, ok := assets.AssetStore.GetImage("cook_station")
 	if ok {
-		defaultAnimation, err := animation.NewAnimation(cookStation, 32, 32, 0, 27, 8, 6, true)
+		defaultAnimation, err := animation.NewAnimation(cookStation, 64, 64, 0, 0, 8, 6, true)
 		// defaultAnimation, err := animation.NewAnimation(cookStation, 32, 32, 0, 32, 8, 6, false)
 		// defaultAnimation, err := animation.NewAnimation(cookStation, 32, 32, 0, 0, 8, 6, false)
 		if err == nil {

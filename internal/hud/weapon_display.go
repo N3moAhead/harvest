@@ -41,9 +41,9 @@ func (w *WeaponDisplay) Update(input *ui.InputState) {
 		if weaponFrame, ok := child.(WeaponFrameInterface); ok {
 			weapon := w.inv.Weapons[currentWeapon]
 			if weapon != nil {
-				weaponFrame.UpdateWeaponFrameValues(weapon.GetType(), weapon.Description())
+				weaponFrame.UpdateWeaponFrameValues(weapon.GetType(), weapon.Description(), weapon.Level())
 			} else {
-				weaponFrame.UpdateWeaponFrameValues(itemtype.Undefined, "")
+				weaponFrame.UpdateWeaponFrameValues(itemtype.Undefined, "", 0)
 			}
 			currentWeapon++
 		}

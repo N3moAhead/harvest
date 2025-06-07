@@ -16,8 +16,9 @@ import (
 
 type BaseMeleeEnemy struct {
 	Enemy
-	AttackRange float64
-	spawnItem   func(x, y float64) *item.Item
+	AttackRange      float64
+	spawnItem        func(x, y float64) *item.Item
+	damageIndicators []*DamageIndicator
 }
 
 type BaseMeleeOptions struct {
@@ -54,13 +55,27 @@ func NewBaseMeleeEnemy(enemyType EnemyType, pos component.Vector2D, store *anima
 			animationStore:      store,
 			enemyType:           enemyType,
 		},
-		AttackRange: op.AttackRange,
-		spawnItem:   op.SpawnItem,
+		AttackRange:      op.AttackRange,
+		spawnItem:        op.SpawnItem,
+		damageIndicators: make([]*DamageIndicator, 0),
 	}
 }
 
 func (e *BaseMeleeEnemy) Update(player *player.Player, dt float64) {
 	e.animationStore.Update()
+
+	/// Remove dead damageIndicators
+	n := 0
+	for i, indicator := range e.damageIndicators {
+		isAlive := indicator.Update(e.GetPosition())
+		if isAlive {
+			if n != i {
+				e.damageIndicators[n] = indicator
+			}
+			n++
+		}
+	}
+	e.damageIndicators = e.damageIndicators[:n]
 
 	if e.Health.HP > 0 {
 		// Set current animation to walking if no animation is currently running
@@ -112,6 +127,16 @@ func (e *BaseMeleeEnemy) Draw(screen *ebiten.Image, camX, camY float64) {
 			color.RGBA{R: 255, G: 255, B: 255, A: 255},
 		)
 	}
+	for _, dmgIndicator := range e.damageIndicators {
+		dmgIndicator.Draw(screen, camX, camY)
+	}
+}
+
+func (e *BaseMeleeEnemy) TakeDamage(damage float64) {
+	// Spawn a new damage indicator
+	newDmgIndicator := NewDamageIndicator(e.GetPosition(), component.NewVector2D(0, -1), damage)
+	e.damageIndicators = append(e.damageIndicators, newDmgIndicator)
+	e.Health.Damage(damage)
 }
 
 func (e *BaseMeleeEnemy) TryDrop(elapsedMinutes float32) []item.Item {
