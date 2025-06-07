@@ -36,6 +36,7 @@ const (
 	DEFAULT_ENEMY_ASSET_SIZE  = 32.0 // THe size in pixels of default enemies
 	DAMAGE_INDICATOR_SPEED    = 0.5
 	DAMAGE_INDICATOR_DURATION = 500 * time.Millisecond
+	ENEMY_SEPERATION_RADIUS   = 16.0 // The radius space for each enemy
 	// Enemy: Carrot
 	CARROT_SPEED                  = 50.0
 	CARROT_HEALTH                 = 2

@@ -2,6 +2,7 @@ package gamescene
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"time"
 
@@ -86,6 +87,8 @@ func updateEnemies(g *GameScene, dt float64, elapsed float32) {
 		// TODO: Implement an endless mode thats total brutal chaos
 	}
 
+	resolveEnemyOverlaps(g)
+
 	// Update existing enemies
 	for i := len(g.Enemies) - 1; i >= 0; i-- {
 		e := g.Enemies[i]
@@ -100,6 +103,37 @@ func updateEnemies(g *GameScene, dt float64, elapsed float32) {
 			}
 			// Remove dead enemy
 			g.Enemies = append(g.Enemies[:i], g.Enemies[i+1:]...)
+		}
+	}
+}
+
+func resolveEnemyOverlaps(g *GameScene) {
+	const SEPARATION_RADIUS float64 = config.ENEMY_SEPERATION_RADIUS
+	const SEPARATION_RADIUS_SQ = SEPARATION_RADIUS * SEPARATION_RADIUS
+
+	numEnemies := len(g.Enemies)
+	if numEnemies < 2 {
+		return
+	}
+
+	for i := 0; i < numEnemies; i++ {
+		for j := i + 1; j < numEnemies; j++ {
+			enemy1 := g.Enemies[i]
+			enemy2 := g.Enemies[j]
+			pos1 := enemy1.GetPosition()
+			pos2 := enemy2.GetPosition()
+			collisionVector := pos1.Sub(pos2)
+			distSq := collisionVector.LengthSq()
+			if distSq < SEPARATION_RADIUS_SQ && distSq > 0 {
+				distance := math.Sqrt(distSq)
+				overlap := SEPARATION_RADIUS - distance
+				pushVector := collisionVector.Normalize().Mul(overlap * 0.5)
+				enemy1.SetPosition(pos1.Add(pushVector))
+				enemy2.SetPosition(pos2.Sub(pushVector))
+			} else if distSq == 0 {
+				nudge := component.NewVector2D(0.1, 0)
+				enemy1.SetPosition(pos1.Add(nudge))
+			}
 		}
 	}
 }
