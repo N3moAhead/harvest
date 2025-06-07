@@ -15,7 +15,7 @@ const (
 	HEIGHT_IN_TILES = 200 // The number of tiles in the X direction.
 	WIDTH_IN_TILES  = 200 // The number of tiles in the Y direction.
 	/// --- Player Settings ---
-	INITIAL_PLAYER_SPEED           = 6.0 // Initial Player Speed
+	INITIAL_PLAYER_SPEED           = 3.0 // Initial Player Speed
 	INITIAL_PLAYER_MAGNET_RADIUS   = 50.0
 	PLAYER_PICKUP_RADIUS           = 5.0   // The radius in which items will be picked up into the players inventory
 	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0   // Determines how fast items move towards the player
@@ -36,6 +36,8 @@ const (
 	DEFAULT_ENEMY_ASSET_SIZE  = 32.0 // THe size in pixels of default enemies
 	DAMAGE_INDICATOR_SPEED    = 0.5
 	DAMAGE_INDICATOR_DURATION = 500 * time.Millisecond
+	ENEMY_SEPERATION_RADIUS   = 16.0 // The radius space for each enemy
+	ENEMY_PER_SUB_FORMATION   = 10   // The amount of enemies that can spawn in a line or zig zag pattern
 	// Enemy: Carrot
 	CARROT_SPEED                  = 50.0
 	CARROT_HEALTH                 = 2
@@ -101,4 +103,7 @@ const (
 	POTATO_COLOR_G = 146
 	POTATO_COLOR_B = 104
 	POTATO_COLOR_A = 255
+	///--- TOASTS ---
+	DEFAULT_TOAST_DURATION = 2 * time.Second
+	TOAST_GAP              = 10
 )

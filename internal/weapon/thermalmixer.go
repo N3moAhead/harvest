@@ -38,27 +38,27 @@ func NewThermalmixer() *Thermalmixer {
 	stats := []WeaponStats{
 		// Level 1
 		{
-			Damage:    1,
-			Cooldown:  2 * time.Second,
+			Damage:    5,
+			Cooldown:  6 * time.Second,
 			AreaSize:  1.0,
 			Pierce:    1000,
-			Knockback: 350.0,
+			Knockback: 2.0,
 		},
 		// Level 2
 		{
-			Damage:    2,
-			Cooldown:  1500 * time.Millisecond,
+			Damage:    6,
+			Cooldown:  5 * time.Second,
 			AreaSize:  1.1,
 			Pierce:    1000,
-			Knockback: 420.0,
+			Knockback: 2.5,
 		},
 		// Level 3
 		{
-			Damage:    5,
-			Cooldown:  650 * time.Millisecond,
+			Damage:    10,
+			Cooldown:  4 * time.Second,
 			AreaSize:  1.2,
 			Pierce:    1000,
-			Knockback: 490.0,
+			Knockback: 3.0,
 		},
 	}
 
@@ -105,17 +105,14 @@ func (t *Thermalmixer) Update(player *player.Player, enemies []enemy.EnemyInterf
 
 		stats := t.CurrentStats(player)
 		playerPos := player.Pos
-		facingDir := player.GetFacingDirection()
 
 		// Calculate the thermal mixer range
 		currentRadius := baseThermalmixerRadius * stats.AreaSize
 
 		// Find the enemies in thermal mixer hit range
-		hitEnemies := collision.FindEnemiesInArc(
+		hitEnemies := collision.FindEnemiesInCircle(
 			playerPos,
 			currentRadius,
-			facingDir,
-			thermalmixerAttackAngle,
 			enemies,
 		)
 
