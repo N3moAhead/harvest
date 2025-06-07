@@ -37,6 +37,7 @@ const (
 	DAMAGE_INDICATOR_SPEED    = 0.5
 	DAMAGE_INDICATOR_DURATION = 500 * time.Millisecond
 	ENEMY_SEPERATION_RADIUS   = 16.0 // The radius space for each enemy
+	ENEMY_PER_SUB_FORMATION   = 10   // The amount of enemies that can spawn in a line or zig zag pattern
 	// Enemy: Carrot
 	CARROT_SPEED                  = 50.0
 	CARROT_HEALTH                 = 2

@@ -185,13 +185,39 @@ func spawnWaveEnemies(g *GameScene) {
 			}
 		case 2: // Spawn ZigZag
 			if countPerType > 0 {
-				startPos := component.NewVector2D(g.Player.Pos.X+float64(rand.Intn(400)-200), g.Player.Pos.Y+float64(rand.Intn(400)-200))
-				g.Enemies = append(g.Enemies, g.Spawner.SpawnZigZag(enemyTypeStr, startPos, countPerType, 30+rand.Float64()*20, 15+rand.Float64()*10)...)
+				enemiesSpawned := 0
+				for enemiesSpawned < countPerType {
+					numToSpawnThisFormation := config.ENEMY_PER_SUB_FORMATION
+					if countPerType-enemiesSpawned < config.ENEMY_PER_SUB_FORMATION {
+						numToSpawnThisFormation = countPerType - enemiesSpawned
+					}
+					if numToSpawnThisFormation <= 0 {
+						break
+					}
+
+					startPos := component.NewVector2D(g.Player.Pos.X+float64(rand.Intn(1500)-750), g.Player.Pos.Y+float64(rand.Intn(1500)-750))
+
+					g.Enemies = append(g.Enemies, g.Spawner.SpawnZigZag(enemyTypeStr, startPos, numToSpawnThisFormation, 30+rand.Float64()*20, 15+rand.Float64()*10)...)
+					enemiesSpawned += numToSpawnThisFormation
+				}
 			}
-		default: // Spawn Line
+		default:
 			if countPerType > 0 {
-				startPos := component.NewVector2D(g.Player.Pos.X+float64(rand.Intn(400)-200), g.Player.Pos.Y+float64(rand.Intn(400)-200))
-				g.Enemies = append(g.Enemies, g.Spawner.SpawnLine(enemyTypeStr, startPos, countPerType, 25+rand.Float64()*15, 5+rand.Float64()*5)...)
+				enemiesSpawned := 0
+				for enemiesSpawned < countPerType {
+					numToSpawnThisFormation := config.ENEMY_PER_SUB_FORMATION
+					if countPerType-enemiesSpawned < config.ENEMY_PER_SUB_FORMATION {
+						numToSpawnThisFormation = countPerType - enemiesSpawned
+					}
+					if numToSpawnThisFormation <= 0 {
+						break
+					}
+
+					startPos := component.NewVector2D(g.Player.Pos.X+float64(rand.Intn(1500)-750), g.Player.Pos.Y+float64(rand.Intn(1500)-750))
+
+					g.Enemies = append(g.Enemies, g.Spawner.SpawnLine(enemyTypeStr, startPos, numToSpawnThisFormation, 25+rand.Float64()*15, 5+rand.Float64()*5)...)
+					enemiesSpawned += numToSpawnThisFormation
+				}
 			}
 		}
 	}
@@ -199,22 +225,29 @@ func spawnWaveEnemies(g *GameScene) {
 
 // Helper function to get a spawn position just off-screen
 func getOffscreenSpawnPosition(playerPos component.Vector2D, screenWidth, screenHeight, buffer float64) component.Vector2D {
-	side := rand.Intn(4) // 0: top, 1: bottom, 2: left, 3: right
+	screenLeftEdge := playerPos.X - screenWidth/2
+	screenRightEdge := playerPos.X + screenWidth/2
+	screenTopEdge := playerPos.Y - screenHeight/2
+	screenBottomEdge := playerPos.Y + screenHeight/2
+
+	side := rand.Intn(4)
 	var x, y float64
+
+	randomizedOffset := buffer + (rand.Float64() * buffer)
 
 	switch side {
 	case 0: // Top
-		x = playerPos.X + rand.Float64()*screenWidth
-		y = playerPos.Y - (screenHeight / 2) - buffer*rand.Float64()
+		x = screenLeftEdge + rand.Float64()*screenWidth
+		y = screenTopEdge - randomizedOffset
 	case 1: // Bottom
-		x = playerPos.X + rand.Float64()*screenWidth
-		y = playerPos.Y + (screenHeight / 2) + buffer*rand.Float64()
+		x = screenLeftEdge + rand.Float64()*screenWidth
+		y = screenBottomEdge + randomizedOffset
 	case 2: // Left
-		x = playerPos.X - (screenWidth / 2) - buffer*rand.Float64()
-		y = playerPos.Y + rand.Float64()*screenHeight
+		x = screenLeftEdge - randomizedOffset
+		y = screenTopEdge + rand.Float64()*screenHeight
 	default: // Right
-		x = playerPos.X + (screenWidth / 2) + buffer*rand.Float64()
-		y = playerPos.Y + rand.Float64()*screenHeight
+		x = screenRightEdge + randomizedOffset
+		y = screenTopEdge + rand.Float64()*screenHeight
 	}
 	return component.NewVector2D(x, y)
 }
