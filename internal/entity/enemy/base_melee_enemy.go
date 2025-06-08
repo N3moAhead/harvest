@@ -93,7 +93,7 @@ func (e *BaseMeleeEnemy) Update(player *player.Player, dt float64) {
 
 			e.attackTimer -= dt
 			if e.Pos.Sub(player.Pos).Len() < e.AttackRange && e.attackTimer <= 0 {
-				player.Health.Damage(e.Damage)
+				player.Damage(e.Damage)
 				e.attackTimer = e.AttackCooldown
 				// Starting the attack animation
 				e.SetAttackAnimation(player)

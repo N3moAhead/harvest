@@ -37,21 +37,25 @@ var RecipeDefinitions = map[itemtype.ItemType]Recipe{
 	itemtype.DamageSoup: {
 		Soup: itemtype.DamageSoup,
 		Ingredients: map[itemtype.ItemType]int{
-			itemtype.Carrot: 2,
+			itemtype.Carrot: 10,
 			itemtype.Potato: 1,
+			itemtype.Onion:  20,
 		},
 	},
 	itemtype.MagnetRadiusSoup: {
 		Soup: itemtype.MagnetRadiusSoup,
 		Ingredients: map[itemtype.ItemType]int{
-			itemtype.Potato: 2,
+			itemtype.Onion:   30,
+			itemtype.Leek:    25,
+			itemtype.Cabbage: 5,
 		},
 	},
 	itemtype.SpeedSoup: {
 		Soup: itemtype.SpeedSoup,
 		Ingredients: map[itemtype.ItemType]int{
-			itemtype.Carrot: 1,
-			itemtype.Potato: 1,
+			itemtype.Radish: 10,
+			itemtype.Potato: 4,
+			itemtype.Carrot: 30,
 		},
 	},
 	// ...
@@ -89,7 +93,7 @@ func NewCookStation(x, y float64, recipe Recipe, costFactor float64) *CookStatio
 	}
 }
 
-func (cookStation *CookStation) Update(player *player.Player, inv *inventory.Inventory) {
+func (cookStation *CookStation) Update(player *player.Player, inv *inventory.Inventory) (scoreAddition int) {
 	if cookStation.Used {
 		cookStation.showRecipe = false
 		return
@@ -114,8 +118,10 @@ func (cookStation *CookStation) Update(player *player.Player, inv *inventory.Inv
 			player.ExtendOrAddSoup(soups.Definitions[cookStation.Recipe.Soup])
 			cookStation.Used = true
 			cookStation.showRecipe = false
+			return 10000
 		}
 	}
+	return 0
 }
 
 func (cs *CookStation) Draw(screen *ebiten.Image, camX, camY float64) {

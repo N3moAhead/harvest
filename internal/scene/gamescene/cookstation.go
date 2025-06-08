@@ -19,7 +19,8 @@ func updateCookStations(g *GameScene, dt float64, inv *inventory.Inventory, elap
 		spawnCookBatch(g, 1) // Spawn a single cook station every interval
 	}
 	for _, cs := range g.cookStations {
-		cs.Update(g.Player, g.inventory)
+		scoreAddition := cs.Update(g.Player, g.inventory)
+		g.Score += scoreAddition
 	}
 }
 func spawnCookBatch(g *GameScene, count int) {
