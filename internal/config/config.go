@@ -27,7 +27,7 @@ const (
 	/// --- Inventory Settings ---
 	MAX_WEAPONS = 5
 	/// --- HUD Settings ---
-	VEGTABLE_TYPE_AMOUNT = 5  // The amount of diffrent vegtable types
+	VEGTABLE_TYPE_AMOUNT = 6  // The amount of diffrent vegtable types
 	SOUP_TYPE_AMOUNT     = 2  // The amount of diffrent soup types
 	ITEM_FRAME_SIZE      = 48 // The size in pixels of an item frame
 	/// --- Icon Settings ---
@@ -82,6 +82,15 @@ const (
 	LEEK_DROP_PROB              = 0.6
 	LEEK_DROP_AMOUNT            = 1
 	LEEK_DROP_AMOUNT_PER_MINUTE = 0.1
+	// Enemy: Radish
+	RADISH_SPEED                  = 60
+	RADISH_HEALTH                 = 2
+	RADISH_DAMAGE                 = 5
+	RADISH_ATTACK_COOLDOWN        = 1.7
+	RADISH_ATTACK_RANGE           = 20.0
+	RADISH_DROP_PROB              = 0.6
+	RADISH_DROP_AMOUNT            = 1
+	RADISH_DROP_AMOUNT_PER_MINUTE = 0.1
 
 	/// --- Enemy Spawning Settings ---
 	BASE_SPAWN_INTERVAL_SEC = 2.0   // Base interval (seconds) for spawning enemies

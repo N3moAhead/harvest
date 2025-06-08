@@ -278,6 +278,9 @@ func initEnemySpawner() *world.EnemySpawner {
 	s.RegisterFactory(enemy.TypeLeek.String(), func(pos component.Vector2D) enemy.EnemyInterface {
 		return enemy.NewLeekEnemy(pos)
 	})
+	s.RegisterFactory(enemy.TypeRadish.String(), func(pos component.Vector2D) enemy.EnemyInterface {
+		return enemy.NewRadishEnemy(pos)
+	})
 
 	return s
 }
