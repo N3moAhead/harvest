@@ -21,7 +21,7 @@ const (
 	PLAYER_MAGNET_ATTRACTION_SPEED = 7.0   // Determines how fast items move towards the player
 	PLAYER_INTERACT_RADIUS         = 20.0  // The radius in which the player can interact with cookstations, NPCs, etc.
 	SHOW_RECIPE_RANGE              = 200.0 // The range in which the player can see the recipe of a cookstation
-	PLAYER_MAX_HEALTH              = 200
+	PLAYER_MAX_HEALTH              = 100
 	/// --- Audio Settings ---
 	AUDIO_SAMPLE_RATE = 44100
 	/// --- Inventory Settings ---
@@ -40,11 +40,11 @@ const (
 	ENEMY_SEPERATION_RADIUS   = 16.0 // The radius space for each enemy
 	ENEMY_PER_SUB_FORMATION   = 10   // The amount of enemies that can spawn in a line or zig zag pattern
 	// Enemy: Carrot
-	CARROT_SPEED                  = 50.0
+	CARROT_SPEED                  = 65.0
 	CARROT_HEALTH                 = 2
-	CARROT_DAMAGE                 = 5
-	CARROT_ATTACK_COOLDOWN        = 1.0
-	CARROT_ATTACK_RANGE           = 20.0
+	CARROT_DAMAGE                 = 1
+	CARROT_ATTACK_COOLDOWN        = 1.5
+	CARROT_ATTACK_RANGE           = 15.0
 	CARROT_ATTACK_START           = 0.0
 	CARROT_DROP_PROB              = 0.8 // 80% chance to drop an item
 	CARROT_DROP_AMOUNT            = 1   // Drops 1 item
@@ -56,38 +56,38 @@ const (
 	CARROT_COLOR_B = 0
 	CARROT_COLOR_A = 255
 	// Enemy: Cabbage
-	CABBAGE_SPEED                  = 30
+	CABBAGE_SPEED                  = 40
 	CABBAGE_HEALTH                 = 4
 	CABBAGE_DAMAGE                 = 1
-	CABBAGE_ATTACK_COOLDOWN        = 1.5
-	CABBAGE_ATTACK_RANGE           = 40.0
-	CABBAGE_DROP_PROB              = 0.8
+	CABBAGE_ATTACK_COOLDOWN        = 0.5
+	CABBAGE_ATTACK_RANGE           = 10.0
+	CABBAGE_DROP_PROB              = 0.5
 	CABBAGE_DROP_AMOUNT            = 1
 	CABBAGE_DROP_AMOUNT_PER_MINUTE = 0.1
 	// Enemy: Onion
-	ONION_SPEED                  = 40
+	ONION_SPEED                  = 30
 	ONION_HEALTH                 = 1
 	ONION_DAMAGE                 = 3
 	ONION_ATTACK_COOLDOWN        = 1.0
 	ONION_ATTACK_RANGE           = 15.0
-	ONION_DROP_PROB              = 0.8
+	ONION_DROP_PROB              = 1.0
 	ONION_DROP_AMOUNT            = 1
 	ONION_DROP_AMOUNT_PER_MINUTE = 0.1
 	// Enemy: Leek
-	LEEK_SPEED                  = 45
-	LEEK_HEALTH                 = 3
-	LEEK_DAMAGE                 = 7
+	LEEK_SPEED                  = 40
+	LEEK_HEALTH                 = 2
+	LEEK_DAMAGE                 = 3
 	LEEK_ATTACK_COOLDOWN        = 2.0
-	LEEK_ATTACK_RANGE           = 25.0
-	LEEK_DROP_PROB              = 0.6
+	LEEK_ATTACK_RANGE           = 15.0
+	LEEK_DROP_PROB              = 0.9
 	LEEK_DROP_AMOUNT            = 1
 	LEEK_DROP_AMOUNT_PER_MINUTE = 0.1
 	// Enemy: Radish
-	RADISH_SPEED                  = 60
-	RADISH_HEALTH                 = 2
-	RADISH_DAMAGE                 = 5
+	RADISH_SPEED                  = 40
+	RADISH_HEALTH                 = 3
+	RADISH_DAMAGE                 = 4
 	RADISH_ATTACK_COOLDOWN        = 1.7
-	RADISH_ATTACK_RANGE           = 20.0
+	RADISH_ATTACK_RANGE           = 15.0
 	RADISH_DROP_PROB              = 0.6
 	RADISH_DROP_AMOUNT            = 1
 	RADISH_DROP_AMOUNT_PER_MINUTE = 0.1
@@ -99,11 +99,11 @@ const (
 	// Enemy: Potato
 	POTATO_SPEED                  = 25.0
 	POTATO_HEALTH                 = 6
-	POTATO_DAMAGE                 = 10
+	POTATO_DAMAGE                 = 8
 	POTATO_ATTACK_COOLDOWN        = 3.0
-	POTATO_ATTACK_RANGE           = 40.0
+	POTATO_ATTACK_RANGE           = 15.0
 	POTATO_ATTACK_START           = 0.0
-	POTATO_DROP_PROB              = 0.8 // 80% chance to drop an item
+	POTATO_DROP_PROB              = 0.4 // 80% chance to drop an item
 	POTATO_DROP_AMOUNT            = 1   // Drops 1 item
 	POTATO_DROP_AMOUNT_PER_MINUTE = 0.1 // Drops additional 0.1 items per minute
 	// Potato Style
