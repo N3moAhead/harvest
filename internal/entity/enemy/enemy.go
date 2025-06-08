@@ -17,6 +17,7 @@ type EnemyInterface interface {
 	Update(player *player.Player, dt float64)
 	Draw(screen *ebiten.Image, camX, camY float64)
 	GetPosition() component.Vector2D
+	SetPosition(pos component.Vector2D)
 	IsAlive() bool
 	TakeDamage(damage float64)
 	AddKnockback(from *component.Vector2D, distance float64)
@@ -32,6 +33,7 @@ const (
 	TypeCabbage
 	TypeOnion
 	TypeLeek
+	TypeRadish
 	maxEnemyType // Move this type to also allow the spawning of TypePeashooter
 	TypePeashooter
 )
@@ -48,6 +50,8 @@ func (t EnemyType) String() string {
 		return "onion"
 	case TypeLeek:
 		return "leek"
+	case TypeRadish:
+		return "radish"
 	case TypePeashooter:
 		return "peashooter"
 	default:
@@ -118,6 +122,10 @@ func (e *Enemy) TakeDamage(damage float64) {
 
 func (e *Enemy) GetPosition() component.Vector2D {
 	return e.Pos
+}
+
+func (e *Enemy) SetPosition(pos component.Vector2D) {
+	e.Pos = pos
 }
 
 func (e *Enemy) GetType() EnemyType {

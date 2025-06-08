@@ -108,7 +108,7 @@ func (s *Store) Load(
 		if _, exists := s.fonts[name]; exists {
 			continue
 		}
-		font, loadErr := loadFontFile(fontConfig.Path, float64(fontConfig.Size), 72, font.HintingFull)
+		font, loadErr := loadFontFile(fontConfig.Path, float64(fontConfig.Size), 72)
 		if loadErr != nil {
 			err = fmt.Errorf("Error while loading the font'%s' (%s): %w", name, fontConfig.Path, loadErr)
 			fmt.Println(err)
@@ -188,7 +188,7 @@ func loadAudioFile(path string, sampleRate int) ([]byte, error) {
 	}
 }
 
-func loadFontFile(path string, size float64, dpi float64, hinting font.Hinting) (font.Face, error) {
+func loadFontFile(path string, size float64, dpi float64) (font.Face, error) {
 	fontBytes, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -202,7 +202,7 @@ func loadFontFile(path string, size float64, dpi float64, hinting font.Hinting) 
 	myFontFace, err := opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    size,
 		DPI:     dpi,
-		Hinting: hinting,
+		Hinting: font.HintingFull,
 	})
 	if err != nil {
 		return nil, err

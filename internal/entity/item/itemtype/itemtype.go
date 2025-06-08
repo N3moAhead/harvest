@@ -33,6 +33,7 @@ const (
 	Cabbage
 	Onion
 	Leek
+	Radish
 	Spoon
 	ThrowingKnifes
 	RollingPin
@@ -57,6 +58,8 @@ func (it ItemType) String() string {
 		return "Onion"
 	case Leek:
 		return "Leek"
+	case Radish:
+		return "Radish"
 	case Spoon:
 		return "Spoon"
 	case RollingPin:
@@ -78,7 +81,7 @@ func (it ItemType) String() string {
 
 func (it ItemType) Category() ItemCategory {
 	switch it {
-	case Potato, Carrot, Onion, Leek, Cabbage:
+	case Potato, Carrot, Onion, Leek, Cabbage, Radish:
 		return CategoryVegetable
 	case RollingPin, ThrowingKnifes, Spoon, Thermalmixer:
 		return CategoryWeapon

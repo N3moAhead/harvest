@@ -37,27 +37,27 @@ func NewRollingPin() *RollingPin {
 	stats := []WeaponStats{
 		// Level 1
 		{
-			Damage:    2,
+			Damage:    1,
 			Cooldown:  2 * time.Second,
 			AreaSize:  1.0,
-			Pierce:    5,
-			Knockback: 300.0,
+			Pierce:    20,
+			Knockback: 150.0,
 		},
 		// Level 2
 		{
-			Damage:    4,
-			Cooldown:  1 * time.Second,
+			Damage:    2,
+			Cooldown:  1500 * time.Millisecond,
 			AreaSize:  1.1,
-			Pierce:    7,
-			Knockback: 400.0,
+			Pierce:    25,
+			Knockback: 200.0,
 		},
 		// Level 3
 		{
-			Damage:    8,
-			Cooldown:  1500 * time.Millisecond,
+			Damage:    3,
+			Cooldown:  1 * time.Second,
 			AreaSize:  1.2,
-			Pierce:    10,
-			Knockback: 550.0,
+			Pierce:    30,
+			Knockback: 300.0,
 		},
 	}
 

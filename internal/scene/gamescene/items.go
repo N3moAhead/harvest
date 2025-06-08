@@ -2,6 +2,7 @@ package gamescene
 
 import (
 	"fmt"
+	"math/rand"
 
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/item"
@@ -83,32 +84,28 @@ func drawItems(g *GameScene, screen *ebiten.Image, mapOffsetX, mapOffsetY float6
 }
 
 func initItems() []*item.Item {
+	worldWidth := config.WIDTH_IN_TILES * config.TILE_SIZE
+	worldHeight := config.HEIGHT_IN_TILES * config.TILE_SIZE
 	items := []*item.Item{
 		item.NewSpoon(
 			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
 			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-50,
 		),
-		item.NewThrowingKnifes(
-			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
-			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2+80,
-		),
-		item.NewThrowingKnifes(
-			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
-			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2+160,
-		),
-		item.NewThrowingKnifes(
-			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
-			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2+240,
-		),
-		item.NewRollingPin(
-			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
-			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-80,
-		),
-		item.NewThermalmixer(
-			(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
-			(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2-150,
-		),
 	}
+	items = append(items, getWeaponsAtRandomPositions(worldWidth, worldHeight, item.NewSpoon, 2)...)
+	items = append(items, getWeaponsAtRandomPositions(worldWidth, worldHeight, item.NewThrowingKnifes, 3)...)
+	items = append(items, getWeaponsAtRandomPositions(worldWidth, worldHeight, item.NewRollingPin, 3)...)
+	items = append(items, getWeaponsAtRandomPositions(worldWidth, worldHeight, item.NewThermalmixer, 3)...)
 
+	return items
+}
+
+func getWeaponsAtRandomPositions(worldWidth, worldHeight int, create func(x, y float64) *item.Item, amount int) []*item.Item {
+	var items []*item.Item = make([]*item.Item, 0)
+	for range amount {
+		x := rand.Float64() * float64(worldWidth)
+		y := rand.Float64() * float64(worldHeight)
+		items = append(items, create(x, y))
+	}
 	return items
 }

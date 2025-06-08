@@ -13,12 +13,18 @@ import (
 	"github.com/N3moAhead/harvest/internal/entity/player"
 	"github.com/N3moAhead/harvest/internal/entity/player/inventory"
 	"github.com/N3moAhead/harvest/internal/input"
+	"github.com/N3moAhead/harvest/internal/toast"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type GameScene struct {
+	lastSpawnTime            time.Time // last spawn batches
+	waveDefinitions          []WaveDefinition
+	currentWaveIndex         int
+	lastWaveStartTime        time.Time
+	gameStartTime            time.Time
 	Player                   *player.Player
 	World                    *world.World
 	Enemies                  []enemy.EnemyInterface
@@ -49,6 +55,7 @@ func NewGameScene(backToMenu func()) *GameScene {
 		startTime:          time.Now(),
 		lastEnemySpawnTime: time.Now(),
 	}
+	newGameScene.initializeWaves()
 	newGameScene.hud = initHUD(newGameScene)
 	newGameScene.gameOverlay = initGameOverlay(newGameScene, backToMenu)
 
@@ -127,6 +134,9 @@ func (g *GameScene) Update() error {
 		dt,
 	)
 
+	/// --- Toast ---
+	toast.UpdateToasts()
+
 	/// --- Update Enemies ---
 	updateEnemies(g, dt, elapsed)
 
@@ -175,6 +185,9 @@ func (g *GameScene) Draw(screen *ebiten.Image) {
 	for _, cookStation := range g.cookStations {
 		cookStation.Draw(screen, mapOffsetX, mapOffsetY)
 	}
+
+	/// --- Toasts ---
+	toast.DrawToasts(screen)
 
 	/// --- Drawing HUD ---
 	drawUI(g, screen)

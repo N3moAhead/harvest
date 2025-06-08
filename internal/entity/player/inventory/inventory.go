@@ -6,6 +6,7 @@ import (
 
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
+	"github.com/N3moAhead/harvest/internal/toast"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -46,8 +47,8 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 	// If the weapon already exists we level up
 	for _, existingWeapon := range inv.Weapons {
 		if existingWeapon != nil && existingWeapon.Name() == newWeapon.Name() {
-
 			if ok := existingWeapon.LevelUp(); ok {
+				toast.AddToast(fmt.Sprintf("'%s' updated to level %d", existingWeapon.Name(), existingWeapon.Level()))
 				fmt.Printf("Weapon '%s' updated to level %d", existingWeapon.Name(), existingWeapon.Level())
 			} else {
 				fmt.Printf("Weapon '%s' is already at max level %d", existingWeapon.Name(), existingWeapon.MaxLevel())
@@ -61,6 +62,7 @@ func (inv *Inventory) AddWeapon(newWeapon weapon.Weapon) (didWork bool) {
 			inv.Weapons[i] = newWeapon
 			// TODO remove debugging statement
 			fmt.Printf("Added weapon '%s' to slot %d \n", newWeapon.Name(), i+1)
+			toast.AddToast(fmt.Sprintf("%s collected!", newWeapon.Name()))
 			break
 		}
 	}

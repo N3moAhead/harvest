@@ -18,16 +18,16 @@ var Definitions = map[itemtype.ItemType]*Soup{
 	itemtype.DamageSoup: {
 		Type:         itemtype.DamageSoup,
 		BuffPerLevel: 5,
-		Duration:     5 * time.Second,
+		Duration:     15 * time.Second,
 	},
 	itemtype.MagnetRadiusSoup: {
 		Type:         itemtype.MagnetRadiusSoup,
 		BuffPerLevel: 200,
-		Duration:     2 * time.Second,
+		Duration:     10 * time.Second,
 	},
 	itemtype.SpeedSoup: {
 		Type:         itemtype.SpeedSoup,
-		BuffPerLevel: 20,
-		Duration:     2 * time.Second,
+		BuffPerLevel: 5,
+		Duration:     5 * time.Second,
 	},
 }
