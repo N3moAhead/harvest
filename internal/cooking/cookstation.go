@@ -37,21 +37,25 @@ var RecipeDefinitions = map[itemtype.ItemType]Recipe{
 	itemtype.DamageSoup: {
 		Soup: itemtype.DamageSoup,
 		Ingredients: map[itemtype.ItemType]int{
-			itemtype.Carrot: 2,
+			itemtype.Carrot: 10,
 			itemtype.Potato: 1,
+			itemtype.Onion:  20,
 		},
 	},
 	itemtype.MagnetRadiusSoup: {
 		Soup: itemtype.MagnetRadiusSoup,
 		Ingredients: map[itemtype.ItemType]int{
-			itemtype.Potato: 2,
+			itemtype.Onion:   30,
+			itemtype.Leek:    25,
+			itemtype.Cabbage: 5,
 		},
 	},
 	itemtype.SpeedSoup: {
 		Soup: itemtype.SpeedSoup,
 		Ingredients: map[itemtype.ItemType]int{
-			itemtype.Carrot: 1,
-			itemtype.Potato: 1,
+			itemtype.Radish: 10,
+			itemtype.Potato: 4,
+			itemtype.Carrot: 30,
 		},
 	},
 	// ...
