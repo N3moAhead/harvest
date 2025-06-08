@@ -19,6 +19,7 @@ func updateItems(g *GameScene) {
 		// The update function also puts collected items into the inventory
 		itemPickedUp := gItem.Update(g.Player)
 		if itemPickedUp {
+			g.Score += 1 // Picking up items increases the score
 			// Add picked up items into the inventory
 			switch gItem.CategoryOf() {
 			case itemtype.CategoryVegetable:
