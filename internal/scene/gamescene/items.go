@@ -25,7 +25,7 @@ func updateItems(g *GameScene) {
 			case itemtype.CategoryVegetable:
 				g.inventory.AddVegtable(gItem.Type)
 			case itemtype.CategorySoup:
-				g.Score += 10_000
+				g.Score += 10000
 				g.inventory.AddSoup(gItem.Type)
 				soup := gItem.RetrieveItemInfo().Soup
 				toast.AddToast(fmt.Sprintf("%s collected! +10.000 Score", soup.Type.String()))
