@@ -68,7 +68,7 @@ func NewCookStation(x, y float64, recipe Recipe, costFactor float64) *CookStatio
 	animationStore := animation.NewAnimationStore()
 	cookStation, ok := assets.AssetStore.GetImage("cook_station")
 	if ok {
-		defaultAnimation, err := animation.NewAnimation(cookStation, 32, 32, 0, 27, 8, 6, true)
+		defaultAnimation, err := animation.NewAnimation(cookStation, 64, 64, 0, 0, 8, 6, true)
 		// defaultAnimation, err := animation.NewAnimation(cookStation, 32, 32, 0, 32, 8, 6, false)
 		// defaultAnimation, err := animation.NewAnimation(cookStation, 32, 32, 0, 0, 8, 6, false)
 		if err == nil {

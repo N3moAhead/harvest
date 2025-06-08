@@ -1,9 +1,11 @@
 package player
 
 import (
+	"fmt"
 	"image/color"
 	"time"
 
+	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/config"
@@ -27,7 +29,20 @@ type Player struct {
 	MagnetRadius    float64
 	Health          component.Health
 	FacingDirection component.Vector2D
+	animationStore  *animation.AnimationStore
 }
+
+const (
+	IDLE       = "idle"
+	UP         = "up"
+	UP_RIGHT   = "up_right"
+	RIGHT      = "right"
+	DOWN_RIGHT = "down_right"
+	DOWN       = "down"
+	DOWN_LEFT  = "down_left"
+	LEFT       = "left"
+	UP_LEFT    = "up_left"
+)
 
 // The player is currently just drawn as a rectangle.
 // TODO: Draw the player with assets
@@ -36,7 +51,9 @@ func (p *Player) Draw(screen *ebiten.Image, mapOffsetX float64, mapOffsetY float
 	rectSize := 32.0
 	var halfRectSize float64 = rectSize / 2
 
-	if playerImg, ok := assets.AssetStore.GetImage("player"); ok {
+	playerImg := p.animationStore.GetImage()
+
+	if playerImg != nil {
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Translate(p.Pos.X-mapOffsetX-halfRectSize, p.Pos.Y-mapOffsetY-halfRectSize)
 		screen.DrawImage(playerImg, op)
@@ -90,31 +107,52 @@ func (p *Player) ExtendOrAddSoup(soup *soups.Soup) {
 
 func (p *Player) Update(inputState *input.InputState, dt float64, inventory InventoryProvider) { //TODO maybe add inventory to player struct?
 	now := time.Now()
+	p.animationStore.Update()
 
 	// Update player position
 	moveDir := component.Vector2D{X: 0, Y: 0}
 	moved := false
+
+	currentAnimation := IDLE
 	if inputState.Up {
 		moveDir.Y -= 1
 		moved = true
+		currentAnimation = UP
 	}
 	if inputState.Down {
 		moveDir.Y += 1
 		moved = true
+		currentAnimation = DOWN
 	}
 	if inputState.Left {
 		moveDir.X -= 1
 		moved = true
+		currentAnimation = LEFT
 	}
 	if inputState.Right {
 		moveDir.X += 1
 		moved = true
+		currentAnimation = RIGHT
+	}
+	if inputState.Up && inputState.Right {
+		currentAnimation = UP_RIGHT
+	}
+	if inputState.Up && inputState.Left {
+		currentAnimation = UP_LEFT
+	}
+	if inputState.Down && inputState.Right {
+		currentAnimation = DOWN_RIGHT
+	}
+	if inputState.Down && inputState.Left {
+		currentAnimation = DOWN_LEFT
 	}
 
 	if moveDir.Y != 0 && moveDir.X != 0 {
 		moveDir = moveDir.Normalize()
 		moved = true
 	}
+
+	p.animationStore.SetCurrentAnimation(currentAnimation)
 
 	// If the player moved update the facingDirection and the player position
 	if moved {
@@ -181,12 +219,94 @@ func NewPlayer() *Player {
 		(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2,
 	)
 
+	store := animation.NewAnimationStore()
+	playerImg, ok := assets.AssetStore.GetImage("chef_walk")
+	playerIdleImg, ok := assets.AssetStore.GetImage("chef_Idle")
+	if ok {
+		up, err := animation.NewAnimation(playerImg, 32, 32, 0, 0, 6, 6, true)
+		if err == nil {
+			store.AddAnimation(UP, up)
+		}
+		upRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 6, 6, true)
+		if err == nil {
+			store.AddAnimation(UP_RIGHT, upRight)
+		}
+		right, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 6, 6, true)
+		if err == nil {
+			store.AddAnimation(RIGHT, right)
+		}
+		downRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 6, 6, true)
+		if err == nil {
+			store.AddAnimation(DOWN_RIGHT, downRight)
+		}
+		down, err := animation.NewAnimation(playerImg, 32, 32, 0, 1*32, 6, 6, true)
+		if err == nil {
+			store.AddAnimation(DOWN, down)
+		}
+		downLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 6, 6, true)
+		if err == nil {
+			store.AddAnimation(DOWN_LEFT, downLeft)
+		}
+		left, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 6, 6, true)
+		if err == nil {
+			store.AddAnimation(LEFT, left)
+		}
+		upLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 6, 6, true)
+		if err == nil {
+			store.AddAnimation(UP_LEFT, upLeft)
+		}
+		idle, err := animation.NewAnimation(playerIdleImg, 32, 32, 0, 0, 2, 24, true)
+		// playerImg, ok := assets.AssetStore.GetImage("player")
+		// playerIdleImg, ok := assets.AssetStore.GetImage("player_idle")
+		// if ok {
+		// 	up, err := animation.NewAnimation(playerImg, 32, 32, 0, 0, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(UP, up)
+		// 	}
+		// 	upRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 1*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(UP_RIGHT, upRight)
+		// 	}
+		// 	right, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(RIGHT, right)
+		// 	}
+		// 	downRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(DOWN_RIGHT, downRight)
+		// 	}
+		// 	down, err := animation.NewAnimation(playerImg, 32, 32, 0, 4*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(DOWN, down)
+		// 	}
+		// 	downLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 5*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(DOWN_LEFT, downLeft)
+		// 	}
+		// 	left, err := animation.NewAnimation(playerImg, 32, 32, 0, 6*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(LEFT, left)
+		// 	}
+		// 	upLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 7*32, 4, 6, true)
+		// 	if err == nil {
+		// 		store.AddAnimation(UP_LEFT, upLeft)
+		// 	}
+		// 	idle, err := animation.NewAnimation(playerIdleImg, 32, 32, 0, 0, 1, 6, true)
+		if err == nil {
+			store.AddAnimation(IDLE, idle)
+		}
+		store.SetCurrentAnimation(IDLE)
+	} else {
+		fmt.Println("Warning: Could not load player img in NewPlayer()")
+	}
+
 	p := &Player{
 		Entity:          *baseEntity,
 		MagnetRadius:    config.INITIAL_PLAYER_MAGNET_RADIUS,
 		Speed:           config.INITIAL_PLAYER_SPEED,
 		Health:          component.NewHealth(config.PLAYER_MAX_HEALTH),
 		FacingDirection: component.NewVector2D(0, -1), // Default looks up
+		animationStore:  store,
 	}
 	return p
 }

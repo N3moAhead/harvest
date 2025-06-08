@@ -24,7 +24,10 @@ type FontConfig struct {
 func LoadAllAssets() {
 	// Always image name to path
 	imagesToLoad := map[string]string{
-		"player":             "assets/images/CookTestImage.png",
+		"player":             "assets/images/player.png",
+		"player_idle":        "assets/images/player_idle.png",
+		"chef_walk":          "assets/images/chef_walk.png",
+		"chef_Idle":          "assets/images/chef_Idle.png",
 		"spoon_slash":        "assets/images/weapons/spoon/spoon_slash3.png",
 		"rolling_pin_roll":   "assets/images/weapons/rolling_pin/rolling_pin_roll.png",
 		"carrot":             "assets/images/carrot.png",
@@ -51,6 +54,9 @@ func LoadAllAssets() {
 		"thermalmixer_icon": "assets/images/icons/thermalmixer_icon.png",
 		"no_icon":           "assets/images/icons/no_icon.png",
 		"rolling_pin_icon":  "assets/images/icons/rolling_pin_icon.png",
+		"soup_icon1":        "assets/images/icons/soup/wurzelwerk_onion_cabbage_soup.png",
+		"soup_icon2":        "assets/images/icons/soup/wurzewerk_carrot_soup.png",
+		"soup_icon3":        "assets/images/icons/soup/wurzewerk_leeke_soup.png",
 		// Hud
 		"vegtable_item_frame": "assets/images/hud/hud_item_frame.png",
 		"soup_item_frame":     "assets/images/hud/hud_item_frame2.png",
