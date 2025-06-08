@@ -7,6 +7,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/config"
 	"github.com/N3moAhead/harvest/internal/entity/item"
 	"github.com/N3moAhead/harvest/internal/entity/item/itemtype"
+	"github.com/N3moAhead/harvest/internal/toast"
 	"github.com/N3moAhead/harvest/internal/weapon"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -23,8 +24,10 @@ func updateItems(g *GameScene) {
 			case itemtype.CategoryVegetable:
 				g.inventory.AddVegtable(gItem.Type)
 			case itemtype.CategorySoup:
+				g.Score += 10_000
 				g.inventory.AddSoup(gItem.Type)
 				soup := gItem.RetrieveItemInfo().Soup
+				toast.AddToast(fmt.Sprintf("%s collected! +10.000 Score", soup.Type.String()))
 				g.Player.ExtendOrAddSoup(soup)
 			case itemtype.CategoryWeapon:
 				switch gItem.Type {

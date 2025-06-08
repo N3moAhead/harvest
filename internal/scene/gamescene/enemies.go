@@ -98,6 +98,8 @@ func updateEnemies(g *GameScene, dt float64, elapsed float32) {
 		if wasAlive && !e.IsAlive() {
 			elapsedMinutes := float64(elapsed) / 60000.0
 			drops := e.TryDrop(float32(elapsedMinutes))
+			// TODO each enemy should increase the score by a diffrent amount
+			g.Score += 10
 			for j := range drops {
 				g.items = append(g.items, &drops[j])
 			}
