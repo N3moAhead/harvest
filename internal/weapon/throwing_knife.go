@@ -26,7 +26,7 @@ func NewThrowingKnife() *ThrowingKnife {
 			Speed:            5,
 			Damage:           2,
 			HitRadius:        16, // Its the px size of the knife image
-			Pierce:           2,
+			Pierce:           5,
 			Duration:         2 * time.Second,
 			Knockback:        50,
 			BulletSpread:     30.0,
@@ -38,7 +38,7 @@ func NewThrowingKnife() *ThrowingKnife {
 			Speed:            5,
 			Damage:           2,
 			HitRadius:        16, // Its the px size of the knife image
-			Pierce:           3,
+			Pierce:           7,
 			Duration:         4 * time.Second,
 			Knockback:        50,
 			BulletSpread:     30.0,
@@ -50,7 +50,7 @@ func NewThrowingKnife() *ThrowingKnife {
 			Speed:            5,
 			Damage:           2,
 			HitRadius:        16, // Its the px size of the knife image
-			Pierce:           5,
+			Pierce:           10,
 			Duration:         5 * time.Second,
 			Knockback:        60,
 			BulletSpread:     30.0,
