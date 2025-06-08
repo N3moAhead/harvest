@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"math/rand"
+	"sort"
 
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/assets"
@@ -16,8 +17,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/basicfont"
 )
 
 type Recipe struct {
@@ -140,12 +139,23 @@ func (cs *CookStation) Draw(screen *ebiten.Image, camX, camY float64) {
 		x := float32(cs.Pos.X - camX + 20)
 		y := float32(cs.Pos.Y - camY - 20)
 		textRecipe := cs.Recipe.Soup.String() + ": "
-		for t, amt := range cs.Recipe.Ingredients {
-			textRecipe += fmt.Sprintf("%s x%d\n", t.String(), int(float64(amt)*cs.CostFactor))
+		ingredientTypes := make([]itemtype.ItemType, 0)
+		for k, _ := range cs.Recipe.Ingredients {
+			ingredientTypes = append(ingredientTypes, k)
 		}
-
-		var fontFace font.Face = basicfont.Face7x13
-		text.Draw(screen, textRecipe, fontFace, int(x), int(y), color.White)
+		sort.Sort(itemtype.ByItemType(ingredientTypes))
+		for _, ingredientType := range ingredientTypes {
+			amt, ok := cs.Recipe.Ingredients[ingredientType]
+			if ok {
+				textRecipe += fmt.Sprintf("%s x%d\n", ingredientType.String(), int(float64(amt)*cs.CostFactor))
+			}
+		}
+		fontFace, ok := assets.AssetStore.GetFont("micro")
+		if ok {
+			text.Draw(screen, textRecipe, fontFace, int(x), int(y), color.White)
+		} else {
+			fmt.Println("Warning: Could not load fontFace in Cooking Station")
+		}
 	}
 
 }
