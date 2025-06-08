@@ -93,7 +93,7 @@ func NewCookStation(x, y float64, recipe Recipe, costFactor float64) *CookStatio
 	}
 }
 
-func (cookStation *CookStation) Update(player *player.Player, inv *inventory.Inventory) {
+func (cookStation *CookStation) Update(player *player.Player, inv *inventory.Inventory) (scoreAddition int) {
 	if cookStation.Used {
 		cookStation.showRecipe = false
 		return
@@ -118,8 +118,10 @@ func (cookStation *CookStation) Update(player *player.Player, inv *inventory.Inv
 			player.ExtendOrAddSoup(soups.Definitions[cookStation.Recipe.Soup])
 			cookStation.Used = true
 			cookStation.showRecipe = false
+			return 10000
 		}
 	}
+	return 0
 }
 
 func (cs *CookStation) Draw(screen *ebiten.Image, camX, camY float64) {
