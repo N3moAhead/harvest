@@ -185,7 +185,7 @@ func NewPlayer() *Player {
 		Entity:          *baseEntity,
 		MagnetRadius:    config.INITIAL_PLAYER_MAGNET_RADIUS,
 		Speed:           config.INITIAL_PLAYER_SPEED,
-		Health:          component.NewHealth(100),
+		Health:          component.NewHealth(config.PLAYER_MAX_HEALTH),
 		FacingDirection: component.NewVector2D(0, -1), // Default looks up
 	}
 	return p
