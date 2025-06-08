@@ -28,7 +28,7 @@ const (
 	MAX_WEAPONS = 5
 	/// --- HUD Settings ---
 	VEGTABLE_TYPE_AMOUNT = 6  // The amount of diffrent vegtable types
-	SOUP_TYPE_AMOUNT     = 2  // The amount of diffrent soup types
+	SOUP_TYPE_AMOUNT     = 3  // The amount of diffrent soup types
 	ITEM_FRAME_SIZE      = 48 // The size in pixels of an item frame
 	/// --- Icon Settings ---
 	ICON_SIZE               = 16.0 // The size in pixels of icon assets
@@ -44,7 +44,7 @@ const (
 	CARROT_HEALTH                 = 2
 	CARROT_DAMAGE                 = 1
 	CARROT_ATTACK_COOLDOWN        = 1.5
-	CARROT_ATTACK_RANGE           = 15.0
+	CARROT_ATTACK_RANGE           = 25.0
 	CARROT_ATTACK_START           = 0.0
 	CARROT_DROP_PROB              = 0.8 // 80% chance to drop an item
 	CARROT_DROP_AMOUNT            = 1   // Drops 1 item
@@ -60,7 +60,7 @@ const (
 	CABBAGE_HEALTH                 = 4
 	CABBAGE_DAMAGE                 = 1
 	CABBAGE_ATTACK_COOLDOWN        = 0.5
-	CABBAGE_ATTACK_RANGE           = 10.0
+	CABBAGE_ATTACK_RANGE           = 25.0
 	CABBAGE_DROP_PROB              = 0.5
 	CABBAGE_DROP_AMOUNT            = 1
 	CABBAGE_DROP_AMOUNT_PER_MINUTE = 0.1
@@ -69,7 +69,7 @@ const (
 	ONION_HEALTH                 = 1
 	ONION_DAMAGE                 = 3
 	ONION_ATTACK_COOLDOWN        = 1.0
-	ONION_ATTACK_RANGE           = 15.0
+	ONION_ATTACK_RANGE           = 25.0
 	ONION_DROP_PROB              = 1.0
 	ONION_DROP_AMOUNT            = 1
 	ONION_DROP_AMOUNT_PER_MINUTE = 0.1
@@ -78,7 +78,7 @@ const (
 	LEEK_HEALTH                 = 2
 	LEEK_DAMAGE                 = 3
 	LEEK_ATTACK_COOLDOWN        = 2.0
-	LEEK_ATTACK_RANGE           = 15.0
+	LEEK_ATTACK_RANGE           = 25.0
 	LEEK_DROP_PROB              = 0.9
 	LEEK_DROP_AMOUNT            = 1
 	LEEK_DROP_AMOUNT_PER_MINUTE = 0.1
@@ -87,7 +87,7 @@ const (
 	RADISH_HEALTH                 = 3
 	RADISH_DAMAGE                 = 4
 	RADISH_ATTACK_COOLDOWN        = 1.7
-	RADISH_ATTACK_RANGE           = 15.0
+	RADISH_ATTACK_RANGE           = 25.0
 	RADISH_DROP_PROB              = 0.6
 	RADISH_DROP_AMOUNT            = 1
 	RADISH_DROP_AMOUNT_PER_MINUTE = 0.1
@@ -101,7 +101,7 @@ const (
 	POTATO_HEALTH                 = 6
 	POTATO_DAMAGE                 = 8
 	POTATO_ATTACK_COOLDOWN        = 3.0
-	POTATO_ATTACK_RANGE           = 15.0
+	POTATO_ATTACK_RANGE           = 25.0
 	POTATO_ATTACK_START           = 0.0
 	POTATO_DROP_PROB              = 0.4 // 80% chance to drop an item
 	POTATO_DROP_AMOUNT            = 1   // Drops 1 item
