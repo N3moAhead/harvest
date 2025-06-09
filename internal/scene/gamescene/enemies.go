@@ -68,7 +68,7 @@ func (g *GameScene) initializeWaves() {
 		// Wave 20
 		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot, enemy.TypeRadish, enemy.TypeCabbage, enemy.TypePotato}, Count: 1500},
 	}
-	g.currentWaveIndex = 30
+	g.currentWaveIndex = -1
 	// g.lastWaveStartTime will be set when the first wave starts
 }
 
