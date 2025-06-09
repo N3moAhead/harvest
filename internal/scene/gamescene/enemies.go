@@ -68,7 +68,7 @@ func (g *GameScene) initializeWaves() {
 		// Wave 20
 		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot, enemy.TypeRadish, enemy.TypeCabbage, enemy.TypePotato}, Count: 1500},
 	}
-	g.currentWaveIndex = -1
+	g.currentWaveIndex = 30
 	// g.lastWaveStartTime will be set when the first wave starts
 }
 
@@ -84,7 +84,7 @@ func updateEnemies(g *GameScene, dt float64, elapsed float32) {
 			}
 		}
 	} else {
-		// TODO: Implement an endless mode thats total brutal chaos
+		spawnEndlessMode(g)
 	}
 
 	resolveEnemyOverlaps(g)
@@ -137,6 +137,31 @@ func resolveEnemyOverlaps(g *GameScene) {
 				enemy1.SetPosition(pos1.Add(nudge))
 			}
 		}
+	}
+}
+
+func spawnEndlessMode(g *GameScene) {
+	waveDef := WaveDefinition{
+		EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato},
+		Count:      config.ENDLESS_MODE_ENEMY_AMOUNT - len(g.Enemies),
+	}
+	numEnemyTypesInWave := len(waveDef.EnemyTypes)
+	if numEnemyTypesInWave == 0 {
+		return
+	}
+
+	countPerType := waveDef.Count / numEnemyTypesInWave
+	if countPerType == 0 && waveDef.Count > 0 {
+		countPerType = 1
+	}
+
+	if countPerType > 200 {
+		for _, enemyTypeEnum := range waveDef.EnemyTypes {
+			enemyTypeStr := enemyTypeEnum.String()
+			g.Enemies = append(g.Enemies, g.Spawner.SpawnCircle(enemyTypeStr, g.Player, 300+rand.Float64()*100, countPerType)...)
+		}
+	} else if countPerType > 0 {
+		g.Enemies = append(g.Enemies, g.Spawner.SpawnCircle(enemy.TypeCarrot.String(), g.Player, 300+rand.Float64()*100, countPerType)...)
 	}
 }
 
