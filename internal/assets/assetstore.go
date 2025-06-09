@@ -79,6 +79,7 @@ func LoadAllAssets() {
 	}
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
+		"game": "assets/audio/music/game_music.mp3",
 	}
 
 	fontsToLoad := map[string]FontConfig{
