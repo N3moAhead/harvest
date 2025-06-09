@@ -25,7 +25,9 @@ type SceneManager struct {
 	gameScene    Scene
 	scoreScene   Scene
 	// If set to true the game will end in the next update loop
-	exitGame bool
+	exitGame      bool
+	highScore     int
+	lastGameScore int // The score of the last played game
 }
 
 func NewSceneManager() *SceneManager {
@@ -58,11 +60,11 @@ func (s *SceneManager) setNextScene(scene SceneId) {
 	switch scene {
 	case MENU_SCENE:
 		fmt.Println("Switched Scene to Menu")
-		s.menuScene = NewMenuScene(s.setExitGame)
+		s.menuScene = NewMenuScene(s.setExitGame, s.highScore)
 		s.currentScene = MENU_SCENE
 	case GAME_SCENE:
 		fmt.Println("Switched Scene to Game Scene")
-		s.gameScene = gamescene.NewGameScene(func() { s.setNextScene(MENU_SCENE) })
+		s.gameScene = gamescene.NewGameScene(func() { s.updateHighScore(); s.setNextScene(MENU_SCENE) })
 		s.currentScene = GAME_SCENE
 	case SCORE_SCENE:
 		fmt.Println("Switched Scene to Score")
@@ -93,6 +95,19 @@ func (s *SceneManager) determineFollowUpScene() SceneId {
 	}
 }
 
+func (s *SceneManager) updateHighScore() {
+	if s.currentScene == GAME_SCENE {
+		scene := s.getCurrentScene()
+		if scoreScene, ok := scene.(gamescene.Score); ok {
+			newScore := scoreScene.GetScore()
+			s.lastGameScore = newScore
+			if s.highScore < newScore {
+				s.highScore = newScore
+			}
+		}
+	}
+}
+
 func (s *SceneManager) Update() error {
 	// --- Check for Exit ---
 	if s.exitGame {
@@ -101,6 +116,8 @@ func (s *SceneManager) Update() error {
 
 	scene := s.getCurrentScene()
 	if !scene.IsRunning() {
+		// If a game scene just ended this function will update the highscore
+		s.updateHighScore()
 		followUpScene := s.determineFollowUpScene()
 		s.setNextScene(followUpScene)
 	}

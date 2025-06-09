@@ -22,6 +22,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio"
 )
 
+type Score interface {
+	GetScore() int
+}
+
 type GameScene struct {
 	lastSpawnTime            time.Time // last spawn batches
 	waveDefinitions          []WaveDefinition
@@ -42,6 +46,7 @@ type GameScene struct {
 	startTime                time.Time // game start
 	lastEnemySpawnTime       time.Time // last spawn batches
 	lastCookStationSpawnTime time.Time
+	Score                    int
 }
 
 func NewGameScene(backToMenu func()) *GameScene {
@@ -57,6 +62,7 @@ func NewGameScene(backToMenu func()) *GameScene {
 		cookStations:       []*cooking.CookStation{},
 		startTime:          time.Now(),
 		lastEnemySpawnTime: time.Now(),
+		Score:              0,
 	}
 	newGameScene.initializeWaves()
 	newGameScene.hud = initHUD(newGameScene)
@@ -86,6 +92,10 @@ func (g *GameScene) Layout(outsideWidth, outsideHeight int) (screenWidth, screen
 
 func (g *GameScene) IsRunning() bool {
 	return g.isRunning
+}
+
+func (g *GameScene) GetScore() int {
+	return g.Score
 }
 
 func (g *GameScene) SetIsRunning(running bool) {

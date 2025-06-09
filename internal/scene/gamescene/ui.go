@@ -44,6 +44,10 @@ func initHUD(g *GameScene) *ui.UIManager {
 	frameContainer.AddChild(weaponDisplay)
 	newHUD.AddElement(frameContainer)
 
+	scoreDisplay := hud.NewScoreDisplay(&g.Score, "Score")
+
+	newHUD.AddElement(scoreDisplay)
+
 	return newHUD
 }
 

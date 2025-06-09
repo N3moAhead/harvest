@@ -8,6 +8,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/assets"
 	"github.com/N3moAhead/harvest/internal/component"
 	"github.com/N3moAhead/harvest/internal/config"
+	"github.com/N3moAhead/harvest/internal/hud"
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
@@ -25,7 +26,7 @@ type MenuScene struct {
 	angularSpeed float64
 }
 
-func NewMenuScene(setExitGame func()) *MenuScene {
+func NewMenuScene(setExitGame func(), highScore int) *MenuScene {
 	icon, ok := assets.AssetStore.GetImage("menu-icon")
 	if !ok {
 		panic("menu-icon nicht im AssetStore gefunden")
@@ -57,6 +58,8 @@ func NewMenuScene(setExitGame func()) *MenuScene {
 	container.AddChild(startBtn)
 	container.AddChild(endGameBtn)
 	newUiManager.AddElement(container)
+	highScoreDisplay := hud.NewScoreDisplay(&highScore, "High Score")
+	newUiManager.AddElement(highScoreDisplay)
 
 	music, ok := assets.AssetStore.GetMusicData("menu")
 	if ok {
