@@ -23,7 +23,7 @@ var Definitions = map[itemtype.ItemType]*Soup{
 	itemtype.MagnetRadiusSoup: {
 		Type:         itemtype.MagnetRadiusSoup,
 		BuffPerLevel: 500,
-		Duration:     10 * time.Second,
+		Duration:     12 * time.Second,
 	},
 	itemtype.SpeedSoup: {
 		Type:         itemtype.SpeedSoup,

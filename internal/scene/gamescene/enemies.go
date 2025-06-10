@@ -28,45 +28,45 @@ type WaveDefinition struct {
 func (g *GameScene) initializeWaves() {
 	g.waveDefinitions = []WaveDefinition{
 		// Wave 1
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion}, Count: 140},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion}, Count: 70},
 		// Wave 2
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek}, Count: 145},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek}, Count: 70},
 		// Wave 3
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot}, Count: 150},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot}, Count: 70},
 		// Wave 4
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeRadish}, Count: 160},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeRadish}, Count: 70},
 		// Wave 5
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage}, Count: 170},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage}, Count: 70},
 		// Wave 6
-		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato}, Count: 190},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypePotato}, Count: 70},
 		// Wave 7
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek}, Count: 200},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek}, Count: 100},
 		// Wave 8
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypeRadish}, Count: 210},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypeRadish}, Count: 100},
 		// Wave 9
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypePotato}, Count: 230},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypePotato}, Count: 100},
 		// Wave 10
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot}, Count: 260},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot}, Count: 160},
 		// Wave 11
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeRadish, enemy.TypeCabbage, enemy.TypePotato}, Count: 300},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeRadish, enemy.TypeCabbage, enemy.TypePotato}, Count: 160},
 		// Wave 12
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeCarrot, enemy.TypePotato}, Count: 330},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeCarrot, enemy.TypePotato}, Count: 160},
 		// Wave 13
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 500},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 160},
 		// Wave 14
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypeRadish, enemy.TypePotato, enemy.TypeCabbage}, Count: 550},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypeRadish, enemy.TypePotato, enemy.TypeCabbage}, Count: 200},
 		// Wave 15
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeRadish, enemy.TypePotato}, Count: 600},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeRadish, enemy.TypePotato}, Count: 200},
 		// Wave 16
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion}, Count: 650},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion}, Count: 200},
 		// Wave 17
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek, enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage}, Count: 700},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeLeek, enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage}, Count: 200},
 		// Wave 18
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot, enemy.TypeRadish, enemy.TypePotato}, Count: 750},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot, enemy.TypeRadish, enemy.TypePotato}, Count: 350},
 		// Wave 19
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 800},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeCarrot, enemy.TypePotato, enemy.TypeCabbage, enemy.TypeOnion, enemy.TypeLeek}, Count: 350},
 		// Wave 20
-		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot, enemy.TypeRadish, enemy.TypeCabbage, enemy.TypePotato}, Count: 1500},
+		{EnemyTypes: []enemy.EnemyType{enemy.TypeOnion, enemy.TypeLeek, enemy.TypeCarrot, enemy.TypeRadish, enemy.TypeCabbage, enemy.TypePotato}, Count: 800},
 	}
 	g.currentWaveIndex = -1
 	// g.lastWaveStartTime will be set when the first wave starts

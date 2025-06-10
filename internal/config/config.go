@@ -35,13 +35,17 @@ const (
 	ICON_SIZE               = 16.0 // The size in pixels of icon assets
 	ICON_ON_MAP_RENDER_SIZE = 16.0 // The size in pixels on how large an item icon should be rendered
 	/// --- Enemy Settings ---
-	DEFAULT_ENEMY_ASSET_SIZE  = 32.0 // THe size in pixels of default enemies
-	DAMAGE_INDICATOR_SPEED    = 0.5
-	DAMAGE_INDICATOR_DURATION = 500 * time.Millisecond
-	ENEMY_SEPERATION_RADIUS   = 16.0 // The radius space for each enemy
-	ENEMY_PER_SUB_FORMATION   = 10   // The amount of enemies that can spawn in a line or zig zag pattern
-	ENDLESS_MODE_ENEMY_AMOUNT = 2000 // Enough enemies to fulfil the 3,000 capacity will be spawned in each tick.
-	ENEMY_UPDATE_INTERVAL     = 30   // The amount of seconds until an enemy gets an upgrade
+	DEFAULT_ENEMY_ASSET_SIZE    = 32.0 // THe size in pixels of default enemies
+	DAMAGE_INDICATOR_SPEED      = 0.5
+	DAMAGE_INDICATOR_DURATION   = 500 * time.Millisecond
+	ENEMY_SEPERATION_RADIUS     = 16.0 // The radius space for each enemy
+	ENEMY_PER_SUB_FORMATION     = 10   // The amount of enemies that can spawn in a line or zig zag pattern
+	ENDLESS_MODE_ENEMY_AMOUNT   = 2000 // Enough enemies to fulfil the 3,000 capacity will be spawned in each tick.
+	ENEMY_UPDATE_INTERVAL       = 30   // The amount of seconds until an enemy gets an upgrade
+	ENEMY_UPDATE_MAX_SPEED      = 140  // The maximum speed an enemy can reach after updates
+	ENEMY_UPDATE_INTERVAL_SPEED = 25   // The amount of speed an enemy gets after each update set by ENEMY_UPDATE_INTERVAL
+	ENEMY_UPDATE_MAX_SCALE      = 2    // The maximum scale an enemy can reach after updates
+	ENEMY_UPDATE_INTERVAL_SCALE = 0.2  // The amount of scale an enemy gets after each update set by ENEMY_UPDATE_INTERVAL
 	// Enemy: Carrot
 	CARROT_SPEED                  = 65.0
 	CARROT_HEALTH                 = 2

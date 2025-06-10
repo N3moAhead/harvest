@@ -39,14 +39,14 @@ var RecipeDefinitions = map[itemtype.ItemType]Recipe{
 		Ingredients: map[itemtype.ItemType]int{
 			itemtype.Carrot: 10,
 			itemtype.Potato: 1,
-			itemtype.Onion:  20,
+			itemtype.Onion:  15,
 		},
 	},
 	itemtype.MagnetRadiusSoup: {
 		Soup: itemtype.MagnetRadiusSoup,
 		Ingredients: map[itemtype.ItemType]int{
-			itemtype.Onion:   30,
-			itemtype.Leek:    25,
+			itemtype.Onion:   15,
+			itemtype.Leek:    10,
 			itemtype.Cabbage: 5,
 		},
 	},
@@ -55,7 +55,7 @@ var RecipeDefinitions = map[itemtype.ItemType]Recipe{
 		Ingredients: map[itemtype.ItemType]int{
 			itemtype.Radish: 10,
 			itemtype.Potato: 4,
-			itemtype.Carrot: 30,
+			itemtype.Carrot: 20,
 		},
 	},
 	// ...
