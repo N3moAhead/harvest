@@ -1,6 +1,8 @@
 package gamescene
 
 import (
+	"bytes"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -17,6 +19,7 @@ import (
 	"github.com/N3moAhead/harvest/internal/world"
 	"github.com/N3moAhead/harvest/pkg/ui"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 )
 
 type Score interface {
@@ -64,6 +67,21 @@ func NewGameScene(backToMenu func()) *GameScene {
 	newGameScene.initializeWaves()
 	newGameScene.hud = initHUD(newGameScene)
 	newGameScene.gameOverlay = initGameOverlay(newGameScene, backToMenu)
+
+	/// Init Game Music
+	game_music, ok := assets.AssetStore.GetMusicData("game")
+	if ok {
+		musicBytesReader := bytes.NewReader(game_music)
+		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(game_music)))
+		if assets.MusicPlayer != nil {
+			assets.MusicPlayer.Close()
+			assets.MusicPlayer, _ = assets.AudioContext.NewPlayer(loop)
+		}
+		assets.MusicPlayer, _ = assets.AudioContext.NewPlayer(loop)
+		assets.MusicPlayer.Play()
+	} else {
+		fmt.Println("Warning: could not load game music")
+	}
 
 	return newGameScene
 }

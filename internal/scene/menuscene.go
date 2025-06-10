@@ -2,6 +2,7 @@ package scene
 
 import (
 	"bytes"
+	"fmt"
 	"math"
 
 	"github.com/N3moAhead/harvest/internal/assets"
@@ -61,13 +62,17 @@ func NewMenuScene(setExitGame func(), highScore int) *MenuScene {
 	newUiManager.AddElement(highScoreDisplay)
 
 	music, ok := assets.AssetStore.GetMusicData("menu")
-	// Only start music initially
-	if ok && assets.MusicPlayer == nil || (assets.MusicPlayer != nil && !assets.MusicPlayer.IsPlaying()) {
+	if ok {
 		musicBytesReader := bytes.NewReader(music)
 		loop := audio.NewInfiniteLoop(musicBytesReader, int64(len(music)))
-
+		if assets.MusicPlayer != nil {
+			assets.MusicPlayer.Close()
+			assets.MusicPlayer, _ = assets.AudioContext.NewPlayer(loop)
+		}
 		assets.MusicPlayer, _ = assets.AudioContext.NewPlayer(loop)
 		assets.MusicPlayer.Play()
+	} else {
+		fmt.Println("Warning: could not load menu music")
 	}
 
 	return newMenuScene
