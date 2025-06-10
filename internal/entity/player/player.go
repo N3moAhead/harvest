@@ -24,12 +24,14 @@ type InventoryProvider interface {
 
 type Player struct {
 	entity.Entity
-	Soups           []soups.Soup
-	Speed           float64
-	MagnetRadius    float64
-	Health          component.Health
-	FacingDirection component.Vector2D
-	animationStore  *animation.AnimationStore
+	Soups            []soups.Soup
+	Speed            float64
+	baseSpeed        float64
+	MagnetRadius     float64
+	baseMagnetRadius float64
+	Health           component.Health
+	FacingDirection  component.Vector2D
+	animationStore   *animation.AnimationStore
 }
 
 const (
@@ -174,8 +176,8 @@ func (p *Player) Update(inputState *input.InputState, dt float64, inventory Inve
 	p.Soups = activeSoups
 
 	// reset player stats to default/base values
-	p.MagnetRadius = config.INITIAL_PLAYER_MAGNET_RADIUS
-	p.Speed = config.INITIAL_PLAYER_SPEED
+	p.MagnetRadius = p.baseMagnetRadius
+	p.Speed = p.baseSpeed
 
 	for _, soup := range p.Soups {
 		buffVal := float64(soup.BuffPerLevel)
@@ -213,7 +215,7 @@ func (p *Player) HasSoup(soupType itemtype.ItemType) bool {
 
 // TODO: implement a LoadPlayer function to get the saved
 // game state from the past
-func NewPlayer() *Player {
+func NewPlayer(playerLvl uint) *Player {
 	baseEntity := entity.NewEntity(
 		(config.WIDTH_IN_TILES*config.TILE_SIZE)/2,
 		(config.HEIGHT_IN_TILES*config.TILE_SIZE)/2,
@@ -256,42 +258,6 @@ func NewPlayer() *Player {
 			store.AddAnimation(UP_LEFT, upLeft)
 		}
 		idle, err := animation.NewAnimation(playerIdleImg, 32, 32, 0, 0, 2, 24, true)
-		// playerImg, ok := assets.AssetStore.GetImage("player")
-		// playerIdleImg, ok := assets.AssetStore.GetImage("player_idle")
-		// if ok {
-		// 	up, err := animation.NewAnimation(playerImg, 32, 32, 0, 0, 4, 6, true)
-		// 	if err == nil {
-		// 		store.AddAnimation(UP, up)
-		// 	}
-		// 	upRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 1*32, 4, 6, true)
-		// 	if err == nil {
-		// 		store.AddAnimation(UP_RIGHT, upRight)
-		// 	}
-		// 	right, err := animation.NewAnimation(playerImg, 32, 32, 0, 2*32, 4, 6, true)
-		// 	if err == nil {
-		// 		store.AddAnimation(RIGHT, right)
-		// 	}
-		// 	downRight, err := animation.NewAnimation(playerImg, 32, 32, 0, 3*32, 4, 6, true)
-		// 	if err == nil {
-		// 		store.AddAnimation(DOWN_RIGHT, downRight)
-		// 	}
-		// 	down, err := animation.NewAnimation(playerImg, 32, 32, 0, 4*32, 4, 6, true)
-		// 	if err == nil {
-		// 		store.AddAnimation(DOWN, down)
-		// 	}
-		// 	downLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 5*32, 4, 6, true)
-		// 	if err == nil {
-		// 		store.AddAnimation(DOWN_LEFT, downLeft)
-		// 	}
-		// 	left, err := animation.NewAnimation(playerImg, 32, 32, 0, 6*32, 4, 6, true)
-		// 	if err == nil {
-		// 		store.AddAnimation(LEFT, left)
-		// 	}
-		// 	upLeft, err := animation.NewAnimation(playerImg, 32, 32, 0, 7*32, 4, 6, true)
-		// 	if err == nil {
-		// 		store.AddAnimation(UP_LEFT, upLeft)
-		// 	}
-		// 	idle, err := animation.NewAnimation(playerIdleImg, 32, 32, 0, 0, 1, 6, true)
 		if err == nil {
 			store.AddAnimation(IDLE, idle)
 		}
@@ -300,13 +266,20 @@ func NewPlayer() *Player {
 		fmt.Println("Warning: Could not load player img in NewPlayer()")
 	}
 
+	playerLvlFactor := config.PLAYER_LEVEL_FACTOR
+	magnetRadius := config.INITIAL_PLAYER_MAGNET_RADIUS + (playerLvlFactor * float64(playerLvl))
+	speed := config.INITIAL_PLAYER_SPEED + (playerLvlFactor * float64(playerLvl))
+	maxHealth := config.PLAYER_MAX_HEALTH + float64(int(playerLvlFactor*float64(playerLvl)))
+
 	p := &Player{
-		Entity:          *baseEntity,
-		MagnetRadius:    config.INITIAL_PLAYER_MAGNET_RADIUS,
-		Speed:           config.INITIAL_PLAYER_SPEED,
-		Health:          component.NewHealth(config.PLAYER_MAX_HEALTH),
-		FacingDirection: component.NewVector2D(0, -1), // Default looks up
-		animationStore:  store,
+		Entity:           *baseEntity,
+		MagnetRadius:     magnetRadius,
+		baseMagnetRadius: magnetRadius,
+		Speed:            speed,
+		baseSpeed:        speed,
+		Health:           component.NewHealth(maxHealth),
+		FacingDirection:  component.NewVector2D(0, -1), // Default looks up
+		animationStore:   store,
 	}
 	return p
 }

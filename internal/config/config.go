@@ -22,6 +22,7 @@ const (
 	PLAYER_INTERACT_RADIUS         = 20.0  // The radius in which the player can interact with cookstations, NPCs, etc.
 	SHOW_RECIPE_RANGE              = 200.0 // The range in which the player can see the recipe of a cookstation
 	PLAYER_MAX_HEALTH              = 100
+	PLAYER_LEVEL_FACTOR            = 0.2
 	/// --- Audio Settings ---
 	AUDIO_SAMPLE_RATE = 44100
 	/// --- Inventory Settings ---

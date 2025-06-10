@@ -3,6 +3,7 @@ package scene
 import (
 	"bytes"
 	"fmt"
+	"image/color"
 	"math"
 
 	"github.com/N3moAhead/harvest/internal/assets"
@@ -26,13 +27,17 @@ type MenuScene struct {
 	angularSpeed float64
 }
 
-func NewMenuScene(setExitGame func(), highScore int) *MenuScene {
+func NewMenuScene(setExitGame func(), stats PlayerStats) *MenuScene {
 	icon, ok := assets.AssetStore.GetImage("menu-icon")
 	if !ok {
 		panic("menu-icon nicht im AssetStore gefunden")
 	}
 
 	fontFace, ok := assets.AssetStore.GetFont("2p")
+	if !ok {
+		panic("Unable to load font in new base scene")
+	}
+	microFont, ok := assets.AssetStore.GetFont("micro")
 	if !ok {
 		panic("Unable to load font in new base scene")
 	}
@@ -58,8 +63,16 @@ func NewMenuScene(setExitGame func(), highScore int) *MenuScene {
 	container.AddChild(startBtn)
 	container.AddChild(endGameBtn)
 	newUiManager.AddElement(container)
-	highScoreDisplay := hud.NewScoreDisplay(&highScore, "High Score")
+	highScoreDisplay := hud.NewScoreDisplay(&stats.highScore, "Highscore")
 	newUiManager.AddElement(highScoreDisplay)
+
+	statsContainer := ui.NewContainer(10, 10, &ui.ContainerOptions{
+		Direction: ui.Col,
+		Gap:       10,
+	})
+	levelDisplay := ui.NewLabel(0, 0, fmt.Sprintf("Player Level: %d", stats.playerLevel), microFont, color.White)
+	statsContainer.AddChild(levelDisplay)
+	newUiManager.AddElement(statsContainer)
 
 	music, ok := assets.AssetStore.GetMusicData("menu")
 	if ok {

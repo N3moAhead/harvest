@@ -84,7 +84,7 @@ func LoadAllAssets() {
 
 	fontsToLoad := map[string]FontConfig{
 		"2p":    FontConfig{Path: "assets/fonts/PressStart2P-Regular.ttf", Size: 24},
-		"micro": FontConfig{Path: "assets/fonts/micro.ttf", Size: 20},
+		"micro": FontConfig{Path: "assets/fonts/micro.ttf", Size: 24},
 	}
 
 	err := AssetStore.Load(imagesToLoad, sfxToLoad, fontsToLoad, musicToLoad, config.AUDIO_SAMPLE_RATE)
