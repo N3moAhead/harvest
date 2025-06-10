@@ -110,10 +110,6 @@ func (g *GameScene) Update() error {
 	// The ui is always getting updated everything else can be paused.
 	updateUI(g)
 
-	if ebiten.IsKeyPressed(ebiten.Key0) {
-		g.Score += 1000
-	}
-
 	// Pause on Escape
 	if inputState.Esc {
 		g.isPaused = true
