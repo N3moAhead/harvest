@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"math/rand/v2"
+	"time"
 
 	"github.com/N3moAhead/harvest/internal/animation"
 	"github.com/N3moAhead/harvest/internal/component"
@@ -19,6 +20,8 @@ type BaseMeleeEnemy struct {
 	AttackRange      float64
 	spawnItem        func(x, y float64) *item.Item
 	damageIndicators []*DamageIndicator
+	updateAt         time.Time
+	scale            float64
 }
 
 type BaseMeleeOptions struct {
@@ -55,9 +58,11 @@ func NewBaseMeleeEnemy(enemyType EnemyType, pos component.Vector2D, store *anima
 			animationStore:      store,
 			enemyType:           enemyType,
 		},
+		updateAt:         time.Now().Add(config.ENEMY_UPDATE_INTERVAL * time.Second),
 		AttackRange:      op.AttackRange,
 		spawnItem:        op.SpawnItem,
 		damageIndicators: make([]*DamageIndicator, 0),
+		scale:            1,
 	}
 }
 
@@ -78,6 +83,13 @@ func (e *BaseMeleeEnemy) Update(player *player.Player, dt float64) {
 	e.damageIndicators = e.damageIndicators[:n]
 
 	if e.Health.HP > 0 {
+		if time.Now().After(e.updateAt) {
+			e.updateAt = time.Now().Add(config.ENEMY_UPDATE_INTERVAL * time.Second)
+			e.Health.Heal(1) // Fully heal the enemy
+			e.scale += 0.25  // Scale the enemy up
+			e.Speed += 35    // Increase the speed of the enemy
+		}
+
 		// Set current animation to walking if no animation is currently running
 		// Or Update the type of running animation if currently the animation is running
 		animationName := e.animationStore.GetCurrentAnimationName()
@@ -115,6 +127,7 @@ func (e *BaseMeleeEnemy) Draw(screen *ebiten.Image, camX, camY float64) {
 	assetSizeHalf := assetSize / 2
 	if frameImage != nil {
 		op := &ebiten.DrawImageOptions{}
+		op.GeoM.Scale(e.scale, e.scale)
 		op.GeoM.Translate(e.Pos.X-camX-assetSizeHalf, e.Pos.Y-camY-assetSizeHalf)
 		screen.DrawImage(frameImage, op)
 	} else {

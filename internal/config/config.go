@@ -41,6 +41,7 @@ const (
 	ENEMY_SEPERATION_RADIUS   = 16.0 // The radius space for each enemy
 	ENEMY_PER_SUB_FORMATION   = 10   // The amount of enemies that can spawn in a line or zig zag pattern
 	ENDLESS_MODE_ENEMY_AMOUNT = 2000 // Enough enemies to fulfil the 3,000 capacity will be spawned in each tick.
+	ENEMY_UPDATE_INTERVAL     = 30   // The amount of seconds until an enemy gets an upgrade
 	// Enemy: Carrot
 	CARROT_SPEED                  = 65.0
 	CARROT_HEALTH                 = 2

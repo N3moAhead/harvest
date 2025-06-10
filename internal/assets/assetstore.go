@@ -76,6 +76,7 @@ func LoadAllAssets() {
 		"player_death_sound": "assets/audio/sfx/player_death_sound.mp3",
 		"knife_throw":        "assets/audio/sfx/knife_throw.wav",
 		"knife_throw_impact": "assets/audio/sfx/knife_throw_impact.wav",
+		"veggienated":        "assets/audio/sfx/you_got_veggienated.mp3",
 	}
 	musicToLoad := map[string]string{
 		"menu": "assets/audio/music/8bitMenuMusic.mp3",
