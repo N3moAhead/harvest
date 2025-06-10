@@ -68,7 +68,7 @@ func (s *SceneManager) setNextScene(scene SceneId) {
 		s.currentScene = GAME_SCENE
 	case SCORE_SCENE:
 		fmt.Println("Switched Scene to Score")
-		s.scoreScene = NewScoreScene()
+		s.scoreScene = NewScoreScene(s.lastGameScore)
 		s.currentScene = SCORE_SCENE
 	default:
 		fmt.Println("Warning: Switched to menu, received undefined SceneId: ", scene)
