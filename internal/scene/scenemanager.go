@@ -25,9 +25,16 @@ type SceneManager struct {
 	gameScene    Scene
 	scoreScene   Scene
 	// If set to true the game will end in the next update loop
-	exitGame      bool
-	highScore     int
-	lastGameScore int // The score of the last played game
+	exitGame bool
+	stats    PlayerStats
+}
+
+type PlayerStats struct {
+	highScore        int
+	lastGameScore    int // The score of the last played game
+	lastGameXPEarned uint
+	playerXP         uint // 10.000 Score Points = 1 XP
+	playerLevel      uint // 10 XP => 1 Player Level
 }
 
 func NewSceneManager() *SceneManager {
@@ -60,15 +67,15 @@ func (s *SceneManager) setNextScene(scene SceneId) {
 	switch scene {
 	case MENU_SCENE:
 		fmt.Println("Switched Scene to Menu")
-		s.menuScene = NewMenuScene(s.setExitGame, s.highScore)
+		s.menuScene = NewMenuScene(s.setExitGame, s.stats)
 		s.currentScene = MENU_SCENE
 	case GAME_SCENE:
 		fmt.Println("Switched Scene to Game Scene")
-		s.gameScene = gamescene.NewGameScene(func() { s.updateHighScore(); s.setNextScene(MENU_SCENE) })
+		s.gameScene = gamescene.NewGameScene(func() { s.updateHighScore(); s.setNextScene(MENU_SCENE) }, s.stats.playerLevel)
 		s.currentScene = GAME_SCENE
 	case SCORE_SCENE:
 		fmt.Println("Switched Scene to Score")
-		s.scoreScene = NewScoreScene(s.lastGameScore)
+		s.scoreScene = NewScoreScene(s.stats)
 		s.currentScene = SCORE_SCENE
 	default:
 		fmt.Println("Warning: Switched to menu, received undefined SceneId: ", scene)
@@ -100,9 +107,12 @@ func (s *SceneManager) updateHighScore() {
 		scene := s.getCurrentScene()
 		if scoreScene, ok := scene.(gamescene.Score); ok {
 			newScore := scoreScene.GetScore()
-			s.lastGameScore = newScore
-			if s.highScore < newScore {
-				s.highScore = newScore
+			s.stats.lastGameXPEarned = uint(newScore / 10000)
+			s.stats.playerXP += s.stats.lastGameXPEarned
+			s.stats.playerLevel = uint(s.stats.playerXP / 10)
+			s.stats.lastGameScore = newScore
+			if s.stats.highScore < newScore {
+				s.stats.highScore = newScore
 			}
 		}
 	}

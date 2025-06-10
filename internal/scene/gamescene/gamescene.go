@@ -49,9 +49,9 @@ type GameScene struct {
 	Score                    int
 }
 
-func NewGameScene(backToMenu func()) *GameScene {
+func NewGameScene(backToMenu func(), playerLevel uint) *GameScene {
 	newGameScene := &GameScene{
-		Player:             player.NewPlayer(),
+		Player:             player.NewPlayer(playerLevel),
 		World:              world.NewWorld(config.WIDTH_IN_TILES, config.HEIGHT_IN_TILES),
 		Enemies:            []enemy.EnemyInterface{},
 		Spawner:            initEnemySpawner(),
@@ -109,6 +109,10 @@ func (g *GameScene) Update() error {
 	/// --- UI Update ---
 	// The ui is always getting updated everything else can be paused.
 	updateUI(g)
+
+	if ebiten.IsKeyPressed(ebiten.Key0) {
+		g.Score += 1000
+	}
 
 	// Pause on Escape
 	if inputState.Esc {

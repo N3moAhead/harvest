@@ -1,6 +1,7 @@
 package scene
 
 import (
+	"fmt"
 	"image/color"
 
 	"github.com/N3moAhead/harvest/internal/assets"
@@ -15,11 +16,15 @@ type ScoreScene struct {
 	uiManager *ui.UIManager
 }
 
-func NewScoreScene(score int) *ScoreScene {
+func NewScoreScene(stats PlayerStats) *ScoreScene {
 
 	fontFace, ok := assets.AssetStore.GetFont("2p")
 	if !ok {
-		panic("Unable to load font in new base scene")
+		panic("Unable to load font in score scene")
+	}
+	microFont, ok := assets.AssetStore.GetFont("micro")
+	if !ok {
+		panic("Unable to load font in score scene")
 	}
 
 	text := ui.NewLabel(50, 50, "You Died!", fontFace, color.RGBA{R: 255, G: 255, B: 255, A: 255})
@@ -44,7 +49,18 @@ func NewScoreScene(score int) *ScoreScene {
 	btnDrawY += 75 // Move the button below the menu text
 	endSceneButton.SetPosition(btnDrawX, btnDrawY)
 
-	newScoreDisplay := hud.NewScoreDisplay(&score, "Score")
+	newScoreDisplay := hud.NewScoreDisplay(&stats.lastGameScore, "Score")
+
+	// Stats Display
+	statsContainer := ui.NewContainer(10, 10, &ui.ContainerOptions{
+		Direction: ui.Col,
+		Gap:       10,
+	})
+	xpEarnedDisplay := ui.NewLabel(0, 0, fmt.Sprintf("XP earned: %d", stats.lastGameXPEarned), microFont, color.White)
+	levelEarned := ui.NewLabel(0, 0, fmt.Sprintf("Level earned: %d", uint(stats.lastGameXPEarned/10)), microFont, color.White)
+	statsContainer.AddChild(xpEarnedDisplay)
+	statsContainer.AddChild(levelEarned)
+	newUiManager.AddElement(statsContainer)
 
 	newUiManager.AddElement(text)
 	newUiManager.AddElement(endSceneButton)
