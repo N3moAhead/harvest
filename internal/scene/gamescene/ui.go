@@ -24,7 +24,8 @@ func drawUI(g *GameScene, screen *ebiten.Image) {
 		g.gameOverlay.Draw(screen)
 	} else {
 		// --- Drawing the HUD ---
-		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("HP: %d / %d\n", int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, config.SCREEN_HEIGHT-20)
+		fpsText := fmt.Sprintf("Fps: %d", int(ebiten.ActualFPS()))
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("%s HP: %d / %d\n", fpsText, int(g.Player.Health.HP), int(g.Player.Health.MaxHP)), 10, config.SCREEN_HEIGHT-20)
 		g.inventory.Draw(screen)
 		g.hud.Draw(screen)
 	}

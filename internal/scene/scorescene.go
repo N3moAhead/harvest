@@ -27,7 +27,7 @@ func NewScoreScene(stats PlayerStats) *ScoreScene {
 		panic("Unable to load font in score scene")
 	}
 
-	text := ui.NewLabel(50, 50, "You Died!", fontFace, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	text := ui.NewLabel(50, 50, "You got Veggienated!", fontFace, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 	// Center the text
 	textWidth, textHeight := text.GetSize()
 	offsetX := (config.SCREEN_WIDTH - textWidth) / 2
@@ -65,6 +65,14 @@ func NewScoreScene(stats PlayerStats) *ScoreScene {
 	newUiManager.AddElement(text)
 	newUiManager.AddElement(endSceneButton)
 	newUiManager.AddElement(newScoreDisplay)
+
+	sound, ok := assets.AssetStore.GetSFXData("veggienated")
+	if ok {
+		sfxPlayer := assets.AudioContext.NewPlayerFromBytes(sound)
+		sfxPlayer.Play()
+	} else {
+		fmt.Println("Warning: Could not load Veggienated sound")
+	}
 
 	return newScoreScene
 }
