@@ -58,6 +58,7 @@ func NewScoreScene(stats PlayerStats) *ScoreScene {
 	})
 	xpEarnedDisplay := ui.NewLabel(0, 0, fmt.Sprintf("XP earned: %d", stats.lastGameXPEarned), microFont, color.White)
 	levelEarned := ui.NewLabel(0, 0, fmt.Sprintf("Level earned: %d", uint(stats.lastGameXPEarned/10)), microFont, color.White)
+	//lastWave := ui.NewLabel(0, 0, fmt.Sprintf("Made it to wave: %d", uint(stats.currentWaveIndex/10)), microFont, color.White) // Could be cool
 	statsContainer.AddChild(xpEarnedDisplay)
 	statsContainer.AddChild(levelEarned)
 	newUiManager.AddElement(statsContainer)

@@ -85,9 +85,13 @@ func (e *BaseMeleeEnemy) Update(player *player.Player, dt float64) {
 	if e.Health.HP > 0 {
 		if time.Now().After(e.updateAt) {
 			e.updateAt = time.Now().Add(config.ENEMY_UPDATE_INTERVAL * time.Second)
-			e.Health.Heal(1) // Fully heal the enemy
-			e.scale += 0.25  // Scale the enemy up
-			e.Speed += 35    // Increase the speed of the enemy
+			e.Health.Heal(1) // Fully heal the enemy - seriously?
+			if e.scale < config.ENEMY_UPDATE_MAX_SCALE {
+				e.scale += config.ENEMY_UPDATE_INTERVAL_SCALE // Scale the enemy up
+			}
+			if e.Speed < config.ENEMY_UPDATE_MAX_SPEED {
+				e.Speed += config.ENEMY_UPDATE_INTERVAL_SPEED // Increase the speed of the enemy
+			}
 		}
 
 		// Set current animation to walking if no animation is currently running
